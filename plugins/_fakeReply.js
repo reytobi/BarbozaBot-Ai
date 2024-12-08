@@ -2,10 +2,7 @@ import fetch from 'node-fetch'
 
 export async function before(m, { conn }) {
 let name = '⛄𝑩𝒐𝒕𝑩𝒂𝒓𝒃𝒐𝒛𝒂 𝑴𝑫 - 𝑪𝒉𝒂𝒏𝒏𝒆𝒍🌲'
-let imagenes = ["https://i.ibb.co/JmcS3kv/Sylph.jpg",
-"https://i.ibb.co/Cs6Tt9V/Sylph.jpg",
-"https://i.ibb.co/JmcS3kv/Sylph.jpg",
-"https://i.ibb.co/Cs6Tt9V/Sylph.jpg",
+let imagenes = ["https://i.ibb.co/Cs6Tt9V/Sylph.jpg",
 "https://i.ibb.co/JmcS3kv/Sylph.jpg",
 "https://i.ibb.co/Cs6Tt9V/Sylph.jpg",
 "https://i.ibb.co/JmcS3kv/Sylph.jpg"]
