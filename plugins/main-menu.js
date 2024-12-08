@@ -21,20 +21,20 @@ let Styles = (text, style = 1) => {
   return output.join('');
 };
 let tags = {
-  'anime': '🧧 ANIME 🎐',
-  'main': '❗ INFO ❕',
-  'search': '🔎 SEARCH 🔍',
-  'rpg': '🌐 RPG 🥇',
-  'rg': '🎑 REGISTRO 🎟️',
-  'sticker': '💟 STICKER 🏷️',
-  'group': '👥 GROUPS 📢',
-  'nable': '🎛️ ON / OFF 🔌',
-  'downloader': '📥 DOWNLOAD 📤',
-  'tools': '🔧 TOOLS 🛠️',
-  'fun': '🎉 FUN 🎊',
-  'nsfw': '🔞 NSFW 📛', 
-  'owner': '👤 OWNER 👁️', 
-  'audio': '📣 AUDIOS 🔊', 
+  'anime': 'ANIME',
+  'main': 'INFO',
+  'search': 'SEARCH',
+  'rpg': 'RPG',
+  'rg': 'REGISTRO',
+  'sticker': 'STICKER',
+  'group': 'GROUPS',
+  'nable': 'ON / OFF',
+  'downloader': 'DOWNLOAD',
+  'tools': 'TOOLS',
+  'fun': 'FUN',
+  'nsfw': 'NSFW', 
+  'owner': 'OWNER', 
+  'audio': 'AUDIOS', 
 }
 
 const defaultMenu = {
