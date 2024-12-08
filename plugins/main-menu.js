@@ -24,7 +24,6 @@ let tags = {
   'anime': 'ANIME',
   'main': 'INFO',
   'search': 'SEARCH',
-  'rpg': 'RPG',
   'rg': 'REGISTRO',
   'sticker': 'STICKER',
   'group': 'GROUPS',
