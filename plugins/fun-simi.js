@@ -1,43 +1,30 @@
 import translate from '@vitalets/google-translate-api';
-import axios from 'axios';
 import fetch from 'node-fetch';
-
-const handler = async (m, { conn, text, command, args, usedPrefix }) => {
-    if (!text) return conn.reply(m.chat, '✧ Te faltó el texto para hablar con BarbozaBot', m);
-
+const handler = async (m, {text, command, args, usedPrefix}) => {
+  if (!text) throw `*Complementa con un texto para interactuar con el bot/modo simsimi.*\n\n_⚕️.- Ejemplo:_ *${usedPrefix + command} Hola bot*`;
+  try {
+    const api = await fetch('https://api.simsimi.net/v2/?text=' + text + '&lc=es');
+    const resSimi = await api.json();
+    m.reply(resSimi.success);
+  } catch {
     try {
-        // await m.react(emojis);
-        const resSimi = await simitalk(text);
-        conn.sendMessage(m.chat, { text: resSimi.resultado.simsimi }, { quoted: m });
+      if (text.includes('Hola')) text = text.replace('Hola', 'Hello');
+      if (text.includes('hola')) text = text.replace('hola', 'Hello');
+      if (text.includes('HOLA')) text = text.replace('HOLA', 'HELLO');
+      const reis = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=' + text);
+      const resu = await reis.json();
+      const nama = m.pushName || '1';
+      const api = await fetch('http://api.brainshop.ai/get?bid=153868&key=rcKonOgrUFmn5usX&uid=' + nama + '&msg=' + resu[0][0][0]);
+      const res = await api.json();
+      const reis2 = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=es&dt=t&q=' + res.cnt);
+      const resu2 = await reis2.json();
+      m.reply(resu2[0][0][0]);
     } catch {
-        return conn.reply(m.chat, '❌ Ocurrió un error', m);
+      throw global.errori;
     }
+  }
 };
-
-handler.help = ['barboza', 'bot'];
-handler.tags = ['tools'];
-handler.register = true;
-handler.command = ['simi', 'bot', 'barboza', 'Barboza'];
+handler.help = ['simi', 'bot'].map((v) => v + ' <teks>');
+handler.tags = ['fun'];
+handler.command = /^((sim)?simi|bot|alexa|cortana)$/i;
 export default handler;
-
-async function simitalk(ask, apikeyyy = "iJ6FxuA9vxlvz5cKQCt3", language = "es") {
-    if (!ask) return { status: false, resultado: { msg: "Debes ingresar un texto para hablar con simsimi." }};
-
-    try {
-        const response1 = await axios.get(`https://deliriussapi-oficial.vercel.app/tools/simi?text=${encodeURIComponent(ask)}`);
-        const trad1 = await translate(`${response1.data.data.message}`, { to: language, autoCorrect: true });
-
-        if (trad1.text === 'indefinida' || response1 === '' || !response1.data) {
-            trad1.text = "XD"; // Se usa "XD" para causar error y usar otra opción.
-        }
-
-        return { status: true, resultado: { simsimi: trad1.text } };
-    } catch {
-        try {
-            const response2 = await axios.get(`https://anbusec.xyz/api/v1/simitalk?apikey=${apikeyyy}&ask=${ask}&lc=${language}`);
-            return { status: true, resultado: { simsimi: response2.data.message } };
-        } catch (error2) {
-            return { status: false, resultado: { msg: "Todas las API's fallaron. Inténtalo de nuevo más tarde.", error: error2.message } };
-        }
-    }
-}
