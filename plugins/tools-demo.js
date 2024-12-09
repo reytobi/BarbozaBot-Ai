@@ -18,7 +18,7 @@ title: `[ BarbozaBot -By|Niño Piña ]`,
 body: ``,
 "previewType": "PHOTO",
 thumbnailUrl: 'https://tinyurl.com/2awg2bch', 
-sourceUrl: 'https://whatsapp.com/channel/0029VapSIvR5EjxsD1B7hU3T'}}},
+sourceUrl: 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d'}}},
 { quoted: m})
     } catch (err) {
         m.reply('error cik:/ ' + err);
