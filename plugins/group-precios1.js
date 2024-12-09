@@ -6,7 +6,7 @@ m.react('💫');
 const message = "*AQUI ESTAN LOS PRECIOS.*\n\n> Renovación💫";
 if (m.isGroup) {
 // URL de la imagen
-const imageUrl = 'https://i.ibb.co/x5w5CHk/file.jpg'; // Cambia esta URL por la de la imagen que deseas enviar
+const imageUrl = 'https://qu.ax/OTxye.jpg'; // Cambia esta URL por la de la imagen que deseas enviar
 // Envía el mensaje
 // Envía la imagen
 await conn.sendMessage(m.chat, { image: { url: imageUrl }, caption: message }, { mimetype: 'image/jpeg' });
@@ -15,5 +15,5 @@ await conn.sendMessage(m.chat, { image: { url: imageUrl }, caption: message }, {
 handler.help = ['precios1'];
 handler.tags = ['main'];
 handler.group = true;
-handler.command = ['precios1', 'p1'];
+handler.command = ['precios1', 'p1', 'precio1'];
 export default handler;
