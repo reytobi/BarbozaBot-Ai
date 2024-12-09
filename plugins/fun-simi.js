@@ -1,30 +1,131 @@
-import translate from '@vitalets/google-translate-api';
-import fetch from 'node-fetch';
-const handler = async (m, {text, command, args, usedPrefix}) => {
-  if (!text) throw `*Complementa con un texto para interactuar con el bot/modo simsimi.*\n\n_⚕️.- Ejemplo:_ *${usedPrefix + command} Hola bot*`;
-  try {
-    const api = await fetch('https://api.simsimi.net/v2/?text=' + text + '&lc=es');
-    const resSimi = await api.json();
-    m.reply(resSimi.success);
-  } catch {
-    try {
-      if (text.includes('Hola')) text = text.replace('Hola', 'Hello');
-      if (text.includes('hola')) text = text.replace('hola', 'Hello');
-      if (text.includes('HOLA')) text = text.replace('HOLA', 'HELLO');
-      const reis = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t&q=' + text);
-      const resu = await reis.json();
-      const nama = m.pushName || '1';
-      const api = await fetch('http://api.brainshop.ai/get?bid=153868&key=rcKonOgrUFmn5usX&uid=' + nama + '&msg=' + resu[0][0][0]);
-      const res = await api.json();
-      const reis2 = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=es&dt=t&q=' + res.cnt);
-      const resu2 = await reis2.json();
-      m.reply(resu2[0][0][0]);
-    } catch {
-      throw global.errori;
-    }
-  }
-};
-handler.help = ['simi', 'bot'].map((v) => v + ' <teks>');
-handler.tags = ['fun'];
-handler.command = /^((sim)?simi|bot|alexa|cortana)$/i;
-export default handler;
+import axios from 'axios'
+
+import fetch from 'node-fetch'
+
+let handler = async (m, { conn, usedPrefix, command, text }) => {
+
+const isQuotedImage = m.quoted && (m.quoted.msg || m.quoted).mimetype && (m.quoted.msg || m.quoted).mimetype.startsWith('image/')
+
+const username = `${conn.getName(m.sender)}`
+
+const basePrompt = `Tu nombre es BarbozaBot y parece haber sido creado por WillZek. Tú usas el idioma Español. Llamarás a las personas por su nombre ${username}, te gusta ser divertido, te encanta aprender y sobre todo las explociones. Lo más importante es que debes ser amigable con la persona con la que estás hablando. ${username}`
+
+if (isQuotedImage) {
+
+const q = m.quoted
+
+const img = await q.download?.()
+
+if (!img) {
+
+console.error('💛 Error: No image buffer available')
+
+return conn.reply(m.chat, '💛 Error: No se pudo descargar la imagen.', m, fake)}
+
+const content = '💛 ¿Qué se observa en la imagen?'
+
+try {
+
+const imageAnalysis = await fetchImageBuffer(content, img)
+
+const query = '😊 Descríbeme la imagen y detalla por qué actúan así. También dime quién eres'
+
+const prompt = `${basePrompt}. La imagen que se analiza es: ${imageAnalysis.result}`
+
+const description = await luminsesi(query, username, prompt)
+
+await conn.reply(m.chat, description, m)
+
+} catch (error) {
+
+console.error('💛 Error al analizar la imagen:', error)
+
+await conn.reply(m.chat, '💛 Error al analizar la imagen.', m)}
+
+} else {
+
+if (!text) { return conn.reply(m.chat, `💛 *Ingrese su petición*\n💛 *Ejemplo de uso:* ${usedPrefix + command} Como hacer un avión de papel`, m, rcanal)}
+
+await m.react('💬')
+
+try {
+
+const query = text
+
+const prompt = `${basePrompt}. Responde lo siguiente: ${query}`
+
+const response = await luminsesi(query, username, prompt)
+
+await conn.reply(m.chat, response, m)
+
+} catch (error) {
+
+console.error('💛 Error al obtener la respuesta:', error)
+
+await conn.reply(m.chat, 'Error: intenta más tarde.', m)}}}
+
+handler.help = ['chatgpt <texto>', 'ia <texto>']
+
+handler.tags = ['ai']
+
+handler.register = true
+
+// handler.estrellas = 1
+
+handler.command = ['ia', 'simi', 'chatgpt', 'ai', 'chat', 'gpt']
+
+export default handler
+
+// Función para enviar una imagen y obtener el análisis
+
+async function fetchImageBuffer(content, imageBuffer) {
+
+try {
+
+const response = await axios.post('https://Luminai.my.id', {
+
+content: content,
+
+imageBuffer: imageBuffer 
+
+}, {
+
+headers: {
+
+'Content-Type': 'application/json' 
+
+}})
+
+return response.data
+
+} catch (error) {
+
+console.error('Error:', error)
+
+throw error }}
+
+// Función para interactuar con la IA usando prompts
+
+async function luminsesi(q, username, logic) {
+
+try {
+
+const response = await axios.post("https://Luminai.my.id", {
+
+content: q,
+
+user: username,
+
+prompt: logic,
+
+webSearchMode: false
+
+})
+
+return response.data.result
+
+} catch (error) {
+
+console.error('💛 Error al obtener:', error)
+
+throw error }}
