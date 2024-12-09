@@ -1,14 +1,13 @@
 // Código Hecho Por Niño Piña wa.me/50557865603
 let handler = async (m, { conn }) => {
-// React con un emoji al mensaje
+// Aqui Pueden Cambiar la reacción si gustan pijes
 m.react('💫');
-// Mensaje que se enviará
+// Dejen Créditos xd
 const message = "*AQUI ESTAN LOS PRECIOS.*\n\n> Renovación💫";
 if (m.isGroup) {
-// URL de la imagen
-const imageUrl = 'https://qu.ax/OTxye.jpg'; // Cambia esta URL por la de la imagen que deseas enviar
-// Envía el mensaje
-// Envía la imagen
+// la del se saca con el tourl
+const imageUrl = 'https://qu.ax/OTxye.jpg'; // Aqui ponen la url perres
+// No Quiten Los Créditos 😑 
 await conn.sendMessage(m.chat, { image: { url: imageUrl }, caption: message }, { mimetype: 'image/jpeg' });
 }
 }
