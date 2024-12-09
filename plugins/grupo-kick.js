@@ -12,9 +12,9 @@ m.reply(`Lo siento, acabas de ser eliminado del grupo.`, user)
 
 handler.help = ['kick *@user*']
 handler.tags = ['group']
-handler.command = ['kick', 'expulsar', '-', '_'] 
+handler.command = ['kick', 'expulsar'] 
 handler.admin = true
 handler.group = true
 handler.botAdmin = true
 
-export default handler y 
+export default handler
