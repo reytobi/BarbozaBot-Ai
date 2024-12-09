@@ -14,7 +14,7 @@ isForwarded: false,
 "externalAdReply": {
 "showAdAttribution": true,
 "containsAutoReply": true,
-title: `[ BarbozaBot -By|Niño Piña ]`,
+title: `[ BarbozaBot -By|Barboza & WillZek ]`,
 body: ``,
 "previewType": "PHOTO",
 thumbnailUrl: 'https://tinyurl.com/2awg2bch', 
