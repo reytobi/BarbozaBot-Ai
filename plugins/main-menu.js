@@ -66,7 +66,7 @@ const defaultMenu = {
 \t\t\t_*Lista De Comandos*_ ﭢ
 `.trimStart(),
   header: '╭═════⊹⊱≼「 *%category* 」≽⊰⊹════•',
-  body: '┃⛄› ✧ . %cmd %islimit %isPremium\n',
+  body: '┃⛄› ✧  %cmd %islimit %isPremium\n',
   footer: '╰═════⊹⊱≼≽⊰⊹═════╯',
   after: `🎄 ${dev}`,
 }
