@@ -15,7 +15,7 @@ let handler = async (m, { conn, command, args }) => {
   } else conn.reply(m.chat, `🚩 Lo siento, no tienes suficientes *⭐ XP* para comprar *${count} ❇️ Estrellas.*`, m, rcanal)
 }
 handler.help = ['buycoins', 'buyall']
-handler.tags = ['rpg']
+handler.tags = ['fun']
 handler.command = ['buycoins', 'buyall', 'buy'] 
 handler.register = true 
 
