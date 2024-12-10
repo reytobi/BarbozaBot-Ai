@@ -68,7 +68,7 @@ const defaultMenu = {
   header: '╭═════⊹⊱≼「 *%category* 」≽⊰⊹════•',
   body: '┃⛄› ✧ . %cmd %islimit %isPremium\n',
   footer: '╰═════⊹⊱≼≽⊰⊹═════╯',
-  after: `© ${dev}`,
+  after: `🎄 ${dev}`,
 }
 
 let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
