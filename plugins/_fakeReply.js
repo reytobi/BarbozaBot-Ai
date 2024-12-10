@@ -11,7 +11,7 @@ let icono = imagenes[Math.floor(Math.random() * imagenes.length)]
 
 //Imagen
 let category = "imagen"
-const db = './src/database/db.json'
+const db = './storage/databases/database.json'
 const db_ = JSON.parse(fs.readFileSync(db))
 const random = Math.floor(Math.random() * db_.links[category].length)
 const randomlink = db_.links[category][random]
