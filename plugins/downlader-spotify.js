@@ -14,7 +14,7 @@ let { name } = res.data.artist;
 conn.sendFile(m.chat, thumbnail, title + '.jpg', text, m, null, rpl)
 /*************/
 await conn.sendMessage(m.chat, { audio: { url: url }}, { quoted: fkontak });
-m.react(done);
+m.react('❤️‍🔥');
 }
 handler.help = ['spotifydl', 'spotify'];
 handler.tags = ['downloader'];
