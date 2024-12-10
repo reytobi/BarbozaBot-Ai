@@ -32,6 +32,16 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       global.opts['autoread'] = isEnable
       break
 
+     case 'restrict':
+    case 'restringir':
+     isAll = true
+        if (!isOwner) {
+          global.dfail('rowner', m, conn)
+          throw false
+      }
+      bot.restrict = isEnable
+      break
+
     case 'document':
     case 'documento':
     isUser = true
@@ -95,6 +105,10 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
 
 *Tipo :* autoread 
 *Descripción :* Des/Activa el *AutoRead* para el Bot
+
+*Tipo :* restrict
+*Description :* Des/Activa el *Restrict*
+para el bot
 
 *Tipo :* document 
 *Descripción :* Des/Activa la *Descarga En Documentos* para el Usuario
