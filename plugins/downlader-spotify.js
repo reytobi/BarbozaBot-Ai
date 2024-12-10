@@ -17,7 +17,7 @@ await conn.sendMessage(m.chat, { audio: { url: url }}, { quoted: fkontak });
 m.react(done);
 }
 handler.help = ['spotifydl', 'spotify'];
-handler.tags = ['dl'];
+handler.tags = ['downloader'];
 handler.command = ['spotifydl', 'spotify'];
 handler.prem = true;
 export default handler;
