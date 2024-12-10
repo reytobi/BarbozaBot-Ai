@@ -32,9 +32,6 @@ global.rcanal = {
     }, 
     }
 
-const rimg = await response.buffer()
-global.icons = rimg
-
  global.fake = {
     contextInfo: {
             isForwarded: true,
