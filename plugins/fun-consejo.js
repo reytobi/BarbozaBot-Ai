@@ -7,13 +7,13 @@ contextInfo: { externalAdReply :{ mediaUrl: null, mediaType: 1, showAdAttributio
 title: packname,
 body: wm,
 previewType: 0, thumbnail: icons,
-sourceUrl: channel }}})*/
+sourceUrl: canal }}})*/
 
 conn.reply(m.chat, `『✧』 ${pickRandom(global.consejo)}`, 
 m, 
 { contextInfo:{ externalAdReply: {title: '•🍀 FRASE / CONSEJO 🍀•', 
 body: dev, 
-sourceUrl: channel, 
+sourceUrl: canal, 
 thumbnail: icons }}})
 
 }
