@@ -10,7 +10,7 @@ let { name } = res.data.artist;
     text += `│  ≡ Duración: \`${duration}\`\n`
     text += `│  ≡ Artiste: \`${name}\`\n`
     text += `╰━━━━━━━━━━━━━━⊜\n`
-    text += `  _Enviando el archivo . . . ._\n- \`${botName}\` -`
+    text += `  _Enviando el archivo . . . ._\n- \`${botname}\` -`
 conn.sendFile(m.chat, thumbnail, title + '.jpg', text, m, null, rpl)
 /*************/
 await conn.sendMessage(m.chat, { audio: { url: url }}, { quoted: fkontak });
