@@ -7,10 +7,10 @@ const handler = async (m, {isOwner, isAdmin, conn, text, participants, args, com
     throw false;
   }
   const pesan = args.join` `;
-const oi = `👤 MENSAJE : ${pesan}`;
-  let teks = `✉️ *"MENCION GENERAL"*\n MIEMBROS: ${participants.length} 🎄\n\n ${oi}\n\n╭•┈┈•┈┈⊰🔥⃪᜔꫶┈•┈┈•◌ᜓ ݊ ᜒ𝅄\n`;
+const oi = `👤 *MENSAJE :* ${pesan}`;
+  let teks = `✉️ *"MENCION GENERAL"*\n *MIEMBROS:* ${participants.length} 🎄\n\n ${oi}\n\n╭•┈┈•┈┈⊰🔥⃪᜔꫶┈•┈┈•◌ᜓ ݊ ᜒ𝅄\n`;
   for (const mem of participants) {
-    teks += `│ ❏ᝰ. @${mem.id.split('@')[0]}\n`;
+    teks += `│ ❄️. @${mem.id.split('@')[0]}\n`;
   }
   teks += `╰─┐ • •ㅤ•-ˏˋ✿ˊˎ-• •ㅤ•
         ꒷︶︶꒷︶︶꒷꒦︶✧꒷₊˚`;
