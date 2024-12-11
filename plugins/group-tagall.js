@@ -13,7 +13,7 @@ const oi = `👤 *MENSAJE :* ${pesan}`;
     teks += `│ ❄️. @${mem.id.split('@')[0]}\n`;
   }
   teks += `╰─┐ • •ㅤ•-ˏˋ✿ˊˎ-• •ㅤ•
-        ꒷︶︶꒷︶︶꒷꒦︶✧꒷₊˚`;
+        ₊˚꒷✧︶︶꒷︶︶꒷꒦︶✧꒷₊˚`;
   conn.sendMessage(m.chat, {text: teks, mentions: participants.map((a) => a.id)} );
 };
 handler.help = ['todos <mesaje>'];
