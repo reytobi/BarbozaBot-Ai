@@ -12,13 +12,12 @@ let texto = ` \`\`\`
     ✦ 𝐏𝐚𝐜𝐤𝐚𝐠𝐞 : ⇢ ${packe} 📦
     ✦ 𝐀𝐜𝐭𝐮𝐚𝐥𝐢𝐳𝐚𝐝𝐨 : ⇢ ${lastUpdate} 🗓️
     ✦ 𝐂𝐫𝐞𝐚𝐝𝐨𝐫 :⇢  WillZek
-
+\`\`\`
 > https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d
 
 ## Su aplicación se enviará en un momento . . .
 
-   - ${wm} -          
-\`\`\`     
+   - ${wm} -               
 `
 await conn.sendFile(m.chat, icon, name + '.jpg', texto, m)
 
