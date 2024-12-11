@@ -63,7 +63,7 @@ global.maxwarn = '2' // máxima advertencias
 
 //Apis
 
-global.APIs = {
+global.API = {
 amel: 'https://melcanz.com',
 bx: 'https://bx-hunter.herokuapp.com',
 nrtm: 'https://nurutomo.herokuapp.com',
