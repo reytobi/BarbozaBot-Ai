@@ -5,7 +5,7 @@ let handler = async (m, { conn, args, isPrems, isOwner, usedPrefix, command }) =
         if (!args || !args[0]) throw `✳️ ${mssg.example} :\n${usedPrefix + command} https://youtu.be/YzkTFFwxtXI`
     if (!args[0].match(/youtu/gi)) throw `❎ ${mssg.noLink('YouTube')}`
          let chat = global.db.data.chats[m.chat]
-         m.react(rwait) 
+         m.react('❤️‍🔥') 
 
          let q = args[1] || '360p'
  try {
@@ -38,7 +38,7 @@ let handler = async (m, { conn, args, isPrems, isOwner, usedPrefix, command }) =
 *🎞️${mssg.quality}:* ${quality}
 ❖ *⚖️${mssg.size}* : ${size}
 `.trim(), m, false, { asDocument: false })
-                m.react(done)
+                m.react('🔥')
 
         } catch {
                 await m.reply(`❎ ${mssg.error}`)
