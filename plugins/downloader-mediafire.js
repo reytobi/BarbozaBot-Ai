@@ -12,7 +12,7 @@ if (!args[0].match(/mediafire/gi)) conn.reply(m.chat, `🚩 *Enlace incorrecto*`
 
 try {
 
-m.react(rwait)
+m.react('🔥')
 let full = /f$/i.test(command)
 let u = /https?:\/\//.test(args[0]) ? args[0] : 'https://' + args[0]
 let ss = await (await fetch(global.API('nrtm', '/api/ssweb', { delay: 1000, url: u }))).buffer()
@@ -23,7 +23,7 @@ let isLimit = (isPrems || isOwner ? limit : limit) * 1012 < filesize
 await conn.reply(m.chat, `*Nombre:* ${filename}\n*Peso:*  ${filesizeH}\n*Tipo:* ${ext}\n*Subido:* ${aploud}`, m, fake, )
 
 if(!isLimit) await conn.sendFile(m.chat, url, filename, '', m, null, { mimetype: ext, asDocument: true })
-m.react(done)
+m.react('❄️')
 } catch (e) {
 conn.reply(m.chat, `🚩 *Ocurrió un fallo*`, m, fake, )
 console.log(e)}
