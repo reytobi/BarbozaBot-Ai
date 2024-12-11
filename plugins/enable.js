@@ -58,6 +58,15 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       chat.antiLink = isEnable
       break
 
+case 'modoadmin': case 'soloadmin': case 'modeadmin':
+if (m.isGroup) {
+if (!(isAdmin || isOwner)) {
+global.dfail('admin', m, conn)
+throw false
+}}
+chat.modoadmin = isEnable          
+break    
+
       case 'antiprivado':
       isAll = true
       if (!isROwner) {
@@ -112,6 +121,9 @@ para el bot
 
 *Tipo :* document 
 *Descripción :* Des/Activa la *Descarga En Documentos* para el Usuario
+
+*Tipo :* modoadmin
+*Descripción :* Des/Activa la *modoadmin* para el Usuario
 
 *• Ejemplo:*
 *- ${usedPrefix + command}* welcome
