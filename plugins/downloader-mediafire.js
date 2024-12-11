@@ -25,7 +25,7 @@ await conn.reply(m.chat, `*Nombre:* ${filename}\n*Peso:*  ${filesizeH}\n*Tipo:* 
 if(!isLimit) await conn.sendFile(m.chat, url, filename, '', m, null, { mimetype: ext, asDocument: true })
 m.react('❄️')
 } catch (e) {
-conn.reply(m.chat, `🚩 *Ocurrió un fallo* {mssg.error}`, m, fake, )
+conn.reply(m.chat, `🚩 *Ocurrió un fallo* ${mssg.error}`, m, fake, )
 console.log(e)}
 
 }
