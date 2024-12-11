@@ -1,41 +1,39 @@
-import Starlights from "@StarlightsTeam/Scraper"
+import fetch from 'node-fetch'
+import { mediafiredl } from '@bochilteam/scraper'
 
-let handler = async (m, { conn, args, usedPrefix, command }) => {
-if (!args[0]) return conn.reply(m.chat, '🚩 Ingrese el enlace de un archivo de Mediafire.', m, rcanal)
-if (!args[0].match(/mediafire/gi)) return conn.reply(m.chat, 'El enlace deve ser de un archivo de Mediafire.', m, rcanal)
-await m.react('🕓')
-try {
-let { title, ext, aploud, size, dl_url } = await Starlights.mediafire(args[0])
-let txt = `乂  *M E D I A F I R E  -  D O W N L O A D*\n\n`
-    txt += `        ✩  *Nombre* : ${title}\n`
-    txt += `        ✩  *Peso* : ${size}\n`
-    txt += `        ✩  *Publicado* : ${aploud}\n`
-    txt += `        ✩  *MimeType* : ${ext}\n\n`
-    txt += `*- ↻ El archivo se esta enviando espera un momento, soy lenta. . .*`
-let img = await (await fetch('https://i.ibb.co/wLQFn7q/logo-mediafire.jpg')).buffer()
-await conn.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, null, rcanal)
-await conn.sendFile(m.chat, dl_url, title, null, m, null, { mimetype: ext, asDocument: true })
-await m.react('✅')
-} catch {
-try {
-let { title, ext, aploud, size, dl_url } = await Starlights.mediafireV2(args[0])
-let txt = `乂  *M E D I A F I R E  -  D O W N L O A D*\n\n`
-    txt += `        ✩  *Nombre* : ${title}\n`
-    txt += `        ✩  *Peso* : ${size}\n`
-    txt += `        ✩  *Publicado* : ${aploud}\n`
-    txt += `        ✩  *MimeType* : ${ext}\n\n`
-    txt += `*- ↻ El archivo se esta enviando espera un momento, soy lenta. . .*`
-let img = await (await fetch('https://i.ibb.co/wLQFn7q/logo-mediafire.jpg')).buffer()
-await conn.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, null, rcanal)
-await conn.sendFile(m.chat, dl_url, title, null, m, null, { mimetype: ext, asDocument: true })
-await m.react('✅')
-} catch {
-await m.react('✖️')
-}}}
+var handler = async (m, { conn, args, usedPrefix, command, isOwner, isPrems }) => {
 
-handler.help = ['mediafire'].map(v => v + ' *<url>*')
-handler.tags = ['downloader', 'premium']
-handler.command = ['mediafire', 'mdfire', 'mf']
-handler.premium = true 
+let limit
+if((isOwner || isPrems)) limit = 1000
+else limit = 600
+
+if (!args[0]) return conn.reply(m.chat, `🎌 *Ingrese un enlace de mediafire*\n\nEjemplo, !mediafire https://www.mediafire.com/file/941xczxhn27qbby/GBWA_V12.25FF-By.SamMods-.apk`, m, fake, )
+if (!args[0].match(/mediafire/gi)) conn.reply(m.chat, `🚩 *Enlace incorrecto*`, m, fake, )
+
+try {
+
+m.react(rwait)
+let full = /f$/i.test(command)
+let u = /https?:\/\//.test(args[0]) ? args[0] : 'https://' + args[0]
+let ss = await (await fetch(global.API('nrtm', '/api/ssweb', { delay: 1000, url: u }))).buffer()
+let res = await mediafiredl(args[0])
+let { url, url2, filename, ext, aploud, filesize, filesizeH } = res
+let isLimit = (isPrems || isOwner ? limit : limit) * 1012 < filesize
+
+await conn.reply(m.chat, `*Nombre:* ${filename}\n*Peso:*  ${filesizeH}\n*Tipo:* ${ext}\n*Subido:* ${aploud}`, m, fake, )
+
+if(!isLimit) await conn.sendFile(m.chat, url, filename, '', m, null, { mimetype: ext, asDocument: true })
+m.react(done)
+} catch (e) {
+conn.reply(m.chat, `🚩 *Ocurrió un fallo*`, m, fake, )
+console.log(e)}
+
+}
+handler.help = ['mediafire']
+handler.tags = ['descargas']
+handler.command = ['mediafire', 'mfire']
+
+handler.diamond = true
+handler.register = true
 
 export default handler
