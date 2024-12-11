@@ -91,6 +91,8 @@ export async function handler(chatUpdate) {
                     chat.antiLink = false
                 if (!('onlyLatinos' in chat))
                     chat.onlyLatinos = false
+                if (!('modoadmin' in chat))
+                    chat.modoadmin = false
                  if (!('nsfw' in chat))
                     chat.nsfw = false
                 if (!isNumber(chat.expired))
@@ -101,7 +103,8 @@ export async function handler(chatUpdate) {
                     bienvenida: false,
                     antiLink: false,
                     onlyLatinos: false,
-                    nsfw: false, 
+                    nsfw: false,
+                    modoadmin: false, 
                     expired: 0, 
                 }
             var settings = global.db.data.settings[this.user.jid]
