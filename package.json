@@ -101,6 +101,7 @@
         "similarity": "^1.2.1",
         "socket.io": "^4.5.2",
         "stream": "^0.0.3",
+        "didyoumean": "^1.2.2",
         "SumiFx-Scraper": "github:BrunoSobrino/SumiFX-Scraper",
         "syntax-error": "^1.4.0",
         "terminal-image": "^2.0.0",
