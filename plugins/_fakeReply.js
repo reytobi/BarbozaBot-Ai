@@ -31,6 +31,16 @@ global.rcanal = {
     }, 
     }
 
+
+global.icono = [ 
+'https://qu.ax/yyCo.jpeg',
+'https://qu.ax/yyCo.jpeg',
+'https://qu.ax/qJch.jpeg',
+'https://qu.ax/qJch.jpeg',
+'https://qu.ax/CHRS.jpeg',
+'https://qu.ax/CHRS.jpeg',
+].getRandom()
+
  global.fake = {
     contextInfo: {
             isForwarded: true,
