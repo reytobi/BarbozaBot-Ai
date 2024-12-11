@@ -63,7 +63,7 @@ global.maxwarn = '2' // máxima advertencias
 
 //Apis
 
-global.API = {
+global.APIs = {
 amel: 'https://melcanz.com',
 bx: 'https://bx-hunter.herokuapp.com',
 nrtm: 'https://nurutomo.herokuapp.com',
@@ -93,6 +93,26 @@ ana: 'https://anabotofc.herokuapp.com/',
 kanx: 'https://kannxapi.herokuapp.com/',
 dhnjing: 'https://dhnjing.xyz'
 },
+
+global.APIKeys = {
+'https://api-alc.herokuapp.com': 'ConfuMods',
+'https://api.reysekha.xyz': 'apirey',
+'https://melcanz.com': 'F3bOrWzY',
+'https://bx-hunter.herokuapp.com': 'Ikyy69',
+'https://api.xteam.xyz': '5bd33b276d41d6b4',
+'https://zahirr-web.herokuapp.com': 'zahirgans',
+'https://bsbt-api-rest.herokuapp.com': 'benniismael',
+'https://api.zeks.me': 'apivinz',
+'https://hardianto-chan.herokuapp.com': 'hardianto',
+'https://pencarikode.xyz': 'pais',
+'https://api-fgmods.ddns.net': 'fg-dylux',
+'https://leyscoders-api.herokuapp.com': 'MIMINGANZ',
+'https://server-api-rey.herokuapp.com': 'apirey',
+'https://api.lolhuman.xyz': 'GataDiosV2',
+'https://botstyle-api.herokuapp.com': 'Eyar749L',
+'https://neoxr-api.herokuapp.com': 'yntkts',
+'https://anabotofc.herokuapp.com/': 'AnaBot'
+} 
 
 let file = fileURLToPath(import.meta.url)
 watchFile(file, () => {
