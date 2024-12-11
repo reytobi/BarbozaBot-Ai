@@ -11,8 +11,9 @@ let texto = ` \`\`\`
     ✦ 𝐓𝐚𝐦𝐚𝐧̃𝐨 : ⇢ ${size} ⚖️
     ✦ 𝐏𝐚𝐜𝐤𝐚𝐠𝐞 : ⇢ ${packe} 📦
     ✦ 𝐀𝐜𝐭𝐮𝐚𝐥𝐢𝐳𝐚𝐝𝐨 : ⇢ ${lastUpdate} 🗓️
-    ✦ 𝐂𝐫𝐞𝐚𝐝𝐨𝐫 :⇢  WillZek
-## Su aplicación se enviará en un momento, *reportar número manda cp +51 928 215 461* . . .
+    ✦ 𝐂𝐫𝐞𝐚𝐝𝐨𝐫 :⇢  WillZek\n\> https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d
+
+## Su aplicación se enviará en un momento . . .
 
    - ${wm} -          
 \`\`\`     
