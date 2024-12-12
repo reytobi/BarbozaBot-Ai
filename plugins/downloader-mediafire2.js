@@ -20,7 +20,7 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
                         sourceUrl: 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d',
                         mediaType: 2,
                         description: `Sigue El Canal Por Favor`,
-                        title: `👑 Gracias Por Usar A BarbozaBot, WhatsApp Bot...`,
+                        title: `👑 Gracias Por Usar A BarbozaBot, WhatsApp Bot⛄`,
                         body: `🎄 Powered By WillZek`,          previewType: 0,
                         thumbnail: await (await fetch('https://telegra.ph/file/11c0098b4f55b2e548b90.png')).buffer(),
                         mediaUrl: canal
@@ -32,7 +32,7 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
     try {
       const res = await mediafireDl(args[0]);
       const {name, size, date, mime, link} = res;
-      let text2 = `✰𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑✰\n\n`
+      let text2 = `𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑\n\n`
     text2 += `│  ✦ *Nombre:* ${name}\n\n`
     text2 += `│  ✦ *Peso:* ${size}\n\n`
     text2 += `│  ✦ *Tipo:* ${mime}\n\n`
@@ -43,7 +43,7 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
                         sourceUrl: 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d',
                         mediaType: 2,
                         description: `❤️‍🔥Sigue El Canal Por Favor❤️‍🔥`,
-                        title: `❄️ Gracias Por Usar BarbozaBot\nRecuerde Seguir El Canal⛄`,
+                        title: `❄️ Gracias Por Usar BarbozaBot Recuerde Seguir El Canal⛄`,
                         body: `🎄 Powered By WillZek`,          previewType: 0,
                         thumbnail: await (await fetch('https://telegra.ph/file/11c0098b4f55b2e548b90.png')).buffer(),
                         mediaUrl: canal
