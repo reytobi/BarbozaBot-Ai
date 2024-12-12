@@ -23,8 +23,6 @@ await conn.sendFile(m.chat, download, 'hasumiBotFreeCodes.mp3', null, m)
 
 } catch (error) {
 console.error(error)
-await m.reply(m.chat, 'Ocurrio Un Error ${error.message}');
-await m.react('✖️')
 }}
 
 handler.command = /^(spotifydl2|sp2)$/i
