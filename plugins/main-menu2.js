@@ -167,7 +167,6 @@ const document = doc[Math.floor(Math.random() * doc.length)];
     }
   } catch {
     conn.reply(m.chat, `*Este menu tiene un error interno, por lo cual no fue posible enviarlo.*`, m);
- console.error(e)
  }
 };
 handler.tags = ['main']
