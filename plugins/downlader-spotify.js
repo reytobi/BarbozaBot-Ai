@@ -4,7 +4,7 @@ m.react('❄️');
 let api = await fetch(`https://api.dorratz.com/spotifydl?url=${args[0]}`);
 let res = await api.json();
 let { title, duration, url, thumbnail } = res.data;
-let { name } = res.data.artist;
+let { name: artistName} = res.data.artist;
     let text = `╭━━━⊜ ⌊ \`Spotify Download\` ⌉⊜━━━\n`
     text += `│  ≡ Nombre: \`${title}\`\n`
     text += `│  ≡ Duración: \`${duration}\`\n`
