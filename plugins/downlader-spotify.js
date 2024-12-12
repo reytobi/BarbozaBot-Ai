@@ -1,85 +1,36 @@
+import Starlights from '@StarlightsTeam/Scraper';
 import fetch from 'node-fetch';
-import axios from 'axios';
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-    if (!text) throw m.reply(`Ingresa una consulta\n*🌹 Ejemplo:* ${usedPrefix}${command} Joji Ew`);
+let handler = async (m, { conn, text }) => {
+if (!text) return conn.reply(m.chat, '🚩 Ingresa el enlace de algún Track, Playlist o Álbum de Spotify.', m);
 
-    conn.sendMessage(m.chat, { react: { text: "🕒", key: m.key } });
+let isSpotifyUrl = text.match(/^(https:\/\/open\.spotify\.com\/(album|track|playlist)\/[a-zA-Z0-9]+)/i);
+if (!isSpotifyUrl) return conn.reply(m.chat, '🚩 Ingresa un enlace válido de Track, Playlist o Álbum de Spotify.', m);
 
-    try {
-        let ouh = await fetch(`https://api.nyxs.pw/dl/spotify-direct?title=${text}`);
+await m.react('🕓')
+try {
+let { title, artist, album, thumbnail, dl_url } = await Starlights.spotifydl(text);
+let img = await (await fetch(thumbnail)).buffer();
 
-        // Verifica que la respuesta sea correcta
-        if (!ouh.ok) {
-            throw new Error(`Error al acceder a la API: ${ouh.status} ${ouh.statusText}`);
-        }
+let txt = `*乂  S P O T I F Y  -  D O W N L O A D*\n\n`;
+    txt += `    ✩  *Título* : ${title}\n`;
+    txt += `    ✩  *Álbum* : ${album}\n`;
+    txt += `    ✩  *Artista* : ${artist}\n\n`;
+    txt += `*- ↻ Los audios se están enviando, espera un momento. . .*`;
 
-        let gyh = await ouh.json();
+await conn.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, null, rcanal);
+await conn.sendMessage(m.chat, { audio: { url: dl_url }, fileName: `${title}.mp3`, mimetype: 'audio/mp4' }, { quoted: m });
 
-        if (!gyh.result) throw m.reply(`*No se encontró la canción*`);
-
-        // Usar un acortador para el enlace de Spotify
-        let shortURL = await getTinyURL(gyh.result.urlSpotify);
-
-        const info = `🌹 *TITULO:*\n_${gyh.result.title} - Versión original_\n\n👤 *ARTISTA:*\n» ${gyh.result.artists}\n\n🔗 *LINK:*\n» ${shortURL}\n\n🥀 *Enviando Canción....*\n> ৎ୭࠭͢BarbozaBot𝓣ⷭ𓆪͟͞ `;
-
-        // Obtener la imagen en formato buffer de la URL original
-        const thumbnailBuffer = await (await fetch(gyh.result.thumbnail)).buffer();
-
-        // Enviar la información y la imagen como un enlace
-        await conn.sendMessage(m.chat, {
-            text: info,
-            contextInfo: {
-                externalAdReply: {
-                    title: gyh.result.title,
-                    body: `Artista: ${gyh.result.artists}`,
-                    mediaType: 1,
-                    thumbnail: thumbnailBuffer,
-                    mediaUrl: shortURL, // URL de la canción
-                    sourceUrl: shortURL, // URL de la canción
-                    showAdAttribution: true,
-                }
-            }
-        }, { quoted: m });
-
-        const doc = {
-            audio: { url: gyh.result.url },
-            mimetype: 'audio/mp4',
-            fileName: `${gyh.result.title}.mp3`,
-            contextInfo: {
-                externalAdReply: {
-                    showAdAttribution: true,
-                    mediaType: 2,
-                    mediaUrl: gyh.result.urlSpotify,
-                    title: gyh.result.title,
-                    sourceUrl: gyh.result.urlSpotify,
-                    thumbnail: thumbnailBuffer
-                }
-            }
-        };
-
-        // Enviar el archivo de audio
-        await conn.sendMessage(m.chat, doc, { quoted: m });
-        await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
-    } catch (error) {
-        console.error(error);
-        m.reply(`Error: ${error.message}`);
-    }
+await m.react('✅');
+} catch {
+await m.react('✖️');
+}
 };
 
-async function getTinyURL(text) {
-    try {
-        let response = await axios.get(`https://tinyurl.com/api-create.php?url=${text}`);
-        return response.data;
-    } catch (error) {
-        return text;
-    }
-}
-
-handler.help = ['spotify'];
-handler.tags = ['descargas'];
-handler.command = /^(spotify|sp)$/i;
-handler.premium = true;
+handler.help = ['spotifydl'];
+handler.tags = ['downloader'];
+handler.command = ['spotifydl'];
+// handler.limit = 1;
 handler.register = true;
 
 export default handler;
