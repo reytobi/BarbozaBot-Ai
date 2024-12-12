@@ -17,7 +17,7 @@ m.react('❄️')
 
     await conn.reply(m.chat, text, m, {
 contextInfo: { externalAdReply :{ showAdAttribution: true,
-                        sourceUrl: 'https://youtube.com/watch?v=TMT9MNM-NHg',
+                        sourceUrl: 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d',
                         mediaType: 2,
                         description: `🍁 This bot is still in development.`,
                         title: `👑 Gracias Por Usar A BarbozaBot, WhatsApp Bot...`,
@@ -40,7 +40,7 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
     text2 += `  _• Enviando archivo . . . ._`
       await conn.reply(m.chat, text2, m, {
 contextInfo: { externalAdReply :{ showAdAttribution: true,
-                        sourceUrl: 'https://youtube.com/watch?v=TMT9MNM-NHg',
+                        sourceUrl: 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d',
                         mediaType: 2,
                         description: `🍁 This bot is still in development.`,
                         title: `❄️ Gracias Por Usar BarbozaBot`,
