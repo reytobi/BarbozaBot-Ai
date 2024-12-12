@@ -32,6 +32,21 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       global.opts['autoread'] = isEnable
       break
 
+  case 'audios':
+    case 'audiosbot':
+    case 'botaudios':
+      if (!m.isGroup) {
+        if (!isOwner) {
+          global.dfail('group', m, conn)
+          throw false
+        }
+      } else if (!isAdmin) {
+        global.dfail('admin', m, conn)
+        throw false
+      }
+      chat.audios = isEnable
+      break
+
      case 'restrict':
     case 'restringir':
      isAll = true
@@ -124,6 +139,10 @@ para el bot
 
 *Tipo :* modoadmin
 *Descripción :* Des/Activa la *modoadmin* para el Usuario
+
+*Tipo :* audios
+*Descripción :* Des/Activa la *audios* para el Usuario
+
 
 *• Ejemplo:*
 *- ${usedPrefix + command}* welcome
