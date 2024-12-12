@@ -32,11 +32,11 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
     try {
       const res = await mediafireDl(args[0]);
       const {name, size, date, mime, link} = res;
-      let text2 = `╭━━━⊜ ⌊ \`\`\`Mediafire Downloader - 2\`\`\` ⌉⊜━━━\n`
-    text2 += `│  ≡ Nombre: ${name}\n`
-    text2 += `│  ≡ Peso: ${size}\n`
-    text2 += `│  ≡ Tipo: ${mime}\n`
-    text2 += `╰━━━━━━━━━━━━━━⊜\n`
+      let text2 = `✰ ⌊ \`\`\`Mediafire Downloader - 2\`\`\` ⌉ ✰\n`
+    text2 += `│  ✦ Nombre: ${name}\n`
+    text2 += `│  ✦ Peso: ${size}\n`
+    text2 += `│  ✦ Tipo: ${mime}\n`
+    text2 += `╰━━━━━━━━━━━━━━\n`
     text2 += `  _• Enviando archivo . . . ._`
       await conn.reply(m.chat, text2, m, {
 contextInfo: { externalAdReply :{ showAdAttribution: true,
