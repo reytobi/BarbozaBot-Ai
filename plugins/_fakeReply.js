@@ -47,13 +47,13 @@ global.icono = [
   global.rpl = {
     contextInfo: {
       externalAdReply: {
-        mediaUrl: group_,
+        mediaUrl: group,
         mediaType: 'VIDEO',
         description: 'support group',
         title: packname,
         body: 'grupo de soporte',
         thumbnailUrl: imagen2,
-        sourceUrl: group_
+        sourceUrl: group,
       }
     }
   };
