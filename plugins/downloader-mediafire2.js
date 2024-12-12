@@ -9,10 +9,11 @@ m.react('❄️')
   try {
     const resEX = await mediafiredl(args[0]);
     let text = `⌊✰𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑✰⌉\n\n`
+    text += `╔──────¤◎¤──────
     text += `│  ✦ *Nombre:* ${resEX.filename}\n`
     text += `│  ✦ *Peso:* ${resEX.filesizeH}\n`
     text += `│  ✦ *Tipo:* ${resEX.ext}\n`
-    text += `╰━━━━━━━━━━━━━━\n`
+    text += `╚──────¤◎¤──────\n`
     text += `> 🎄Espere Un Momento Enviando Archivo Tenga Paciencia❄️`
 
     await conn.reply(m.chat, text, m, {
@@ -33,10 +34,11 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
       const res = await mediafireDl(args[0]);
       const {name, size, date, mime, link} = res;
       let text2 = `⌊✰𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑✰⌉\n\n`
+    text2 += `╔──────¤◎¤──────
     text2 += `│  ✦ *Nombre:* ${name}\n`
     text2 += `│  ✦ *Peso:* ${size}\n`
     text2 += `│  ✦ *Tipo:* ${mime}\n`
-    text2 += `╰━━━━━━━━━━━━━━\n`
+    text2 += `╚──────¤◎¤──────\n`
     text2 += `> 🎄Espera Un Momento, Enviando Archivo Tenga Paciencia❄️`
       await conn.reply(m.chat, text2, m, {
 contextInfo: { externalAdReply :{ showAdAttribution: true,
