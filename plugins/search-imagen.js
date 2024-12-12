@@ -15,7 +15,7 @@ const messages = [['Imagen 1', dev, await res.getRandom(),
 await conn.sendCarousel(m.chat, `💛 Resultado de ${text}`, '🔎 Imagen - Descargas', null, messages, m);
 };
 handler.help = ['imagen <query>'];
-handler.tags = ['buscador', 'tools', 'descargas'];
+handler.tags = [''tools', 'search'];
 handler.command = ['image', 'imagen'];
 handler.register = true;
 export default handler;
