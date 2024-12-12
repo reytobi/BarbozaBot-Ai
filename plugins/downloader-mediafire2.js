@@ -8,8 +8,7 @@ const handler = async (m, {conn, args, usedPrefix, command}) => {
 m.react('❄️')
   try {
     const resEX = await mediafiredl(args[0]);
-    let text = `⌊✰𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑✰⌉\n\n`
-    text += `╔──────────────
+    let text = `✰𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑✰\n\n`
     text += `│  ✦ *Nombre:* ${name}\n`
     text += `│  ✦ *Peso:* ${size}\n`
     text += `│  ✦ *Tipo:* ${mime}\n`
@@ -33,8 +32,7 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
     try {
       const res = await mediafireDl(args[0]);
       const {name, size, date, mime, link} = res;
-      let text2 = `⌊✰𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑✰⌉\n\n`
-    text2 += `╔──────────────
+      let text2 = `✰𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑✰\n\n`
     text2 += `│  ✦ *Nombre:* ${name}\n`
     text2 += `│  ✦ *Peso:* ${size}\n`
     text2 += `│  ✦ *Tipo:* ${mime}\n`
