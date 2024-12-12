@@ -29,7 +29,7 @@ filesDeleted++;
 if (filesDeleted === 0) {
 await conn.reply(m.chat, '🚩 *La carpeta esta vacía*',  m, rcanal, )
 } else {
-m.react(done)
+m.react('✅')
 await conn.reply(m.chat, `🚩 *Se eliminaron ${filesDeleted} archivos de sesión, excepto el archivo creds.json*`,  m, rcanal, )
 conn.reply(m.chat, `🚩 *¡Hola! ¿logras verme?*`, m, rcanal, )
 
