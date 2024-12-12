@@ -5,7 +5,7 @@ const handler = async (m, {conn, usedPrefix, usedPrefix: _p, __dirname, text, is
   try {
     const pp = imagen3;
     // let vn = './storage/menu.mp3'
-    const img = './storage/img/miniurl.jpg';
+    const img = 'https://i.ibb.co/S73gfZn/file.jpg';
     const d = new Date(new Date + 3600000);
     const locale = 'es-ES';
     const week = d.toLocaleDateString(locale, {weekday: 'long'});
