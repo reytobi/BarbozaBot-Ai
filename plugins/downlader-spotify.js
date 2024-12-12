@@ -1,5 +1,5 @@
 let handler = async (m, { conn, args, isPrems, isOwner, usedPrefix, command }) => {
-if (!args[0]) return conn.reply(m.chat, `\`\`\`[ 🌼 ] Por gavor ingresa un link de Spotify. Ejemplo:\n${usedPrefix + command} https://open.spotify.com/intl-es/track/0P0BTqkBQuAlzbwbTEV57m\`\`\``, null, fkontak)
+if (!args[0]) return conn.reply(m.chat, `\`\`\`[ 🌼 ] Por Favor ingresa un link de Spotify. Ejemplo:\n${usedPrefix + command} https://open.spotify.com/intl-es/track/0P0BTqkBQuAlzbwbTEV57m\`\`\``, null, fkontak)
 m.react('❄️');
 let api = await fetch(`https://api.dorratz.com/spotifydl?url=${args[0]}`);
 let res = await api.json();
