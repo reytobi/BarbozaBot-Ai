@@ -8,7 +8,7 @@ const handler = async (m, {conn, args, usedPrefix, command}) => {
 m.react('❄️')
   try {
     const resEX = await mediafiredl(args[0]);
-    let text = `✰𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑✰\n\n`
+    let text = `𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑\n\n`
     text += `│  ✦ *Nombre:* ${name}\n\n`
     text += `│  ✦ *Peso:* ${size}\n\n`
     text += `│  ✦ *Tipo:* ${mime}\n\n`
@@ -43,7 +43,7 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
                         sourceUrl: 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d',
                         mediaType: 2,
                         description: `❤️‍🔥Sigue El Canal Por Favor❤️‍🔥`,
-                        title: `❄️ Gracias Por Usar BarbozaBot⛄`,
+                        title: `❄️ Gracias Por Usar BarbozaBot\nRecuerde Seguir El Canal⛄`,
                         body: `🎄 Powered By WillZek`,          previewType: 0,
                         thumbnail: await (await fetch('https://telegra.ph/file/11c0098b4f55b2e548b90.png')).buffer(),
                         mediaUrl: canal
