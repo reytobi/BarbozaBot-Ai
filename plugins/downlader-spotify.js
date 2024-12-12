@@ -2,10 +2,9 @@ let handler = async (m, { conn, args, isPrems, isOwner, usedPrefix, command }) =
     if (!args[0]) return conn.reply(m.chat, `\`\`\`[ 🌼 ] Por favor ingresa un link de Spotify. Ejemplo:\n${usedPrefix + command} https://open.spotify.com/intl-es/track/0P0BTqkBQuAlzbwbTEV57m\`\`\``, null, fkontak);
     
     m.react('❄️');
-    let api = await fetch(`https://api.dorratz.com/spotifydl?url=${args[0]}`);
+    let api = await fetch(`https://api.ryzendesu.vip/api/downloader/spotify?url=${args[0]}`);
     let res = await api.json();
 
-    // Verifica si res.data existe antes de desestructurarlo
     if (res.data) {
         let { title, duration, url, thumbnail } = res.data;
         let { name: artistName } = res.data.artist; // Cambiar el nombre a artistName
