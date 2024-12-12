@@ -13,7 +13,7 @@ m.react('❄️')
     text += `│  ✦ *Peso:* ${resEX.filesizeH}\n`
     text += `│  ✦ *Tipo:* ${resEX.ext}\n`
     text += `╰━━━━━━━━━━━━━━\n`
-    text += ` 🎄Espere Un Momento Enviando Archivo Tenga Paciencia❄️`
+    text += `> 🎄Espere Un Momento Enviando Archivo Tenga Paciencia❄️`
 
     await conn.reply(m.chat, text, m, {
 contextInfo: { externalAdReply :{ showAdAttribution: true,
@@ -37,7 +37,7 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
     text2 += `│  ✦ *Peso:* ${size}\n`
     text2 += `│  ✦ *Tipo:* ${mime}\n`
     text2 += `╰━━━━━━━━━━━━━━\n`
-    text2 += ` 🎄Espera Un Momento, Enviando Archivo Tenga Paciencia❄️`
+    text2 += `> 🎄Espera Un Momento, Enviando Archivo Tenga Paciencia❄️`
       await conn.reply(m.chat, text2, m, {
 contextInfo: { externalAdReply :{ showAdAttribution: true,
                         sourceUrl: 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d',
