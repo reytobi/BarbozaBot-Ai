@@ -28,7 +28,7 @@ handler.command = /^(phsearch|pornhubsearch)$/i;
 export default handler;
 async function searchPornhub(search) {
   try {
-    const response = await axios.get(`https://www.pornhub.com/video/search?search=${search}`);
+    const response = await axios.get(`https://darkcore-api.onrender.com/api/pornohut?text=${search}`);
     const html = response.data;
     const $ = cheerio.load(html);
     const result = [];
