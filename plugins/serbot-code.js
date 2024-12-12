@@ -5,7 +5,7 @@ const {
     MessageRetryMap,
     makeCacheableSignalKeyStore, 
     jidNormalizedUser,
-    PHONENUMBER_MCC
+    PhoneNumberUtil
    } = await import('glogle-liphonenumner')
 import moment from 'moment-timezone'
 import NodeCache from 'node-cache'
