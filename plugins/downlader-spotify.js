@@ -1,53 +1,23 @@
-import _ from "lodash"
-
-let handler = async (m, { conn, command, usedPrefix, args }) => {
-  const text = _.get(args, "length") ? args.join(" ") : _.get(m, "quoted.text") || _.get(m, "quoted.caption") || _.get(m, "quoted.description") || ""
-  if (typeof text !== 'string' || !text.trim()) return m.reply(`✦ Ingresa una consulta\n*Ejemplo:* .${command} Joji Ew`)
-
-  await m.reply('✦ Espere un momento...')
-
-const dps = await fetch(`https://rest.cifumo.biz.id/api/downloader/spotify-dl?url=${text}`)
-  const dp = await dps.json()
-
-  const { title = "No encontrado", type = "No encontrado", artis = "No encontrado", durasi = "No encontrado", download, image } = dp.data
-
-  const captvid = ` *✦Título:* ${title}
- *✧Duración:* ${durasi}
- *✦Tipo:* ${type}
- *✧Artista:* ${artis}
- *✦link:* ${text}
- `
-
-  const spthumb = (await conn.getFile(image))?.data
-
-  const infoReply = {
-    contextInfo: {
-      externalAdReply: {
-        body: `✧ En unos momentos se entrega su audio`,
-        mediaType: 1,
-        mediaUrl: text,
-        previewType: 0,
-        renderLargerThumbnail: true,
-        sourceUrl: text,
-        thumbnail: spthumb,
-        title: `S P O T I F Y - A U D I O`
-      }
-    }
-  }
-
-  await conn.reply(m.chat, captvid, m, infoReply)
-  infoReply.contextInfo.externalAdReply.body = `Audio descargado con éxito`
-
-    await conn.sendMessage(m.chat, {
-      audio: { url: download },
-      caption: captvid,
-      mimetype: "audio/mpeg",
-      contextInfo: infoReply.contextInfo
-    }, { quoted: m })
+let handler = async (m, { conn, args, isPrems, isOwner, usedPrefix, command }) => {
+if (!args[0]) return conn.reply(m.chat, `\`\`\`[ 🌼 ] Por gavor ingresa un link de Spotify. Ejemplo:\n${usedPrefix + command} https://open.spotify.com/intl-es/track/0P0BTqkBQuAlzbwbTEV57m\`\`\``, null, fkontak)
+m.react('❄️');
+let api = await fetch(`https://api.dorratz.com/spotifydl?url=${args[0]}`);
+let res = await api.json();
+let { title, duration, url, thumbnail } = res.data;
+let { name } = res.data.artist;
+    let text = `╭━━━⊜ ⌊ \`Spotify Download\` ⌉⊜━━━\n`
+    text += `│  ≡ Nombre: \`${title}\`\n`
+    text += `│  ≡ Duración: \`${duration}\`\n`
+    text += `│  ≡ Artiste: \`${name}\`\n`
+    text += `╰━━━━━━━━━━━━━━⊜\n`
+    text += `  _Enviando el archivo . . . ._\n- \`${botname}\` -`
+conn.sendFile(m.chat, thumbnail, title + '.jpg', text, m, null, rpl)
+/*************/
+await conn.sendMessage(m.chat, { audio: { url: url }}, { quoted: fkontak });
+m.react('✅');
 }
-
-handler.help = ["spotifydl *<link>*"]
-handler.tags = ["downloader"]
-handler.command = /^(spotifydl)$/i
-handler.limit = true
-export default handler
+handler.help = ['spotifydl', 'spotify'];
+handler.tags = ['downloader'];
+handler.command = ['spotifydl', 'spotify'];
+handler.prem = true;
+export default handler;
