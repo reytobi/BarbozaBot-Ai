@@ -8,12 +8,12 @@ const handler = async (m, {conn, args, usedPrefix, command}) => {
 m.react('❄️')
   try {
     const resEX = await mediafiredl(args[0]);
-    let text = `✰ ⌊ 𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑 ⌉ ✰\n`
-    text += `│  ✦ Nombre: ${resEX.filename}\n`
-    text += `│  ✦ Peso: ${resEX.filesizeH}\n`
-    text += `│  ✦ Tipo: ${resEX.ext}\n`
+    let text = `⌊✰𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑✰⌉\n`
+    text += `│  ✦ *Nombre:* ${resEX.filename}\n`
+    text += `│  ✦ *Peso:* ${resEX.filesizeH}\n`
+    text += `│  ✦ *Tipo:* ${resEX.ext}\n`
     text += `╰━━━━━━━━━━━━━━\n`
-    text += `  _• Enviando archivo . . . ._`
+    text += `  _• Espere Un Momento Enviando Archivo..._`
 
     await conn.reply(m.chat, text, m, {
 contextInfo: { externalAdReply :{ showAdAttribution: true,
@@ -32,12 +32,12 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
     try {
       const res = await mediafireDl(args[0]);
       const {name, size, date, mime, link} = res;
-      let text2 = `✰ ⌊ *𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑* ⌉ ✰\n`
-    text2 += `│  ✦ Nombre: ${name}\n`
-    text2 += `│  ✦ Peso: ${size}\n`
-    text2 += `│  ✦ Tipo: ${mime}\n`
+      let text2 = `⌊✰𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑✰⌉\n`
+    text2 += `│  ✦ *Nombre:* ${name}\n`
+    text2 += `│  ✦ *Peso:* ${size}\n`
+    text2 += `│  ✦ *Tipo:* ${mime}\n`
     text2 += `╰━━━━━━━━━━━━━━\n`
-    text2 += `  _• Enviando archivo . . . ._`
+    text2 += `  _• Espere Un Momento, Enviando Archivo..._`
       await conn.reply(m.chat, text2, m, {
 contextInfo: { externalAdReply :{ showAdAttribution: true,
                         sourceUrl: 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d',
