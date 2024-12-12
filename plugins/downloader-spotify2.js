@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 let handler = async (m, { conn, usedPrefix, command, args }) => {
 if (!args[0]) return m.reply(`Ingresa un enlace de Spotify`)
 
+await m.react('❄️')
 try {
 let api = await fetch(`https://deliriussapi-oficial.vercel.app/download/spotifydlv2?url=${args[0]}`)
 let json = await api.json()
