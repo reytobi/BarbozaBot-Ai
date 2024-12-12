@@ -5,7 +5,7 @@ import {mediafiredl} from '@bochilteam/scraper';
 
 const handler = async (m, {conn, args, usedPrefix, command}) => {
     if (!args[0]) throw `\`\`\`[🌠] Ingresa un link de mediafire junto al comando. Ejemplo: \n${usedPrefix + command} https://www.mediafire.com/file/r0lrc9ir5j3e2fs/DOOM_v13_UNCLONE\`\`\``;
-m.react(rwait)
+m.react('❄️')
   try {
     const resEX = await mediafiredl(args[0]);
     let text = `╭━━━⊜ ⌊ \`\`\`Mediafire Downloader\`\`\` ⌉⊜━━━\n`
