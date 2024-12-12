@@ -43,7 +43,7 @@ global.miniurl = fs.readFileSync('./storage/img/miniurl.jpg')
 
 global.group = 'https://chat.whatsapp.com/IO3kjd9ovw1Dm8pVUE2MgN'
 global.canal = 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d'
-global.insta = 'https://www.instagram.com/pina_dzn'
+global.insta = 'https://www.instagram.com/pina_dzn?igsh=MWhkc25peXV3djNuag=='
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
