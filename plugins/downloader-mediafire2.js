@@ -20,10 +20,10 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
                         sourceUrl: 'https://youtube.com/watch?v=TMT9MNM-NHg',
                         mediaType: 2,
                         description: `🍁 This bot is still in development.`,
-                        title: `👑 Gracias Por Usar A CrowBot, WhatsApp Bot...`,
-                        body: `⚘ Developed by I\`m Fz ~`,          previewType: 0,
+                        title: `👑 Gracias Por Usar A BarbozaBot, WhatsApp Bot...`,
+                        body: `🎄 Powered By WillZek`,          previewType: 0,
                         thumbnail: await (await fetch('https://telegra.ph/file/11c0098b4f55b2e548b90.png')).buffer(),
-                        mediaUrl: insta
+                        mediaUrl: canal
 
                       }}
 })
@@ -43,10 +43,10 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
                         sourceUrl: 'https://youtube.com/watch?v=TMT9MNM-NHg',
                         mediaType: 2,
                         description: `🍁 This bot is still in development.`,
-                        title: `🌺 Thank you for using Sylphiette, the best WhatsApp bot.`,
-                        body: `⚘ Developed by I\`m Fz ~`,          previewType: 0,
+                        title: `❄️ Gracias Por Usar BarbozaBot`,
+                        body: `🎄 Powered By WillZek`,          previewType: 0,
                         thumbnail: await (await fetch('https://telegra.ph/file/11c0098b4f55b2e548b90.png')).buffer(),
-                        mediaUrl: insta
+                        mediaUrl: canal
 
                       }}
 })
