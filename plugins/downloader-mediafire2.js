@@ -20,7 +20,7 @@ m.react('❄️')
 contextInfo: { externalAdReply :{ showAdAttribution: true,
                         sourceUrl: 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d',
                         mediaType: 2,
-                        description: `❤️‍🔥Sigue El Canal Por Favor❤️‍🔥`,
+                        description: `Sigue El Canal Por Favor`,
                         title: `👑 Gracias Por Usar A BarbozaBot, WhatsApp Bot...`,
                         body: `🎄 Powered By WillZek`,          previewType: 0,
                         thumbnail: await (await fetch('https://telegra.ph/file/11c0098b4f55b2e548b90.png')).buffer(),
