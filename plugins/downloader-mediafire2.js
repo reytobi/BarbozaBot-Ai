@@ -58,7 +58,7 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
 };
 handler.help = ['mediafire'].map((v) => v + ' <url>');
 handler.tags = ['descargas'];
-handler.command = /^(mediafire|mediafiredl|dlmediafire)$/i;
+handler.command = /^(mediafire|mediafiredl|dlmediafire|mf)$/i;
 export default handler;
 
 async function mediafireDl(url) {
