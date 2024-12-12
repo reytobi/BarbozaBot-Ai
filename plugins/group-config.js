@@ -5,7 +5,7 @@ if (isClose === undefined) { return conn.reply(m.chat, `*Elija una opción para 
 await conn.groupSettingUpdate(m.chat, isClose)
 { 
 conn.reply(m.chat, '✅ *Configurado correctamente*', m, rcanal, )
-await m.react(done)
+await m.react('✅')
 }}
 handler.help = ['group abrir / cerrar']
 handler.tags = ['grupo']
