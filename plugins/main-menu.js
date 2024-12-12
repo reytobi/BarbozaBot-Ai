@@ -21,8 +21,8 @@ let Styles = (text, style = 1) => {
   return output.join('');
 };
 let tags = {
-  'anime': 'ANIME',
   'main': 'INFO',
+  'anime': 'ANIME',
   'search': 'SEARCH',
   'rg': 'REGISTRO',
   'sticker': 'STICKER',
