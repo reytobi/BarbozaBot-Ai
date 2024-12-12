@@ -47,8 +47,3 @@ async function searchPornhub(search) {
     return { result: [] };
   }
 }
-handler.help = ['pornohubdl <link>]
-handler.tag = ['search']
-handler.command = ['pornohubdl', 'phdl']
-
-export default handler;
