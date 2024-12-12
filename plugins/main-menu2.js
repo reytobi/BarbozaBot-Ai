@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 const handler = async (m, {conn, usedPrefix, usedPrefix: _p, __dirname, text, isPrems}) => {
   if (usedPrefix == 'a' || usedPrefix == 'A') return;
   try {
-    const pp = imagen3;
+    const pp = 'https://i.ibb.co/S73gfZn/file.jpg';
     // let vn = './storage/menu.mp3'
     const img = 'https://i.ibb.co/S73gfZn/file.jpg';
     const d = new Date(new Date + 3600000);
