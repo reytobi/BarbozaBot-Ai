@@ -181,9 +181,9 @@ creloadHandler(false)
 serbot()
 
 }
-handler.help = ['code']
+handler.help = ['code2']
 handler.tags = ['serbot']
-handler.command = ['code', 'codebot']
+handler.command = ['code2', 'codebot2']
 handler.rowner = false
 
 export default handler
