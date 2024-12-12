@@ -8,11 +8,11 @@ const handler = async (m, {conn, args, usedPrefix, command}) => {
 m.react('❄️')
   try {
     const resEX = await mediafiredl(args[0]);
-    let text = `╭━━━⊜ ⌊ \`\`\`Mediafire Downloader\`\`\` ⌉⊜━━━\n`
-    text += `│  ≡ Nombre: ${resEX.filename}\n`
-    text += `│  ≡ Peso: ${resEX.filesizeH}\n`
-    text += `│  ≡ Tipo: ${resEX.ext}\n`
-    text += `╰━━━━━━━━━━━━━━⊜\n`
+    let text = `✰ ⌊ \`\`\`Mediafire Downloader\`\`\` ⌉ ✰\n`
+    text += `│  ✦ Nombre: ${resEX.filename}\n`
+    text += `│  ✦ Peso: ${resEX.filesizeH}\n`
+    text += `│  ✦ Tipo: ${resEX.ext}\n`
+    text += `╰━━━━━━━━━━━━━━\n`
     text += `  _• Enviando archivo . . . ._`
 
     await conn.reply(m.chat, text, m, {
