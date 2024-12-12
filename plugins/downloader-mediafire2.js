@@ -22,7 +22,7 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
                         description: `Sigue El Canal Por Favor`,
                         title: `👑 Gracias Por Usar A BarbozaBot, WhatsApp Bot⛄`,
                         body: `🎄 Powered By WillZek`,          previewType: 0,
-                        thumbnail: await (await fetch('https://telegra.ph/file/11c0098b4f55b2e548b90.png')).buffer(),
+                        thumbnail: await (await fetch('https://i.ibb.co/ZfjXNy0/file.jpg')).buffer(),
                         mediaUrl: canal
 
                       }}
@@ -45,7 +45,7 @@ contextInfo: { externalAdReply :{ showAdAttribution: true,
                         description: `❤️‍🔥Sigue El Canal Por Favor❤️‍🔥`,
                         title: `❄️ Gracias Por Usar BarbozaBot, Sigue El Canal⛄`,
                         body: `🎄 Powered By WillZek`,          previewType: 0,
-                        thumbnail: await (await fetch('https://telegra.ph/file/11c0098b4f55b2e548b90.png')).buffer(),
+                        thumbnail: await (await fetch('https://i.ibb.co/ZfjXNy0/file.jpg')).buffer(),
                         mediaUrl: canal
 
                       }}
