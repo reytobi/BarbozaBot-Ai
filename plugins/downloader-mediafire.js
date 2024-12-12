@@ -22,9 +22,9 @@ await m.react('✅')
 } catch {
 await m.react('✖️')
 }}
-handler.help = ['mediafire2']
+handler.help = ['mediafire']
 handler.tags = ['descargas']
-handler.command = ['mediafire2', 'mdfire2', 'mf2']
+handler.command = ['mediafire', 'mdfire', 'mf']
 handler.premium = false
 
 export default handler
