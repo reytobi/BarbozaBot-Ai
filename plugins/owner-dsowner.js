@@ -11,7 +11,7 @@ return conn.reply(m.chat, '🚩 *Utiliza este comando directamente en el número
 await conn.reply(m.chat, '🚩 *Iniciando proceso de eliminación de todos los archivos de sesión, excepto el archivo creds.json...*', m, rcanal, )
 m.react('❄️')
 
-let sessionPath = './CrowJadiBot/'
+let sessionPath = './BarbozaJadiBot/'
 
 try {
 
@@ -36,7 +36,7 @@ conn.reply(m.chat, `🚩 *¡Hola! ¿logras verme?*`, m, rcanal, )
 }
 } catch (err) {
 console.error('Error al leer la carpeta o los archivos de sesión:', err);
-await conn.reply(m.chat, '🚩 *Ocurrió un fallo* ${e.message}',  m, rcanal, )
+await conn.reply(m.chat, '🚩 *Ocurrió un fallo*',  m, rcanal, )
 }
 
 }
