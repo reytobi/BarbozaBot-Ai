@@ -14,7 +14,7 @@ var user = number '@whatsapp.net'
 } else if(m.quoted.sender) {
 var user = m.quoted.sender
 } else if(m.mentionedJid) {
-var user = number
+var user = number '@whatsapp.net'
 } 
 } catch (e) {
 } finally {
