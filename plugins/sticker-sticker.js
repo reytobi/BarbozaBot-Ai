@@ -44,7 +44,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
       }
       m.reply(stiker)
     } else {
-      m.reply('     `✧ Responde a una Imagen o Video.`', m, rcanal)
+      m.reply('     `✧ Responde a una Imagen o Video.`')
     }
   } catch (e) {
     console.error(e)
