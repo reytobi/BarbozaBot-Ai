@@ -9,9 +9,6 @@ var number = text
 if(!text && !m.quoted) return conn.reply(m.chat, `🚩 Menciona a una persona.`, m, rcanal)
 if(number.length > 13 || (number.length < 11 && number.length > 0)) return conn.reply(m.chat, `🚩 Menciona a una persona.`, m, rcanal)
 try {
-  const mentionsContentM = [m.sender, m.messageStubParameters[0]];
-  const fkontak2 = {'key': {'participants': '0@s.whatsapp.net', 'remoteJid': 'status@broadcast', 'fromMe': false, 'id': 'Halo'}, 'message': {'contactMessage': {'vcard': `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`}}, 'participant': '0@s.whatsapp.net'}
-
 if(text) {
 var user = number + '@s.whatsapp.net'
 } else if(m.quoted.sender) {
@@ -22,7 +19,7 @@ var user = number + '@s.whatsapp.net'
 } catch (e) {
 } finally {
 conn.groupParticipantsUpdate(m.chat, [user], 'promote')
-await conn.reply(m.chat, `*[ ☃️ ] @⁨${user.name} Fue promovido a administrador.*`, m, rcanal)
+await conn.reply(m.chat, `*[ ☃️ ] @⁨${user} Fue promovido a administrador.*`, m, rcanal)
 await m.react('✅')
 }}
 handler.help = ['promote *@user*']
