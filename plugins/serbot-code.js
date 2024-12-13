@@ -184,7 +184,7 @@ serbot()
 }
 handler.help = ['code']
 handler.tags = ['serbot']
-handler.command = ['code', 'codebot']
+handler.command = ['codddde', 'codedddbot']
 handler.rowner = false
 
 export default handler
