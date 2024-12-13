@@ -19,7 +19,7 @@ var user = number + '@s.whatsapp.net'
 } catch (e) {
 } finally {
 conn.groupParticipantsUpdate(m.chat, [user], 'promote')
-await conn.reply(m.chat, `*[ ☃️ ] @⁨${user} Fue promovido a administrador.*`, m, rcanal)
+await conn.reply(m.chat, `*[ ☃️ ] @⁨${m.messageStubParameters[0].split`@`[0]} Fue promovido a administrador.*`, m, rcanal)
 await m.react('✅')
 }}
 handler.help = ['promote *@user*']
