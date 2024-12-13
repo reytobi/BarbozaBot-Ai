@@ -25,7 +25,7 @@ let username = conn.getName(who);
         if (!user) return conn.reply(m.chat, `🚩 Menciona a una persona válida.`, m, rcanal);
 
         await conn.groupParticipantsUpdate(m.chat, [user], 'promote');
-        await conn.reply(m.chat, `*[ ☃️ ] @${username} Fue promovido a administrador.*`, m, rcanal);
+        await conn.reply(m.chat, `*[ ☃️ ] @${user.split('@')[0]} Fue promovido a administrador.*`, m, rcanal);
         await m.react('✅');
     } catch (e) {
         console.error(e); // Registra el error
