@@ -36,7 +36,7 @@ conn.reply(m.chat, `🚩 *¡Hola! ¿logras verme?*`, m, rcanal, )
 }
 } catch (err) {
 console.error('Error al leer la carpeta o los archivos de sesión:', err);
-await conn.reply(m.chat, '🚩 *Ocurrió un fallo* ${err.message}',  m, rcanal, )
+await conn.reply(m.chat, '🚩 *Ocurrió un fallo* ${e.message}',  m, rcanal, )
 }
 
 }
