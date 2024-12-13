@@ -20,7 +20,6 @@ let handler = async (m, { conn, usedPrefix, command, text }) => {
         } else if (m.mentionedJidList.length > 0) {
             user = m.mentionedJidList[0]; // Asegúrate de que haya al menos un mencionado
         }
-let username = conn.getName(who);
 
         if (!user) return conn.reply(m.chat, `🚩 Menciona a una persona válida.`, m, rcanal);
 
