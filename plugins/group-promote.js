@@ -10,7 +10,7 @@ if(!text && !m.quoted) return conn.reply(m.chat, `🚩 Menciona a una persona.`,
 if(number.length > 13 || (number.length < 11 && number.length > 0)) return conn.reply(m.chat, `🚩 Menciona a una persona.`, m, rcanal)
 try {
 if(text) {
-var user = number '@whatsapp.net'
+var user = number
 } else if(m.quoted.sender) {
 var user = m.quoted.sender
 } else if(m.mentionedJid) {
