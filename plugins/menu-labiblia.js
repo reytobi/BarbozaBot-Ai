@@ -77,6 +77,7 @@ if (!db.data.chats[m.chat].modohorny && m.isGroup) throw `${tradutor.texto1[0]} 
     }
   } catch {
     conn.reply(m.chat, tradutor.texto1[3], m);
+m.react('✖️')
   }
 };
 handler.command = /^(menulabiblia|labiblia|Labiblia)$/i;
