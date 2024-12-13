@@ -84,14 +84,14 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       chat.antiLink = isEnable
       break
 
-case 'modoadmin': case 'soloadmin': case 'modeadmin':
+    case 'modoadmin': case 'soloadmin': case 'modeadmin':
 if (m.isGroup) {
 if (!(isAdmin || isOwner)) {
 global.dfail('admin', m, conn)
 throw false
 }}
 chat.modoadmin = isEnable          
-break    
+break
 
       case 'antiprivado':
       isAll = true
