@@ -1,4 +1,4 @@
-import { doc, getDoc, getDocs, collection, query, where } from "firebase/firestore";
+import { doc, getDoc, getDocs, collection, query, where } from "firebase";
 import { db } from "../database/clanes-db.js";
 
 const handler = async (m, { conn, args, usedPrefix, command }) => {
