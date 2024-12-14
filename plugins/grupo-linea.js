@@ -15,7 +15,7 @@ let handler = async (m, { conn, args }) => {
     const listaEnLinea =
       participantesOrdenados
         .map((k, i) => `*${i + 1}.* @${k.split("@")[0]}`)
-        .join("\n") || "No hay usuarios en linea en este momento :c.";
+        .join("\n") || "No hay usuarios en linea en este momento :c."; BotBarboza-Ai 
 
     const imgUrl = "https://files.catbox.moe/y4l6ec.jpg";
     const responseImg = await axios.get(imgUrl, {
@@ -26,7 +26,7 @@ let handler = async (m, { conn, args }) => {
       m.chat,
       responseImg.data,
       "thumbnail.png",
-      `*🌐 Lista de usuarios en línea ahora ♡:*\n${listaEnLinea}\n\n\`barboza
+      `*🌐 Lista de usuarios en línea ahora ♡:*\n${listaEnLinea}\n\n\`barbozabot
       m,
       {
         contextInfo: { mentionedJid: participantesOrdenados },
