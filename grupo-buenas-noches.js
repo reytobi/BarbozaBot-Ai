@@ -9,12 +9,12 @@ let handler = async (m, { conn }) => {
 
     // Lista de mensajes de buenas noches
     const messages = [
-        "¡Buenas noches! 🌜 Espero que tengas un descanso reparador y sueñes con cosas hermosas.\n> ৎ୭࠭͢𝐊𝐚𝐤𝐚𝐫𝐨𝐭𝐨-𝐁𝐨𝐭-𝐌𝐃ⷭ𓆪͟͞ ",
-        "¡Buenas noches! 🌟 Que la tranquilidad de la noche te envuelva y te prepare para un nuevo día.\n> ৎ୭࠭͢𝐊𝐚𝐤𝐚𝐫𝐨𝐭𝐨-𝐁𝐨𝐭-𝐌𝐃ⷭ𓆪͟͞ ",
-        "¡Buenas noches! 🌌 Recuerda que cada estrella en el cielo es un sueño esperando a hacerse realidad.\n> ৎ୭࠭͢𝐊𝐚𝐤𝐚𝐫𝐨𝐭𝐨-𝐁𝐨𝐭-𝐌𝐃ⷭ𓆪͟͞ ",
+        "¡Buenas noches! 🌜 Espero que tengas un descanso reparador y sueñes con cosas hermosas.\n> ৎ୭࠭͢bot barboza𓆪͟͞ ",
+        "¡Buenas noches! 🌟 Que la tranquilidad de la noche te envuelva y te prepare para un nuevo día.\n> ৎ୭࠭͢botbaroza𓆪͟͞ ",
+        "¡Buenas noches! 🌌 Recuerda que cada estrella en el cielo es un sueño esperando a hacerse realidad.\n> ৎ୭࠭͢botbarboza-ai𓆪͟͞ ",
         "¡Buenas noches! 🌙 Deja atrás las preocupaciones de hoy y abraza la paz de la noche.",
-        "¡Buenas noches! 🌠 Espero que tus sueños sean tan brillantes como las estrellas que iluminan el cielo.\n> ৎ୭࠭͢𝐊𝐚𝐤𝐚𝐫𝐨𝐭𝐨-𝐁𝐨𝐭-𝐌𝐃ⷭ𓆪͟͞ ",
-        "¡Buenas noches! 💤 Que encuentres serenidad en el silencio de la noche y te despiertes renovado.\n> ৎ୭࠭͢𝐊𝐚𝐤𝐚𝐫𝐨𝐭𝐨-𝐁𝐨𝐭-𝐌𝐃ⷭ𓆪͟͞ "
+        "¡Buenas noches! 🌠 Espero que tus sueños sean tan brillantes como las estrellas que iluminan el cielo.\n> ৎ୭࠭͢botbarboza-ai𓆪͟͞
+        "¡Buenas noches! 💤 Que encuentres serenidad en el silencio de la noche y te despiertes renovado.\n> ৎ୭࠭͢botbarboza-ai𓆪͟͞
     ];
 
     // Seleccionar un mensaje aleatorio
