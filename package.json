@@ -48,6 +48,7 @@
         "@xct007/frieren-scraper": "^0.0.2",
         "google-libphonenumber": "latest",
         "acrcloud": "^1.4.0",
+        "firebase": "latest",
         "adm-zip": "^0.5.16",
         "api-dylux": "^1.8.5",
         "aptoide-scraper": "^1.0.1",
