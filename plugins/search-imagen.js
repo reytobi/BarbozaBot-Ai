@@ -92,9 +92,9 @@ let handler = async (_0x10bd40, {
     'messageId': _0x1ca5c6.key.id
   });
 };
-handler.help = ["imagen"];
+handler.help = ["imagen2"];
 handler.tags = ["search"];
 handler.corazones = 2;
 handler.register = true
-handler.command = ['imagen'];
+handler.command = ['imagen2'];
 export default handler;
