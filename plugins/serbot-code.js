@@ -4,7 +4,8 @@ const {
     fetchLatestBaileysVersion, 
     MessageRetryMap,
     makeCacheableSignalKeyStore, 
-    jidNormalizedUser
+    jidNormalizedUser,
+    PHONENUMBER_MCC
    } = await import('@whiskeysockets/baileys')
 import moment from 'moment-timezone'
 import NodeCache from 'node-cache'
@@ -29,13 +30,14 @@ let handler = async (m, { conn: _conn, args, usedPrefix, command, isOwner }) => 
 
   async function serbot() {
 
-  let authFolderB = m.sender.split('@')[0]
-    if (!fs.existsSync("./Sesion Subbots/"+ authFolderB)){
-        fs.mkdirSync("./Sesion Subbots/"+ authFolderB, { recursive: true });
-    }
-    args[0] ? fs.writeFileSync("./Sesion Subbots/" + authFolderB + "/creds.json", JSON.stringify(JSON.parse(Buffer.from(args[0], "base64").toString("utf-8")), null, '\t')) : ""
+  let authFolderB = crypto.randomBytes(10).toString('hex').slice(0, 8)
 
-const {state, saveState, saveCreds} = await useMultiFileAuthState(`./Sesion Subbots/${authFolderB}`)
+    if (!fs.existsSync("./serbot/"+ authFolderB)){
+        fs.mkdirSync("./serbot/"+ authFolderB, { recursive: true });
+    }
+    args[0] ? fs.writeFileSync("./serbot/" + authFolderB + "/creds.json", JSON.stringify(JSON.parse(Buffer.from(args[0], "base64").toString("utf-8")), null, '\t')) : ""
+
+const {state, saveState, saveCreds} = await useMultiFileAuthState(`./serbot/${authFolderB}`)
 const msgRetryCounterMap = (MessageRetryMap) => { };
 const msgRetryCounterCache = new NodeCache()
 const {version} = await fetchLatestBaileysVersion();
@@ -52,7 +54,7 @@ const connectionOptions = {
   logger: pino({ level: 'silent' }),
   printQRInTerminal: false,
   mobile: MethodMobile, 
-  browser: ["Ubuntu", "Chrome", "20.0.04"],
+  browser: [ "Ubuntu", "Chrome", "20.0.04" ], 
   auth: {
   creds: state.creds,
   keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
@@ -77,19 +79,23 @@ if (methodCode && !conn.authState.creds.registered) {
         process.exit(0);
     }
     let cleanedNumber = phoneNumber.replace(/[^0-9]/g, '');
-  /*  if (!Object.keys(PHONENUMBER_MCC).some(v => cleanedNumber.startsWith(v))) {
+    if (!Object.keys(PHONENUMBER_MCC).some(v => cleanedNumber.startsWith(v))) {
         process.exit(0);
-    }*/
+    }
 
     setTimeout(async () => {
         let codeBot = await conn.requestPairingCode(cleanedNumber);
         codeBot = codeBot?.match(/.{1,4}/g)?.join("-") || codeBot;
-        let txt = ` \`\`\`- ${botName} -\`\`\`
-        *\`[ 🚀 ] Ingresa el siguiente código para convertirse en subbot\`*
-        > Nota: Solo funciona en el número dónde se ejecutó el comando; ${m.sender.split('@')[0]}
-        `
-         await parent.reply(m.chat, txt, m, rpl)
-         await parent.reply(m.chat, codeBot, m, rpl)
+        let txt = ` –  *S E R B O T  -  S U B B O T*\n\n`
+            txt += `┌  ✩  *Usa este Código para convertirte en un Sub Bot*\n`
+            txt += `│  ✩  Pasos\n`
+            txt += `│  ✩  *1* : Haga click en los 3 puntos\n`
+            txt += `│  ✩  *2* : Toque dispositivos vinculados\n`
+            txt += `│  ✩  *3* : Selecciona *Vincular con el número de teléfono*\n` 
+            txt += `└  ✩  *4* : Escriba el Codigo\n\n`
+            txt += `*Nota:* Este Código solo funciona en el número que lo solicito`
+         await parent.reply(m.chat, txt, m, rcanal)
+         await parent.reply(m.chat, codeBot, m, rcanal)
         rl.close()
     }, 3000)
 }
@@ -118,11 +124,11 @@ async function connectionUpdate(update) {
     if (connection == 'open') {
     conn.isInit = true
     global.conns.push(conn)
-    await parent.reply(m.chat, args[0] ? 'Conectado con exito' : 'Conectado exitosamente con Sylphiette! 🚀', m, rpl)
+    await parent.reply(m.chat, args[0] ? 'EXITO✅' : '*CONECTASTE EXITOSAMENTE A 💞NAKANO EN TU WHATSAPP*\n\n*LEER ESTO⚠️:* Esto es temporal\n*SI LA BOT PRINCIPAL SE APAGA LOS SUBS TAMBIEN LO ARAN*\n\n*RECUERDA QUE PUEDES APOYAR A LA BOT SIGUIENDO EL CANAL*\nhttps://whatsapp.com/channel/0029VaXDEwlC1FuFm82otA0K', m,)
     await sleep(5000)
     if (args[0]) return
 
-                await parent.reply(conn.user.jid, `La siguiente vez que se conecte envía el siguiente mensaje para iniciar sesión sin utilizar otro código `, m, rpl)
+                await parent.reply(conn.user.jid, `La siguiente vez que se conecte envía el siguiente mensaje para iniciar sesión sin utilizar otro código `, m,)
 
                 await parent.sendMessage(conn.user.jid, {text : usedPrefix + command + " " + Buffer.from(fs.readFileSync("./serbot/" + authFolderB + "/creds.json"), "utf-8").toString("base64")}, { quoted: m })
           }
@@ -176,7 +182,7 @@ serbot()
 
 }
 handler.help = ['code']
-handler.tags = ['bebot']
+handler.tags = ['serbot']
 handler.command = ['code', 'codebot']
 handler.rowner = false
 
@@ -184,4 +190,4 @@ export default handler
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
-}
+                }
