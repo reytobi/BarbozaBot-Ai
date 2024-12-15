@@ -5,7 +5,7 @@ const botName = 'Descarga de MEGA';
 
 let handler = async (m, { conn, args, usedPrefix, text, command }) => {
     try {
-        if (!text) return conn.reply(m.chat, `\`\`\`[ 🐉 ] Uso correcto del comando:\`\`\` ${usedPrefix + command} https://mega.nz/file/ovJTHaQZ#yAbkrvQgykcH_NDKQ8eIc0zvsN7jonBbHZ_HTQL6lZ8`, null, { quoted: fkontak });
+        if (!text) return conn.reply(m.chat, `\`\`\`[ ⛄ ] Uso correcto del comando:\`\`\` ${usedPrefix + command} https://mega.nz/file/ovJTHaQZ#yAbkrvQgykcH_NDKQ8eIc0zvsN7jonBbHZ_HTQL6lZ8`, null, { quoted: fkontak });
 
         const file = File.fromURL(text);
         await file.loadAttributes();
