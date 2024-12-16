@@ -1,6 +1,4 @@
-let handler = async(m, { conn, text, usedPrefix, command }) => {
-
-    if (m.mentionedJid && m.mentionedJid.length === 2) {
+ if (m.mentionedJid && m.mentionedJid.length === 2) {
         let person1 = m.mentionedJid[0];
         let person2 = m.mentionedJid[1];
         let name1 = conn.getName(person1);
