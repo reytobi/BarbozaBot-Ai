@@ -1,27 +1,38 @@
-import {googleIt} from '@bochilteam/scraper'
-import google from 'google-it'
-import axios from 'axios'
-let handler = async (m, { conn, command, args, usedPrefix }) => {
-const fetch = (await import('node-fetch')).default;
-const text = args.join` `
-if (!text) return conn.reply(m.chat, '🌟 Ingresa lo que deseas buscar en Google.', m, rcanal)
-conn.reply(m.chat, `🌟 Buscando Su Información...`, m, {
-contextInfo: { externalAdReply :{ mediaUrl: null, mediaType: 1, showAdAttribution: true,
-title: packname,
-body: wm,
-previewType: 0, thumbnail: icons,
-sourceUrl: channel }}})
-const url = 'https://google.com/search?q=' + encodeURIComponent(text)
-google({'query': text}).then(res => {
-let teks = `🌟 *Resultado de* : ${text}\n\n`
-for (let g of res) {
-teks += `🌟 *Titulo ∙* ${g.title}\n🌟 *Info ∙* ${g.snippet}\n🌟 *Url ∙* ${g.link}\n\n`
-}
-conn.reply(m.chat, teks, m, rcanal)
-})
-}
-handler.help = ['google <búsqueda>']
-handler.tags = ['buscador']
-handler.command = ['google']
-handler.register = true 
-export default handler
+import fetch from 'node-fetch';
+
+const handler = async (m, { conn, text, usedPrefix, command }) => {
+  if (!text) throw `*🚩 Uso Correcto: ${usedPrefix + command} gatos*`;
+
+  // API ofuscada con Base64
+  const encodedApiUrl = 'aHR0cHM6Ly9hcGkudnJlZGVuLm15LmlkL2FwaS9naW1hZ2U/cXVlcnk9';
+  const decodeApiUrl = (base64) => Buffer.from(base64, 'base64').toString('utf-8');
+
+  const apiUrl = decodeApiUrl(encodedApiUrl) + encodeURIComponent(text);
+
+  conn.reply(m.chat, '🚩 *Buscando imágenes, espere un momento...*', m);
+
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    if (data.status !== 200 || !data.result || data.result.length === 0) {
+      throw '🚩 *No se encontraron imágenes para tu búsqueda.*';
+    }
+
+    // Obtener una URL aleatoria de la lista de resultados
+    const imageUrl = data.result[Math.floor(Math.random() * data.result.length)];
+
+    // Enviar la imagen al chat
+    conn.sendFile(m.chat, imageUrl, 'image.jpg', `*🔎 Resultado para: ${text}*`, m);
+  } catch (error) {
+    console.error(error);
+    conn.reply(m.chat, '🚩 *Hubo un problema al obtener las imágenes.*', m);
+  }
+};
+
+handler.help = ['imagen <query>'];
+handler.tags = ['buscador', 'tools', 'descargas'];
+handler.command = /^(image|imagen)$/i;
+handler.register = true;
+
+export default handler;
