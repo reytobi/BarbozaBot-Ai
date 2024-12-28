@@ -11,7 +11,7 @@ let texto = ` \`\`\`
     ✦ 𝐓𝐚𝐦𝐚𝐧̃𝐨 : ⇢ ${size} ⚖️
     ✦ 𝐏𝐚𝐜𝐤𝐚𝐠𝐞 : ⇢ ${packe} 📦
     ✦ 𝐀𝐜𝐭𝐮𝐚𝐥𝐢𝐳𝐚𝐝𝐨 : ⇢ ${lastUpdate} 🗓️
-    ✦ 𝐂𝐫𝐞𝐚𝐝𝐨𝐫 :⇢  WillZek
+    ✦ 𝐂𝐫𝐞𝐚𝐝𝐨𝐫 :⇢  BotBarboza-Ai 
 \`\`\`
 > https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d
 
