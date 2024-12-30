@@ -1,36 +1,50 @@
 import ws from 'ws';
+async function handler(m, { usedPrefix }) {
 
-async function handler(m, { conn: stars, usedPrefix }) {
-  let uniqueUsers = new Map();
+const users = [...new Set([...global.conns.filter((conn) => conn.user && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED).map((conn) => conn)])];
+function dhms(ms) {
+  var segundos = Math.floor(ms / 1000);
+  var minutos = Math.floor(segundos / 60);
+  var horas = Math.floor(minutos / 60);
+  var días = Math.floor(horas / 24);
 
-  global.conns.forEach((conn) => {
-    if (conn && conn.user && conn.ws && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED) {
-      uniqueUsers.set(conn.user.jid, conn);
-    }
-  });
+  segundos %= 60;
+  minutos %= 60;
+  horas %= 24;
 
-  let users = [...uniqueUsers.values()];
+  var resultado = "";
+  if (días !== 0) {
+    resultado += días + 'd '
+  }
+  if (horas !== 0) {
+    resultado += horas + 'h '
+  }
+  if (minutos !== 0) {
+    resultado += minutos + 'm '
+  }
+  if (segundos !== 0) {
+    resultado += segundos + 's'
+  }
 
-  let message = users
-    .map((v, index) => {
-      let jid = v.user?.jid || '-';
-      let name = v.user?.name || '-';
-      return `*${index + 1}.-* @${jid.replace(/[^0-9]/g, '')}\n*Link:* https://wa.me/${jid.replace(/[^0-9]/g, '')}\n*Nombre:* ${name}`;
-    })
-    .join('\n\n');
-
-  let replyMessage = message.length === 0 ? '' : message;
-  let totalUsers = users.length;
-  let responseMessage = `*Total de Bots* : ${totalUsers || '0'}\n\n${replyMessage.trim()}`.trim();
-
-  await stars.sendMessage(
-    m.chat,
-    { text: responseMessage, mentions: stars.parseMention(responseMessage) },
-    { quoted: m }
-  );
+  return resultado;
 }
 
-handler.command = ['listjadibot', 'bots'];
-handler.help = ['bots'];
-handler.tags = ['serbot'];
-export default handler;
+  const message = users.map((v, index) => `*\`🐉 SonGoku | Subbot: ${index + 1}\`* \n*\`✅ Tag:\` @${v.user.jid.replace(/[^0-9]/g, '')}*\n*• wa.me/${v.user.jid.replace(/[^0-9]/g, '')}?text=${usedPrefix}menu*\n*\`🌼 Nombre: ${v.user.name || '-'}\`*\n*\`🌱 Uptime: ${v.uptime ? dhms(Date.now() - v.uptime) : "Desconocido"}\`*`).join('\n\n*─ ── ──  ── ── ── ── ──  ── ── ─*\n\n');
+  const replyMessage = message.length === 0 ? 'No hay' : message;
+  const totalUsers = users.length;
+  const responseMessage = `
+*\`📝 Subbots activos: ${totalUsers || '0'}\`*
+
+ ${replyMessage.trim()}
+ 
+ 
+_*\`Developed by I'm Fz ~\`*_`.trim();
+
+  await conn.sendMessage(m.chat, { text: responseMessage, mentions: conn.parseMention(responseMessage)}, {quoted: m});
+}
+handler.help = ['botlist']
+handler.tags = ['bebot']
+handler.command = ['listbot', 'listbots', 'bots', 'bebots', 'botlist'] 
+
+
+export default handler
