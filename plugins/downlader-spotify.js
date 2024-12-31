@@ -1,36 +1,26 @@
-import Starlights from '@StarlightsTeam/Scraper';
 import fetch from 'node-fetch';
 
-let handler = async (m, { conn, text }) => {
-if (!text) return conn.reply(m.chat, '🚩 Ingresa el enlace de algún Track, Playlist o Álbum de Spotify.', m);
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+  if (!text) {
+    return conn.reply(m.chat, '❀ Ingresa el link de una cancion de spotify', m, rcanal);
+  }
 
-let isSpotifyUrl = text.match(/^(https:\/\/open\.spotify\.com\/(album|track|playlist)\/[a-zA-Z0-9]+)/i);
-if (!isSpotifyUrl) return conn.reply(m.chat, '🚩 Ingresa un enlace válido de Track, Playlist o Álbum de Spotify.', m);
+  try {
+    let api = await fetch(`https://api.giftedtech.my.id/api/download/spotifydl?apikey=gifted&url=${text}`);
+    let json = await api.json();
+    let { quality, title, duration, thumbnail, download_url: dl_url } = json.result;
+   
+    let HS = `- Titulo : ${title}
+- Calidad : ${quality}
+- Duracion : ${duration}`;
 
-await m.react('🕓')
-try {
-let { title, artist, album, thumbnail, dl_url } = await Starlights.spotifydl(text);
-let img = await (await fetch(thumbnail)).buffer();
-
-let txt = `*乂  S P O T I F Y  -  D O W N L O A D*\n\n`;
-    txt += `    ✩  *Título* : ${title}\n`;
-    txt += `    ✩  *Álbum* : ${album}\n`;
-    txt += `    ✩  *Artista* : ${artist}\n\n`;
-    txt += `*- ↻ Los audios se están enviando, espera un momento. . .*`;
-
-await conn.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, null, rcanal);
-await conn.sendMessage(m.chat, { audio: { url: dl_url }, fileName: `${title}.mp3`, mimetype: 'audio/mp4' }, { quoted: m });
-
-await m.react('✅');
-} catch {
-await m.react('✖️');
-}
+    await conn.sendFile(m.chat, thumbnail, 'defoult.jpg', HS, m,rcanal);
+    await conn.sendFile(m.chat, dl_url, 'defoult.mp3', null, m);
+  } catch (error) {
+    console.error(error);
+  }
 };
 
-handler.help = ['spotifydl'];
-handler.tags = ['downloader'];
-handler.command = ['spotifydl', 'sp'];
-// handler.limit = 1;
-handler.register = true;
+handler.command = /^(spotify)$/i;
 
 export default handler;
