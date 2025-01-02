@@ -1,4 +1,4 @@
-const handler = async (m, {conn, usedPrefix: prefix, command, text}) => {
+pconst handler = async (m, {conn, usedPrefix: prefix, command, text}) => {
  if (!text) throw conn.reply(m.chat, '*\`Ingrese el nombre de la APK que quiera buscar. 🤍\`*', m, fake, )
   try {    
     const searchA = await search(text);
