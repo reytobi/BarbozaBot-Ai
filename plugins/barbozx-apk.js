@@ -1,27 +1,34 @@
-let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
-if (!args[0]) throw `\`\`\`[ 🌟 ] Ingresa el nombre de la aplicación que quieres descargar. Ejemplo:\n${usedPrefix + command} Clash Royale\`\`\``
-let res = await fetch(`https://api.dorratz.com/v2/apk-dl?text=${args[0]}`);
-let result = await res.json();
-let { name, size, lastUpdate, icon } = result;
-let URL = result.dllink
-let packe = result.package
-let texto = ` \`\`\`
-   ❯───「 𝗔𝗣𝗞 𝗗𝗢𝗪𝗡𝗟𝗢𝗔𝗗 」───❮
-    ✦ 𝐍𝐨𝐦𝐛𝐫𝐞 : ⇢ ${name} 📛
-    ✦ 𝐓𝐚𝐦𝐚𝐧̃𝐨 : ⇢ ${size} ⚖️
-    ✦ 𝐏𝐚𝐜𝐤𝐚𝐠𝐞 : ⇢ ${packe} 📦
-    ✦ 𝐀𝐜𝐭𝐮𝐚𝐥𝐢𝐳𝐚𝐝𝐨 : ⇢ ${lastUpdate} 🗓️
-    
-## Su aplicación se enviará en un momento, *reportar número manda cp +51 928 215 461* . . .
+import { search, download } from 'aptoide-scraper'
 
-   - ${wm} -          
-\`\`\`     
-`
-await conn.sendFile(m.chat, icon, name + '.jpg', texto, m)
+var handler = async (m, {conn, usedPrefix, command, text}) => {
+if (!text) return conn.reply(m.chat, '🌸 *Iɳɠɾҽʂҽ ҽʅ ɳσɱზɾҽ ԃҽ ʅα αρƙ ραɾα ԃҽʂƈαɾɠαɾʅσ.*', m, rcanal)
+try {
+await m.react(rwait)
+conn.reply(m.chat, '🌸 *Eʂρҽɾҽ υɳ ɱσɱҽɳƚσ...*', m, {
+contextInfo: { externalAdReply :{ mediaUrl: null, mediaType: 1, showAdAttribution: true,
+title: packname,
+body: dev,
+previewType: 0, thumbnail: icons,
+sourceUrl: channel }}})
+let searchA = await search(text)
+let data5 = await download(searchA[0].id)
+let txt = `*DESCARGAS MOD APK* 乂\n\n`
+txt += `🌙 *Nombre* : ${data5.name}\n`
+txt += `🌙 *Package* : ${data5.package}\n`
+txt += `🌙 *Update* : ${data5.lastup}\n`
+txt += `🌙 *Peso* :  ${data5.size}`
+await conn.sendFile(m.chat, data5.icon, 'thumbnail.jpg', txt, m, null, rcanal) 
+await m.react(done)  
+if (data5.size.includes('GB') || data5.size.replace(' MB', '') > 999) {
+return await conn.reply(m.chat, '☁ *El archivo es demaciado pesado*', m, rcanal )}
+await conn.sendMessage(m.chat, {document: {url: data5.dllink}, mimetype: 'application/vnd.android.package-archive', fileName: data5.name + '.apk', caption: null}, {quoted: fkontak})
+} catch {
+return conn.reply(m.chat, '☁ *Ocurrió un fallo*', m, rcanal )}}
 
-await conn.sendMessage(m.chat, { document: { url: URL }, mimetype: 'application/vnd.android.package-archive', fileName: name + '.apk', caption: ''}, { quoted: m });
-}
-handler.command = ['apk', 'apkdl', 'modapk']
-handler.help = ['apkdl']
-handler.tags = ['dl']
+handler.tags = ['descargas']
+handler.help = ['apkmod']
+handler.command = ['apk', 'modapk', 'aptoide']
+handler.register = true
+handler.estrellas = 1
+
 export default handler
