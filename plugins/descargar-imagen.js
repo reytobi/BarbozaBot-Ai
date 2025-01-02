@@ -1,21 +1,19 @@
 import {googleImage} from '@bochilteam/scraper';
 const handler = async (m, {conn, text, usedPrefix, command}) => {
-if (!text) return conn.reply(m.chat, `*🌟 Uso Correcto: ${usedPrefix + command} Nakano NIno*`, m, rcanal);
-conn.reply(m.chat, '🌟 *Descargando su imagen...*', m, {
-contextInfo: { externalAdReply :{ mediaUrl: null, mediaType: 1, showAdAttribution: true,
-title: packname,
-body: wm,
-previewType: 0, thumbnail: icons,
-sourceUrl: channel }}})
+if (!text) return m.reply(`𝗤𝘂𝗲 𝗯𝘂𝘀𝗰𝗮𝗿? 🤔️ 𝙪𝘀𝙖𝙧 𝙙𝙚 𝙡𝙖 𝙨𝙞𝙜𝙪𝙞𝙚𝙣𝙩𝙚 𝙢𝙖𝙣𝙚𝙧𝙖\n• 𝗘𝗷𝗲𝗺𝗽𝗹𝗼\n*${usedPrefix + command} Loli*`) 
+if (m.text.includes('gore') || m.text.includes('cp')|| m.text.includes('porno')|| m.text.includes('Gore')|| m.text.includes('rule')|| m.text.includes('CP') || m.text.includes('Rule34') || m.text.includes('xxx')) throw '🙄 No voy a buscar tu pendejadas....'
+try {
 const res = await googleImage(text);
 const image = await res.getRandom();
 const link = image;
-const messages = [['Imagen 1', dev, await res.getRandom(),
-[[]], [[]], [[]], [[]]], ['Imagen 2', dev, await res.getRandom(), [[]], [[]], [[]], [[]]], ['Imagen 2', dev, await res.getRandom(), [[]], [[]], [[]], [[]]], ['Imagen 4', dev, await res.getRandom(), [[]], [[]], [[]], [[]]]]
-await conn.sendCarousel(m.chat, `🌟 Resultado de ${text}`, '🔎 Imagen - Descargas', null, messages, m);
-};
-handler.help = ['imagen <query>'];
-handler.tags = ['buscador', 'tools', 'descargas'];
-handler.command = ['image', 'imagen'];
-handler.register = true;
+conn.sendFile(m.chat, link, 'error.jpg', `_🔎 𝙍𝙚𝙨𝙪𝙡𝙩𝙖𝙙𝙤𝙨 𝙙𝙚: ${text}_`, m, null, fake);
+//conn.sendButton(m.chat, ``, botname, link, [['🔄 𝐒𝐈𝐆𝐔𝐈𝐄𝐍𝐓𝐄 🔄', `/${command} ${text}`]], null, null, m, null, fake)
+} catch (e) {
+console.log(e) 
+}}
+handler.help = ['gimage <query>', 'imagen <query>'];
+handler.tags = ['buscadores'];
+handler.command = /^(gimage|image|imagen)$/i;
+handler.register = true 
+handler.limit = 1
 export default handler;
