@@ -1,41 +1,36 @@
-import Scraper from "@SumiFX/Scraper";
+import fetch from 'node-fetch'
 
-let handler = async (m, { conn, args, usedPrefix, command }) => {
-  if (!args[0]) {
-    return conn.reply(m.chat,`🍭 Ingresa el enlace del vídeo de YouTube junto al comando.\n\n` + `Ejemplo:\n` + `*${usedPrefix + command}* https://youtu.be/QSvaCSt8ixs`,m,rcanal);
+let handler = async (m, { conn, text }) => {
+  if (!text) {
+    return m.reply("🤍 Por favor, ingresa una URL válida de YouTube.")
+  }
+    await m.react('🕓')
+
+  let ytUrlRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+  if (!ytUrlRegex.test(text)) {
+    return m.reply("❀ La URL ingresada no es válida. Asegúrate de que sea un enlace de YouTube.")
   }
 
-  if (!args[0].match(/youtu/gi)) {
-    return conn.reply(m.chat, 'Verifica que el enlace sea de YouTube.', m,rcanal);
-  }
-
-  let user = global.db.data.users[m.sender];
   try {
-    let { title, size, quality, thumbnail, dl_url } = await Scraper.ytmp4(args[0]);
+    let api = await fetch(`https://api.giftedtech.my.id/api/download/dlmp4?apikey=gifted&url=${text}`)
+    let json = await api.json()
+    let { quality, title, download_url } = json.result
 
-    if (size.includes('GB') || parseFloat(size.replace(' MB', '')) > 300) {
-      return await m.reply('El archivo pesa más de 300 MB, se canceló la descarga.');
-    }
-
-    let txt = `╭─⬣「 *YouTube Download* 」⬣\n` +
-              `│  ≡◦ *⭐ Título:* ${title}\n` +
-              `│  ≡◦ *🪴 Calidad:* ${quality}\n` +
-              `│  ≡◦ *⚖ Peso:* ${size}\n` +
-              `╰─⬣`;
-
-    await conn.sendFile(m.chat, thumbnail, 'thumbnail.jpg', txt, m,rcanal);
-
-
-    await conn.sendFile(m.chat, dl_url,`${title}.mp4`, `*⭐ Título:* ${title}\n*🪴 Calidad:* ${quality}`, m, false, { asDocument: user.useDocument });
+    await m.react('✅')
+    await conn.sendMessage(m.chat, { 
+      video: { url: download_url }, 
+      caption: `_${title}_`, 
+      mimetype: 'video/mp4', 
+      fileName: `${title}.mp4` 
+    }, { quoted: m })
   } catch (error) {
-    console.error(error);
-    await m.reply('❌ Ocurrió un error al intentar descargar el video. Por favor, inténtalo de nuevo.');
+    console.error(error)
+    m.reply("❀ Hubo un error al procesar la URL. Inténtalo nuevamente.")
   }
-};
+}
 
-handler.help = ['ytmp4 <url>'];
-handler.tags = ['downloader'];
-handler.command = ['ytmp4', 'yt', 'ytv']; 
-// handler.limit = 1
+handler.help = ['ytmp4 *<link yt>*']
+handler.tags = ['dl']
+handler.command = ['ytmp4', 'ytv', 'fgmp4']
 
-export default handler;
+export default handler
