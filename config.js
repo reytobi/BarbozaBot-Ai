@@ -20,17 +20,17 @@ global.prems = []
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
-global.packname = `[ ⛄Sticker Maker`
-global.author = 'FELIZ NAVIDAD🎄]'
+global.packname = `[ 🔖Sticker Maker`
+global.author = 'FELIZ DÍA 🔖]'
 global.stickpack = '© BarbozaBot'
 global.stickauth = 'By Barboza'
-global.wm = 'Barboza 🌸'
+global.wm = 'Barboza 🔖'
 global.dev = '© Powered By Barboza ❀'
-global.wait = '❄️ *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛ𝙾... ฅ^•ﻌ•^ฅ\n\n> Feliz Navidad🎄*'
-global.botname = '[ 🎅𝐁𝐚𝐫𝐛𝐨𝐳𝐚 𝐀𝐢 𝐖𝐡𝐚𝐬𝐀𝐩𝐩 𝐁𝐨𝐭 🎄]'
+global.wait = '❄️ *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛ𝙾... ฅ^•ﻌ•^ฅ\n\n> Feliz Año 🔖*'
+global.botname = '[ 🔖𝐁𝐚𝐫𝐛𝐨𝐳𝐚 𝐀𝐢 𝐖𝐡𝐚𝐬𝐀𝐩𝐩 𝐁𝐨𝐭 🔖]'
 global.textbot = `❄️BotBarboza By Barboza⛄`
 global.listo = '*Aqui tiene ฅ^•ﻌ•^ฅ*'
-global.namechannel = '🎁𝐅𝐄𝐋𝐈𝐙 𝐍𝐀𝐕𝐈𝐃𝐀𝐃🎅'
+global.namechannel = 'FELIZ NAVIDAD'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
