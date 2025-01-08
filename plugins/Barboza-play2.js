@@ -1,53 +1,53 @@
+import Starlights from '@StarlightsTeam/Scraper'
+import yts from 'yt-search'
 import fetch from 'node-fetch'
 
 let handler = async (m, { conn, args, usedPrefix, text, command }) => {
-let formatos = ["mp3", "mp4", "mp3doc", "mp4doc"]
-let [feature, ...query] = text.split(" ")
+  let lister = ["mp3", "mp4", "mp3doc", "mp4doc"]
+  let [feature, ...query] = text.split(" ")
 
-if (!formatos.includes(feature)) {
-return conn.reply(m.chat, `❀ Ingresa el formato y el texto de lo que quieres buscar\n\n*❀ ejemplo :*\n*${usedPrefix + command}* mp3 *<txt>*\n\n*❀ Formatos disponibles* :\n\n*${usedPrefix + command}* mp3\n*${usedPrefix + command}* mp3doc\n*${usedPrefix + command}* mp4\n*${usedPrefix + command}* mp4doc`, m)
-}
+  if (!lister.includes(feature)) {
+    return conn.reply(m.chat, '[ ✰ ] Ingresa el formato y el título de un video de *YouTube*.\n\n`» Ejemplo :`\n' + `> *${usedPrefix + command}* mp3 SUICIDAL-IDOL\n\n*» Formatos disponibles* :\n\n*${usedPrefix + command}* mp3\n*${usedPrefix + command}* mp3doc\n*${usedPrefix + command}* mp4\n*${usedPrefix + command}* mp4doc`, m, rcanal)
+  }
 
-if (!query.length) {
-return conn.reply(m.chat, `❀ ingresa el texto de lo que quieres buscar\n\n*❀ ejemplo :*\n*${usedPrefix + command}* mp3 *<txt>*`, m)
-}
+  if (!query.length) {
+    return conn.reply(m.chat, '[ ✰ ] Ingresa el título de un video o canción de *YouTube*.\n\n`» Ejemplo :`\n' + `> *${usedPrefix + command}* mp3 SUICIDAL-IDOL`, m, rcanal)
+  }
 
-let res = await yts(query.join(" "))
-let vid = res.videos[0]
-let txt = `- *Título*: ${vid.title}
-- *Duración*: ${vid.timestamp}
-- *Visitas*: ${toNum(vid.views)}
-- *Autor*: ${vid.author.name}
-- *Publicado*: ${eYear(vid.ago)}
-- *Url*: https://youtu.be/${vid.videoId}`
+  await m.react('🕓')
+  let res = await yts(query.join(" "))
+  let vid = res.videos[0]
+  let txt = '`乂 Y O U T U B E - P L A Y`\n\n'
+      txt += `        ✩   *Título*: ${vid.title}\n`
+      txt += `        ✩   *Duración*: ${vid.timestamp}\n`
+      txt += `        ✩   *Visitas*: ${formatNumber(vid.views)}\n`
+      txt += `        ✩   *Autor*: ${vid.author.name}\n`
+      txt += `        ✩   *Publicado*: ${eYear(vid.ago)}\n`
+      txt += `        ✩   *Url*: https://youtu.be/${vid.videoId}\n\n`
+      txt += `> *- ↻ El archivo se esta enviando espera un momento, soy lenta. . .*`
 
-await conn.sendFile(m.chat, vid.thumbnail, 'thumbnail.jpg', txt, m)
+  await conn.sendFile(m.chat, vid.thumbnail, 'thumbnail.jpg', txt, m, null, rcanal)
+  try {
+  let data = feature.includes('mp3') ? await Starlights.ytmp3(vid.url) : await Starlights.ytmp4(vid.url)
+    let isDoc = feature.includes('doc')
+    let mimetype = feature.includes('mp3') ? 'audio/mpeg' : 'video/mp4'
+    let file = { url: data.dl_url }
 
-try {
-let api = await fetch(`https://api.giftedtech.my.id/api/download/ytdl?apikey=gifted&url=${vid.url}`)
-let json = await api.json()
-
-
-let dl_url = feature.includes('mp3') ? json.result.audio_url : json.result.video_url
-let fileType = feature.includes('mp3') ? 'audio/mp3' : 'video/mp4'
-let fileName = `${json.result.title}.${feature.includes('mp3') ? 'mp3' : 'mp4'}`
-
-let isDoc = feature.includes('doc')
-let file = { url: dl_url }
-
-await conn.sendMessage(m.chat, { [isDoc ? 'document' : feature.includes('mp3') ? 'audio' : 'video']: file,  mimetype: fileType,  fileName: fileName  }, { quoted: m })
-
-} catch (error) {
-console.error(error)
-}}
-
-
-handler.command = ['play2']
-
+    await conn.sendMessage(m.chat, { [isDoc ? 'document' : feature.includes('mp3') ? 'audio' : 'video']: file, mimetype, fileName: `${data.title}.${feature.includes('mp3') ? 'mp3' : 'mp4'}` }, { quoted: m })
+    await m.react('✅')
+  } catch {
+    await m.react('✖️')
+  }
+ }
+handler.help = ['play2 <formato> <búsqueda>']
+handler.tags = ['downloader']
+handler.command = ['ytplay', 'play2']
 export default handler
 
 function eYear(txt) {
-    if (!txt) return '×'
+    if (!txt) {
+        return '×'
+    }
     if (txt.includes('month ago')) {
         var T = txt.replace("month ago", "").trim()
         var L = 'hace '  + T + ' mes'
@@ -101,6 +101,9 @@ function eYear(txt) {
     return txt
 }
 
+function formatNumber(number) {
+  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+}
 
 function toNum(number) {
     if (number >= 1000 && number < 1000000) {
