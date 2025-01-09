@@ -1,129 +1,109 @@
-import fetch from 'node-fetch';
-import yts from "yt-search";
-import axios from 'axios';
-const { generateWAMessageContent, generateWAMessageFromContent, proto } = (await import('@adiwajshing/baileys')).default;
-import FormData from "form-data";
-import Jimp from "jimp";
+import fetch from "node-fetch";
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-    if (!text) return m.reply(`• *Ejemplo:* ${usedPrefix + command} elaina edit`);
+// Función para decodificar Base64
+const decodeBase64 = (encoded) => Buffer.from(encoded, "base64").toString("utf-8");
 
-    await m.reply('> _*`Cargando...`*_');
+const fetchWithRetries = async (url, maxRetries = 2) => {
+  let attempt = 0;
+  while (attempt <= maxRetries) {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
 
-    async function createImage(img) {
-        const { imageMessage } = await generateWAMessageContent({
-            image: img
-        }, {
-            upload: conn.waUploadToServer
-        });
-        return imageMessage;
+      if (data && data.status === 200 && data.data && data.data.download && data.data.download.url) {
+        return data.data; // Retorna el resultado si es válido
+      }
+    } catch (error) {
+      console.error(`Error en el intento ${attempt + 1}:`, error.message);
     }
+    attempt++;
+  }
+  throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
+};
 
-    function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
+let handler = async (m, { conn, text, usedPrefix }) => {
+  if (!text || !/^https:\/\/(www\.)?youtube\.com\/watch\?v=/.test(text)) {
+    return conn.sendMessage(m.chat, {
+      text: `⚠️ *¡Atención!*\n\n💡 *Por favor ingresa un enlace válido de YouTube para descargar el video.*\n\n📌 *Ejemplo:* ${usedPrefix}ytv https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
+    });
+  }
+
+  try {
+    await conn.sendMessage(m.chat, {
+      text: `
+╭━━━🌐📡━━━╮  
+   🔍 **Procesando con ☆Barboza Bot Ai☆** 🔍  
+╰━━━🌐📡━━━╯  
+
+✨ *Estamos descargando tu video...*  
+📥 *Por favor espera unos instantes mientras procesamos tu solicitud.*  
+
+⏳ *Esto puede tardar unos segundos.*  
+      `,
+    });
+
+    // URL de la API ofuscada
+    const encodedApiUrl = "aHR0cHM6Ly9yZXN0YXBpLmFwaWJvdHdhLmJpei5pZC9hcGkveXRtcDQ=";
+    const apiUrl = `${decodeBase64(encodedApiUrl)}?url=${encodeURIComponent(text)}`;
+    const apiData = await fetchWithRetries(apiUrl);
+
+    const { metadata, download } = apiData;
+    const { title, duration, thumbnail, description } = metadata;
+    const { url: downloadUrl, quality, filename } = download;
+
+    // Obtener el tamaño del archivo
+    const fileResponse = await fetch(downloadUrl, { method: "HEAD" });
+    const fileSize = parseInt(fileResponse.headers.get("content-length") || 0);
+    const fileSizeInMB = fileSize / (1024 * 1024); // Convertir bytes a MB
+
+    // Formato del mensaje de información
+    const videoInfo = `
+📥 **Video Encontrado**  
+━━━━━━━━━━━━━━━━━━━  
+🎵 **Título:** ${title}  
+⏱️ **Duración:** ${duration.timestamp || "No disponible"}  
+📦 **Tamaño:** ${fileSizeInMB.toFixed(2)} MB  
+📽️ **Calidad:** ${quality || "No disponible"}  
+
+📌 **Descripción:**  
+${description || "No hay descripción disponible"}  
+━━━━━━━━━━━━━━━━━━━  
+    `;
+
+    await conn.sendMessage(m.chat, { image: { url: thumbnail }, caption: videoInfo });
+
+    // Descargar el video
+    if (fileSizeInMB > 80) {
+      await conn.sendMessage(
+        m.chat,
+        {
+          document: { url: downloadUrl },
+          mimetype: "video/mp4",
+          fileName: filename || `${title}.mp4`,
+          caption: `📂 *Video en Formato Documento:* \n🎵 *Título:* ${title}\n📦 *Tamaño:* ${fileSizeInMB.toFixed(2)} MB`,
+        },
+        { quoted: m }
+      );
+    } else {
+      await conn.sendMessage(
+        m.chat,
+        {
+          video: { url: downloadUrl },
+          mimetype: "video/mp4",
+          fileName: filename || `${title}.mp4`,
+          caption: `🎥 *Video Reproducible:* \n🎵 *Título:* ${title}\n📦 *Tamaño:* ${fileSizeInMB.toFixed(2)} MB`,
+        },
+        { quoted: m }
+      );
     }
+  } catch (error) {
+    console.error("Error al descargar el video:", error);
+    await conn.sendMessage(m.chat, {
+      text: `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+    });
+  }
+};
 
-    let push = [];
-    let results = await yts(text);
-    let videos = results.videos.slice(0, 6); 
-    shuffleArray(videos);
-
-    let i = 1;
-    for (let video of videos) {
-        let imageUrl = video.thumbnail;
-        let imageK = await fetch(imageUrl);
-        let imageB = await imageK.buffer();
-      let pr = await remini(imageB, "enhance")
-        push.push({
-            body: proto.Message.InteractiveMessage.Body.fromObject({
-                text: `🎬 *Título:* ${video.title}\n⌛ *Duración:* ${video.timestamp}\n👀 *Vistas:* ${video.views}`
-            }),
-            footer: proto.Message.InteractiveMessage.Footer.fromObject({
-                text: '乂 Y O U T U B E' 
-            }),
-            header: proto.Message.InteractiveMessage.Header.fromObject({
-                title: `Video - ${i++}`,
-                hasMediaAttachment: true,
-                imageMessage: await createImage(pr) 
-            }),
-            nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
-                buttons: [
-                    {
-                        "name": "cta_url",
-                        "buttonParamsJson": `{"display_text":"Mirar en YouTube","url":"${video.url}"}`
-                    },
-                    {
-                "name": "cta_copy",
-                "buttonParamsJson": JSON.stringify({
-                "display_text": "Copiar Link",
-                "copy_code": `${video.url}`
-                })
-              }
-                ]
-            })
-        });
-    }
-
-    const bot = generateWAMessageFromContent(m.chat, {
-        viewOnceMessage: {
-            message: {
-                messageContextInfo: {
-                    deviceListMetadata: {},
-                    deviceListMetadataVersion: 2
-                },
-                interactiveMessage: proto.Message.InteractiveMessage.fromObject({
-                    body: proto.Message.InteractiveMessage.Body.create({
-                        text: "Resultados de la búsqueda completos..."
-                    }),
-                    footer: proto.Message.InteractiveMessage.Footer.create({
-                        text: "Sexo"
-                    }),
-                    header: proto.Message.InteractiveMessage.Header.create({
-                        hasMediaAttachment: false
-                    }),
-                    carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
-                        cards: [...push] // Mengisi carousel dengan hasil video
-                    })
-
-                })
-            }
-        }
-    }, {});
-
-    await conn.relayMessage(m.chat, bot.message, { messageId: bot.key.id });
-}
-
-handler.help = ["ytslide", "yts"];
-handler.tags = ["search"];
-handler.command = ["ytslide", "yts"];
+handler.command = /^tv$/i; // Solo responde al comando .tv
 
 export default handler;
-
-async function remini(imageData, operation) {
-  return new Promise(async (resolve, reject) => {
-    const availableOperations = ["enhance", "recolor", "dehaze"]
-    if (availableOperations.includes(operation)) {
-      operation = operation
-    } else {
-      operation = availableOperations[0]
-    }
-    const baseUrl = "https://inferenceengine.vyro.ai/" + operation + ".vyro"
-    const formData = new FormData()
-    formData.append("image", Buffer.from(imageData), {filename: "enhance_image_body.jpg", contentType: "image/jpeg"})
-    formData.append("model_version", 1, {"Content-Transfer-Encoding": "binary", contentType: "multipart/form-data; charset=utf-8"})
-    formData.submit({url: baseUrl, host: "inferenceengine.vyro.ai", path: "/" + operation, protocol: "https:", headers: {"User-Agent": "okhttp/4.9.3", Connection: "Keep-Alive", "Accept-Encoding": "gzip"}},
-      function (err, res) {
-        if (err) reject(err);
-        const chunks = [];
-        res.on("data", function (chunk) {chunks.push(chunk)});
-        res.on("end", function () {resolve(Buffer.concat(chunks))});
-        res.on("error", function (err) {
-        reject(err);
-        });
-      },
-    )
-  })
-}
