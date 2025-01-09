@@ -1,4 +1,4 @@
-Import { sticker } from '../lib/sticker.js';
+import { sticker } from '../lib/sticker.js';
 //import uploadFile from '../lib/uploadFile.js';
 //import uploadImage from '../lib/uploadImage.js';
 //import { webp2png } from '../lib/webp2mp4.js';
@@ -15,7 +15,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
       if (/video/g.test(mime)) 
         if ((q.msg || q).seconds > 8) 
           return m.reply(`☁️ *¡El video no puede durar más de 8 segundos!*`);
-      
+
       let img = await q.download?.();
       if (!img) 
         return conn.reply(m.chat, `☃️ *_¿Y el video? Intenta enviar primero imagen/video/gif y luego responde con el comando._*`, m);
@@ -69,7 +69,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
         { quoted: m }
       );
     } else {
-      return conn.reply(m.chat, '☃️ *_¿Y el video? Intenta enviar primero imagen/video/gif y luego responde con el comando._*', m);
+      return conn.reply(m.chat, '⚡ *_¿Y el video? Intenta enviar primero imagen/video/gif y luego responde con el comando._*', m);
     }
   }
 };
