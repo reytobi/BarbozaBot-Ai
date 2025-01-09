@@ -1,120 +1,128 @@
-import Starlights from '@StarlightsTeam/Scraper'
-import yts from 'yt-search'
-import fetch from 'node-fetch'
+import fetch from "node-fetch";
+import yts from "yt-search"; // Asegúrate de tener instalado yt-search
 
-let handler = async (m, { conn, args, usedPrefix, text, command }) => {
-  let lister = ["mp3", "mp4", "mp3doc", "mp4doc"]
-  let [feature, ...query] = text.split(" ")
+// Función para decodificar Base64
+const decodeBase64 = (encoded) => Buffer.from(encoded, "base64").toString("utf-8");
 
-  if (!lister.includes(feature)) {
-    return conn.reply(m.chat, '[ ✰ ] Ingresa el formato y el título de un video de *YouTube*.\n\n`» Ejemplo :`\n' + `> *${usedPrefix + command}* mp3 SUICIDAL-IDOL\n\n*» Formatos disponibles* :\n\n*${usedPrefix + command}* mp3\n*${usedPrefix + command}* mp3doc\n*${usedPrefix + command}* mp4\n*${usedPrefix + command}* mp4doc`, m, rcanal)
+const fetchWithRetries = async (url, maxRetries = 2) => {
+  let attempt = 0;
+  while (attempt <= maxRetries) {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data && data.status === 200 && data.data && data.data.download && data.data.download.url) {
+        return data.data; // Retorna el resultado si es válido
+      }
+    } catch (error) {
+      console.error(`Error en el intento ${attempt + 1}:`, error.message);
+    }
+    attempt++;
+  }
+  throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
+};
+
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+  if (!text) {
+    return conn.sendMessage(m.chat, {
+      text: `⚠️ *¡Atención!*\n\n💡 *Por favor ingresa un término de búsqueda para encontrar el video.*\n\n📌 *Ejemplo:* ${usedPrefix}play2 Never Gonna Give You Up`,
+    });
   }
 
-  if (!query.length) {
-    return conn.reply(m.chat, '[ ✰ ] Ingresa el título de un video o canción de *YouTube*.\n\n`» Ejemplo :`\n' + `> *${usedPrefix + command}* mp3 SUICIDAL-IDOL`, m, rcanal)
-  }
-
-  await m.react('🕓')
-  let res = await yts(query.join(" "))
-  let vid = res.videos[0]
-  let txt = '`乂 Y O U T U B E - P L A Y`\n\n'
-      txt += `        ✩   *Título*: ${vid.title}\n`
-      txt += `        ✩   *Duración*: ${vid.timestamp}\n`
-      txt += `        ✩   *Visitas*: ${formatNumber(vid.views)}\n`
-      txt += `        ✩   *Autor*: ${vid.author.name}\n`
-      txt += `        ✩   *Publicado*: ${eYear(vid.ago)}\n`
-      txt += `        ✩   *Url*: https://youtu.be/${vid.videoId}\n\n`
-      txt += `> *- ↻ El archivo se esta enviando espera un momento, soy lenta. . .*`
-
-  await conn.sendFile(m.chat, vid.thumbnail, 'thumbnail.jpg', txt, m, null, rcanal)
   try {
-  let data = feature.includes('mp3') ? await Starlights.ytmp3(vid.url) : await Starlights.ytmp4(vid.url)
-    let isDoc = feature.includes('doc')
-    let mimetype = feature.includes('mp3') ? 'audio/mpeg' : 'video/mp4'
-    let file = { url: data.dl_url }
+    await conn.sendMessage(m.chat, {
+      text: `
+╭━━━🌐📡━━━╮  
+   🔍 **Buscando en ☆Barboza Bot Ai☆** 🔍  
+╰━━━🌐📡━━━╯  
 
-    await conn.sendMessage(m.chat, { [isDoc ? 'document' : feature.includes('mp3') ? 'audio' : 'video']: file, mimetype, fileName: `${data.title}.${feature.includes('mp3') ? 'mp3' : 'mp4'}` }, { quoted: m })
-    await m.react('✅')
-  } catch {
-    await m.react('✖️')
-  }
- }
-handler.help = ['play2 <formato> <búsqueda>']
-handler.tags = ['downloader']
-handler.command = ['ytplay', 'play2']
-export default handler
+✨ *Estamos localizando tu video...*  
+📥 *Por favor espera unos instantes mientras procesamos tu solicitud.*  
 
-function eYear(txt) {
-    if (!txt) {
-        return '×'
-    }
-    if (txt.includes('month ago')) {
-        var T = txt.replace("month ago", "").trim()
-        var L = 'hace '  + T + ' mes'
-        return L
-    }
-    if (txt.includes('months ago')) {
-        var T = txt.replace("months ago", "").trim()
-        var L = 'hace ' + T + ' meses'
-        return L
-    }
-    if (txt.includes('year ago')) {
-        var T = txt.replace("year ago", "").trim()
-        var L = 'hace ' + T + ' año'
-        return L
-    }
-    if (txt.includes('years ago')) {
-        var T = txt.replace("years ago", "").trim()
-        var L = 'hace ' + T + ' años'
-        return L
-    }
-    if (txt.includes('hour ago')) {
-        var T = txt.replace("hour ago", "").trim()
-        var L = 'hace ' + T + ' hora'
-        return L
-    }
-    if (txt.includes('hours ago')) {
-        var T = txt.replace("hours ago", "").trim()
-        var L = 'hace ' + T + ' horas'
-        return L
-    }
-    if (txt.includes('minute ago')) {
-        var T = txt.replace("minute ago", "").trim()
-        var L = 'hace ' + T + ' minuto'
-        return L
-    }
-    if (txt.includes('minutes ago')) {
-        var T = txt.replace("minutes ago", "").trim()
-        var L = 'hace ' + T + ' minutos'
-        return L
-    }
-    if (txt.includes('day ago')) {
-        var T = txt.replace("day ago", "").trim()
-        var L = 'hace ' + T + ' dia'
-        return L
-    }
-    if (txt.includes('days ago')) {
-        var T = txt.replace("days ago", "").trim()
-        var L = 'hace ' + T + ' dias'
-        return L
-    }
-    return txt
-}
+⏳ *Esto puede tardar unos segundos.*  
+      `,
+    });
 
-function formatNumber(number) {
-  return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-}
+    // Búsqueda en YouTube
+    const searchResults = await yts(text);
+    const video = searchResults.videos[0]; // Tomamos el primer resultado
 
-function toNum(number) {
-    if (number >= 1000 && number < 1000000) {
-        return (number / 1000).toFixed(1) + 'k'
-    } else if (number >= 1000000) {
-        return (number / 1000000).toFixed(1) + 'M'
-    } else if (number <= -1000 && number > -1000000) {
-        return (number / 1000).toFixed(1) + 'k'
-    } else if (number <= -1000000) {
-        return (number / 1000000).toFixed(1) + 'M'
+    if (!video) {
+      return conn.sendMessage(m.chat, {
+        text: `❌ *No se encontraron resultados para:* ${text}`,
+      });
+    }
+
+    const { title, url: videoUrl, timestamp, views, author, image, ago } = video;
+
+    // URL de la API ofuscada
+    const encodedApiUrl = "aHR0cHM6Ly9yZXN0YXBpLmFwaWJvdHdhLmJpei5pZC9hcGkveXRtcDQ=";
+    const apiUrl = `${decodeBase64(encodedApiUrl)}?url=${encodeURIComponent(videoUrl)}`;
+    const apiData = await fetchWithRetries(apiUrl);
+
+    const { metadata, download } = apiData;
+    const { duration, description } = metadata;
+    const { url: downloadUrl, quality, filename } = download;
+
+    // Obtener el tamaño del archivo
+    const fileResponse = await fetch(downloadUrl, { method: "HEAD" });
+    const fileSize = parseInt(fileResponse.headers.get("content-length") || 0);
+    const fileSizeInMB = fileSize / (1024 * 1024); // Convertir bytes a MB
+
+    // Formato del mensaje de información
+    const videoInfo = `
+╭━━━☆☆☆━━━╮  
+ *★ ☆Barboza Bot Ai☆ ★*
+╰━━━☆☆☆━━━╯  
+🎵 **Título:**  ${title}  
+
+📅 **Subido hace:**  ${ago}  
+
+⏱️ **Duración:**  ${timestamp}  
+
+👀 **Vistas:**  ${views.toLocaleString()}  
+
+👤 **Autor:**  ${author.name}  
+
+🔗 **Enlace del video:**  ${videoUrl}  
+╭━━━━━━☆☆☆━━━━━━━╮    
+ > Por favor espera 🔄 ....  
+╰━━━━━━☆☆☆━━━━━━━╯  
+    `;
+
+    await conn.sendMessage(m.chat, { image: { url: image }, caption: videoInfo });
+
+    if (fileSizeInMB > 70) {
+      await conn.sendMessage(
+        m.chat,
+        {
+          document: { url: downloadUrl },
+          mimetype: "video/mp4",
+          fileName: filename || `${title}.mp4`,
+          caption: `📂 *Video en Formato Documento:* \n🎵 *Título:* ${title}\n👤 *Autor:* ${author.name}\n⏱️ *Duración:* ${duration.timestamp || timestamp}\n📦 *Tamaño:* ${fileSizeInMB.toFixed(2)} MB`,
+        },
+        { quoted: m }
+      );
     } else {
-        return number.toString()
+      await conn.sendMessage(
+        m.chat,
+        {
+          video: { url: downloadUrl },
+          mimetype: "video/mp4",
+          fileName: filename || `${title}.mp4`,
+          caption: `🎥 *Video Reproducible:* \n🎵 *Título:* ${title}\n👤 *Autor:* ${author.name}\n⏱️ *Duración:* ${duration.timestamp || timestamp}\n📦 *Tamaño:* ${fileSizeInMB.toFixed(2)} MB`,
+        },
+        { quoted: m }
+      );
     }
-}
+  } catch (error) {
+    console.error("Error al descargar el video:", error);
+    await conn.sendMessage(m.chat, {
+      text: `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+    });
+  }
+};
+
+handler.command = /^play2$/i; // Solo funciona con play2
+
+export default handler;
