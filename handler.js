@@ -89,11 +89,13 @@ export async function handler(chatUpdate) {
                     chat.bienvenida = false 
                 if (!('antiLink' in chat))
                     chat.antiLink = false
+                if (!('detect' in chat)) 
+                    chat.detect = true
                 if (!('onlyLatinos' in chat))
                     chat.onlyLatinos = false
                 if (!('audios' in chat))
                     chat.audios = false
-                if (!('modoadmin' in chat)) chat.modoadmin = false
+                if (!('modoadmin' in chat))
                     chat.modoadmin = false
                 if (!('nsfw' in chat))
                     chat.nsfw = false
@@ -104,6 +106,7 @@ export async function handler(chatUpdate) {
                     isBanned: false,
                     bienvenida: false,
                     antiLink: false,
+                    detect: true,
                     onlyLatinos: false,
                     nsfw: false,
                     audios: false,
@@ -256,6 +259,9 @@ conn: this,
                     if (name != 'owner-unbanbot.js' && setting?.banned)
                         return
                 }
+                let adminMode = global.db.data.chats[m.chat].modoadmin
+
+                if (adminMode && !isOwner && !isROwner && m.isGroup && !isAdmin) return
                 if (plugin.rowner && plugin.owner && !(isROwner || isOwner)) { 
                     fail('owner', m, this)
                     continue
@@ -411,15 +417,15 @@ conn: this,
 
 global.dfail = (type, m, conn, usedPrefix) => {
     let msg = {
-        rowner: "> _*`Perdon, Este comando es solo para mi Owner.`*_",
-        owner: "> _*`Perdon, Solo mi creador puede usar este comando.`*_",
-        mods: "> _*`Perdon, Este comando solo es para mods`*_",
-        premium: "> _*`No eres un usuario Premium, Habla con mi owner`*_",
-        group: "> _*`Perdon, Este comando solo es para grupos`*_",
-        private: "> _*`Ve a mi chat privado y usa este comando`*_",
-        admin: "> _*`Quien eres?, tu no eres admin`*_",
-        botAdmin: "> _*`Es necesario que sea admin primero para usar esta función`*_",
-        unreg: "> _*`‼️USUARIO NO REGISTRADO‼️`*_\n\n`Para Registrarse:`\n\n> .reg nombre.edad\n\n`Ejemplo:`\n\n> .reg Barboza. 18",
+        rowner: "> _*`Perdon, Este comando es solo para mi Owner⚡.`*_",
+        owner: "> _*`Perdon, Solo mi creador puede usar este comando⚡.`*_",
+        mods: "> _*`Perdon, Este comando solo es para mods⚡`*_",
+        premium: "> _*`No eres un usuario Premium, Habla con mi owner⚡`*_",
+        group: "> _*`Perdon, Este comando solo es para grupos⚡`*_",
+        private: "> _*`Ve a mi chat privado y usa este comando⚡`*_",
+        admin: "> _*`Quien eres?, tu no eres admin⚡`*_",
+        botAdmin: "> _*`Es necesario que sea admin primero para usar esta función⚡`*_",
+        unreg: "> _*`‼️USUARIO NO REGISTRADO‼️`*_\n\n`Para Registrarse:`\n\n> .reg nombre.edad\n\n`Ejemplo:`\n\n> .reg Barboza.18",
         restrict: "> _*`Comando desactivado por mi Owner`*_" 
     }[type]
     if (msg) return conn.reply(m.chat, msg, m, rcanal).then(_ => m.react('✖️'))
