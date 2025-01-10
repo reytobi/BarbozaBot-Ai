@@ -17,11 +17,11 @@ const fetchWithRetries = async (url, maxRetries = 2) => {
   throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
 };
 
-// Handler principal para ytmp4doc
+// Handler principal para playdoc
 let handler = async (m, { conn, text, usedPrefix }) => {
   if (!text || !/^https:\/\/(www\.)?youtube\.com\/watch\?v=/.test(text)) {
     return conn.sendMessage(m.chat, {
-      text: `⚠️ *¡Error! Enlace de YouTube inválido.*\n\n🔗 *Por favor, ingresa un enlace válido de YouTube para descargar el video usando el comando de Barboza Bot AI.*\n\n💡 *Ejemplo:* ${usedPrefix}ytmp4doc https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
+      text: `⚠️ *¡Error! Enlace de YouTube inválido.*\n\n🔗 *Por favor, ingresa un enlace válido de YouTube para descargar el video usando el comando de Barboza Bot AI.*\n\n💡 *Ejemplo:* ${usedPrefix}playdoc https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
     });
   }
 
