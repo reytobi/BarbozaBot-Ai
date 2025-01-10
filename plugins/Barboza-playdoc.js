@@ -1,65 +1,90 @@
 import fetch from "node-fetch";
 
-// URL de la API ofuscada en Base64
-const encodedApiUrl = "aHR0cHM6Ly9hcGkudnJlZGVuLm15LmlkL2FwaS95dHBsYXltcDM=";
+// Función para decodificar Base64
+const decodeBase64 = (encoded) => Buffer.from(encoded, "base64").toString("utf-8");
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) {
+// Función para manejar solicitudes con reintentos
+const fetchWithRetries = async (url, maxRetries = 2) => {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data?.status === 200 && data?.data?.download?.url) return data.data;
+    } catch (error) {
+      console.error(`Error en intento ${attempt + 1}:`, error.message);
+    }
+  }
+  throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
+};
+
+// Handler principal para ytmp4doc
+let handler = async (m, { conn, text, usedPrefix }) => {
+  if (!text || !/^https:\/\/(www\.)?youtube\.com\/watch\?v=/.test(text)) {
     return conn.sendMessage(m.chat, {
-      text: `❗ *Por favor ingresa un término de búsqueda para encontrar la música.*\n\n📌 *Ejemplo:* ${usedPrefix}playdoc No llores más\n\n🤖 *Procesado por BarbozaBot-Ai*`,
+      text: `⚠️ *¡Error! Enlace de YouTube inválido.*\n\n🔗 *Por favor, ingresa un enlace válido de YouTube para descargar el video usando el comando de Barboza Bot AI.*\n\n💡 *Ejemplo:* ${usedPrefix}ytmp4doc https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
     });
   }
 
   try {
-    // Decodificar la URL de la API
-    const apiUrl = Buffer.from(encodedApiUrl, "base64").toString("utf-8");
-    const finalUrl = `${apiUrl}?query=${encodeURIComponent(text)}`;
+    // Mensaje inicial de procesamiento con diseño llamativo
+    const initialMessage = `
+╭━━━━━━━━━━━━━━━🌐📡━━━━━━━━━━━━━━━╮
+   🔍 *Procesando tu solicitud...*  
+   ⏳ *Por favor, espera unos momentos.*  
+   📥 *Descargando el video usando Barboza Bot AI...*  
+╰━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╯
+    `;
+    const key = await conn.sendMessage(m.chat, { text: initialMessage });
 
-    // Llamar a la API y parsear los datos
-    const response = await fetch(finalUrl);
-    const data = await response.json();
+    // URL de la API en Base64
+    const encodedApiUrl = "aHR0cHM6Ly9yZXN0YXBpLmFwaWJvdHdhLmJpei5pZC9hcGkveXRtcDQ=";
+    const apiUrl = `${decodeBase64(encodedApiUrl)}?url=${encodeURIComponent(text)}`;
+    const apiData = await fetchWithRetries(apiUrl);
 
-    // Comprobaciones para la respuesta
-    if (!data || data.status !== 200 || !data.result || !data.result.download) {
-      throw new Error("La API no devolvió datos válidos.");
-    }
+    // Datos del video
+    const { metadata, download } = apiData;
+    const { title, duration, description } = metadata;
+    const { url: downloadUrl, filename } = download;
 
-    const {
-      result: {
-        metadata: { title, author, timestamp, image, description, views, url: videoUrl },
-        download: { url: rawDownloadUrl },
-      },
-    } = data;
+    // Calcular el tamaño del archivo
+    const fileResponse = await fetch(downloadUrl, { method: "HEAD" });
+    const fileSize = parseInt(fileResponse.headers.get("content-length") || 0);
+    const fileSizeInMB = fileSize / (1024 * 1024);
 
-    // Corregir la URL de descarga si hay espacios
-    const downloadUrl = rawDownloadUrl.replace(/\s+/g, "%20");
+    // Mensaje con información detallada del video
+    const videoInfo = `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔵 **Barboza Bot AI - Video Encontrado:**
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎵 **Título:** ${title}
+⏱️ **Duración:** ${duration.timestamp || "No disponible"}
+📦 **Tamaño:** ${fileSizeInMB.toFixed(2)} MB
+📝 **Descripción:**
+${description || "Sin descripción disponible"}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📤 *Enviando el archivo en formato documento con Barboza Bot AI...*
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    `;
+    await conn.sendMessage(m.chat, { text: videoInfo, edit: key });
 
-    // Enviar información del video al usuario
-    await conn.sendMessage(m.chat, {
-      image: { url: image },
-      caption: `🎵 *Música Encontrada:*\n\n📌 *Título:* ${title}\n👤 *Autor:* ${author.name}\n⏱️ *Duración:* ${timestamp}\n👁️ *Vistas:* ${views}\n\n🔗 *Enlace del Video:* ${videoUrl}\n\n🤖 *Procesado por BarbozaBot-Ai*`,
-    });
-
-    // Enviar música como documento .mp3
+    // Enviar el archivo como documento (.mp4)
     await conn.sendMessage(
       m.chat,
       {
         document: { url: downloadUrl },
-        mimetype: "audio/mpeg",
-        fileName: `${title}.mp3`,
-        caption: `🎵 *Música descargada:*\n📌 *Título:* ${title}\n👤 *Autor:* ${author.name}\n⏱️ *Duración:* ${timestamp}\n\n🤖 *BarbozaBot-Ai al servicio!*`,
+        mimetype: "video/mp4",
+        fileName: filename || `${title}.mp4`,
+        caption: `📂 *Video descargado en formato documento por Barboza Bot AI:*\n🎵 *Título:* ${title}\n📦 *Tamaño:* ${fileSizeInMB.toFixed(2)} MB`,
       },
       { quoted: m }
     );
   } catch (error) {
-    console.error("Error al descargar la música:", error);
+    console.error("Error al procesar la solicitud:", error);
     await conn.sendMessage(m.chat, {
-      text: `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || "Error desconocido"}\n\n🤖 *BarbozaBot-Ai trabajando para ti.*`,
+      text: `❌ *Error al procesar tu solicitud con Barboza Bot AI:* ${error.message || "Error desconocido"}\nPor favor intenta de nuevo más tarde.`,
     });
   }
 };
 
-// Definir el comando
-handler.command = /^playdoc$/i;
-
+handler.command = /^playdoc$/i; // Solo responde al comando .playdoc
 export default handler;
