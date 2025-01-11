@@ -7,7 +7,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
 if (!args[0]) return conn.reply(m.chat, '🚩 Ingrese el enlace de un archivo de Mediafire.', m, rcanal)
 if (!args[0].match(/mediafire/gi)) return conn.reply(m.chat, '🌸 El enlace deve ser de un archivo de Mediafire.', m, rcanal)
 try {
-await m.react('❄️')
+await m.react('⚡')
 let { title, ext, aploud, size, dl_url } = await mediafiredl(args[0])
 let txt = `乂  *¡MEDIAFIRE - DESCARGAS!*  乂\n\n`
     txt += `✩ *Nombre* : ${title}\n`
