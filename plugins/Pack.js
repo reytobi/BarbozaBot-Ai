@@ -42,6 +42,5 @@ let handler = async (m, { conn }) => {
 handler.help = ['pechos', 'tetas'];
 handler.tags = ['nsfw'];
 handler.command = ['pechos', 'tetas'];
-handler.group = true;
 
 export default handler;
