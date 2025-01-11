@@ -42,5 +42,4 @@ handler.help = ['pechos', 'tetas'];
 handler.tags = ['nsfw'];
 handler.command = ['pechos', 'tetas'];
 
-
 export default handler;
