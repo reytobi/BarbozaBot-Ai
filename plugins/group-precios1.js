@@ -19,6 +19,5 @@ let handler = async (m, { conn }) => {
 handler.help = ['precios1'];
 handler.tags = ['main'];
 handler.command = ['precios1', 'p1', 'precio1'];
-handler.group = true;
 
 export default handler;
