@@ -1,103 +1,79 @@
-import fetch from 'node-fetch';
-import axios from 'axios';
+import fetch from "node-fetch";
+import yts from "yt-search";
 
-let handler = async (m, { conn, command, args, text, usedPrefix }) => {
-if (!text) return conn.reply(m.chat, `🧑‍💻INGRESE EL NOMBRE DE ALGUNA CANCION *Soundcloud.*`, m, rcanal)
+// API en formato Base64
+const encodedApi = "aHR0cHM6Ly9hcGkudnJlZGVuLndlYi5pZC9hcGkveXRtcDM=";
 
-await m.react('🕒');
-try {
-let api = await fetch(`https://apis-starlights-team.koyeb.app/starlight/soundcloud-search?text=${encodeURIComponent(text)}`);
-let json = await api.json();
-let { url } = json[0];
+// Función para decodificar la URL de la API
+const getApiUrl = () => Buffer.from(encodedApi, "base64").toString("utf-8");
 
-let api2 = await fetch(`https://apis-starlights-team.koyeb.app/starlight/soundcloud?url=${url}`);
-let json2 = await api2.json();
-
-let { link: dl_url, quality, image } = json2;
-
-let audio = await getBuffer(dl_url);
-
-let txt = `*\`- S O U N C L O U D - M U S I C -\`*\n\n`;
-    txt += `        ✩  *Título* : ${json[0].title}\n`;
-    txt += `        ✩  *Calidad* : ${quality}\n`;
-    txt += `        ✩  *Url* : ${url}\n\n`;
-    txt += `> 🚩 *${textbot}*`
-
-await conn.sendFile(m.chat, image, 'thumbnail.jpg', txt, m, null, rcanal);
-await conn.sendMessage(m.chat, { audio: audio, fileName: `${json[0].title}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m })
-
-await m.react('✅');
-} catch {
-await m.react('✖️');
-}}
-
-handler.help = ['soundcloud *<búsqueda>*']
-handler.tags = ['downloader']
-handler.command = ['soundcloud', 'sound', 'play']
-
-export default handler
-
-const getBuffer = async (url, options) => {
-try {
-const res = await axios({
-method: 'get',
-url,
-headers: {
-'DNT': 1,
-'Upgrade-Insecure-Request': 1,
-},
-...options,
-responseType: 'arraybuffer',
-});
-return res.data;
-} catch (e) {
-console.log(`Error : ${e}`);
-}
+// Función para obtener datos de la API con reintentos
+const fetchWithRetries = async (url, maxRetries = 2) => {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data?.status === 200 && data.result?.download?.url) {
+        return data.result;
+      }
+    } catch (error) {
+      console.error(`Intento ${attempt + 1} fallido:`, error.message);
+    }
+  }
+  throw new Error("No se pudo obtener la música después de varios intentos.");
 };
 
-/*
-//Instalar la dependencia Node-id3 🙃
-//Use math por problemas de que algunos audios no se envian
-//La segunda url si descarga los datos de la cancion para eso tienes que ingresar a Souncloud la musica que quieres descargar ingresas y copias el link y lo pegas en la segunda url :) 
-//el buscador aun no tiene permisos para ir directamente a la cancion y obtener el link directamente a la cancion por eso es que algunos audios no son enviados
-import axios from 'axios'
-import fs from 'fs'
-import nodeID3 from 'node-id3'
+// Handler principal
+let handler = async (m, { conn, text }) => {
+  if (!text || !text.trim()) {
+    return conn.sendMessage(m.chat, {
+      text: "❗ *Ingresa un término de búsqueda para encontrar música.*\n\n*Ejemplo:* `.play No llores más`",
+    });
+  }
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-if (!text) return conn.reply(m.chat, `🚩 Ingrese el nombre de la cancion de *Soundcloud.*`, m, rcanal)
-await m.react('🕓')
-try {
-let { data: results } = await axios.get(`https://apis-starlights-team.koyeb.app/starlight/soundcloud-search?text=${text}`, { headers: { 'Content-Type': 'application/json' } })
-let randoms = results[Math.floor(Math.random() * results.length)]
-let { data: sm } = await axios.get(`https://apis-starlights-team.koyeb.app/starlight/soundcloud?url=${randoms.url}`, { headers: { 'Content-Type': 'application/json' }})
-let mpeg = await axios.get(sm.audio, { responseType: 'arraybuffer' })
-let img = await axios.get(randoms.image, { responseType: 'arraybuffer' })
-let mp3 = `${sm.title}.mp3`
-fs.writeFileSync(mp3, Buffer.from(mpeg.data))
-let tags = {
-title: sm.title,
-artist: sm.creator, 
-image: Buffer.from(img.data) 
-}
-nodeID3.write(tags, mp3)
-let txt = `*\`- S O U N C L O U D - M U S I C -\`*\n\n`
-txt += `🍘• *Nombre:* ${randoms.title}\n`
-txt += `🍘• *Artista:* ${randoms.artist}\n`
-txt += `🍘• *Duracion:* ${randoms.duration}\n`
-txt += `🍘• *Reproducciones:* ${randoms.repro}\n`
-txt += `🍘• *Link:* ${randoms.url}\n\n`
-txt += `🚩 Powered By Starlights Team`
-await conn.sendFile(m.chat, randoms.image, 'thumb.jpg', txt, m)
-await conn.sendMessage(m.chat, { audio: fs.readFileSync(mp3), fileName: `${sm.title}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m })
-fs.unlinkSync(mp3)
-await m.react('✅')
-} catch {
-await m.react('✖️')
-}}
-handler.help = ['soundcloud *<búsqueda>*']
-handler.tags = ['downloader']
-handler.command = ['soundcloud', 'sound', 'play']
-handler.register = true
-//handler.limit = 3
-export default handler*/
+  try {
+    // Reaccionar al mensaje inicial con 🕒
+    await conn.sendMessage(m.chat, { react: { text: "🕒", key: m.key } });
+
+    // Buscar en YouTube
+    const searchResults = await yts(text.trim());
+    const video = searchResults.videos[0];
+    if (!video) throw new Error("No se encontraron resultados.");
+
+    // Obtener datos de descarga
+    const apiUrl = `${getApiUrl()}?url=${encodeURIComponent(video.url)}`;
+    const apiData = await fetchWithRetries(apiUrl);
+
+    // Enviar información del video con miniatura
+    await conn.sendMessage(m.chat, {
+      image: { url: video.thumbnail },
+      caption: `🎵 *Título:* ${video.title}\n👁️ *Vistas:* ${video.views}\n⏳ *Duración:* ${video.timestamp}\n✍️ *Autor:* ${video.author.name}`,
+    });
+
+    // Enviar solo el audio
+    const audioMessage = {
+      audio: { url: apiData.download.url },
+      mimetype: "audio/mpeg",
+      fileName: `${video.title}.mp3`,
+    };
+
+    await conn.sendMessage(m.chat, audioMessage, { quoted: m });
+
+    // Reaccionar al mensaje original con ✅
+    await conn.sendMessage(m.chat, { react: { text: "✅", key: m.key } });
+  } catch (error) {
+    console.error("Error:", error);
+
+    // Reaccionar al mensaje original con ❌
+    await conn.sendMessage(m.chat, { react: { text: "❌", key: m.key } });
+
+    await conn.sendMessage(m.chat, {
+      text: `❌ *Error al procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+    });
+  }
+};
+
+// Cambia el Regex para que reconozca ".play"
+handler.command = /^play$/i;
+
+export default handler;
