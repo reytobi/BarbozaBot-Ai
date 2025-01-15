@@ -18,7 +18,10 @@ handler.tags = ['random']
 handler.command = /^(tiktokmusic)$/i
 export default handler
 global.tiktokmusic = [
- "https://telegra.ph/file/710607d85b7abd702eced.mp4",
+
+"https://d.uguu.se/weBhvdkc.mp4",
+"https://d.uguu.se/rANmCCfA.mp4",
+"https://f.uguu.se/smprFuCN.mp4", "https://telegra.ph/file/710607d85b7abd702eced.mp4",
 "https://telegra.ph/file/0dc17539451e5ead356d0.mp4",
 "https://telegra.ph/file/b9fd93c88043364458e2e.mp4",
 "https://d.uguu.se/FDmnYLla.mp4",
