@@ -1,21 +1,48 @@
-let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
-if (!args[0]) throw `\`\`\`[ 🐉 ] Ingresa el nombre de la aplicación que quieres descargar. Ejemplo:\n${usedPrefix + command} Clash Royale\`\`\``
-let res = await fetch(`https://api.dorratz.com/v2/apk-dl?text=${args[0]}`);
-let result = await res.json();
-let { name, size, lastUpdate, icon } = result;
-let URL = result.dllink
-let packe = result.package
-let texto = ` \`\`\`
-descargando aplicación...espere
-   - ${wm} -          
-\`\`\`     
-`
-await conn.sendFile(m.chat, icon, name + '.jpg', texto, m)
+import axios from 'axios';
+import cheerio from 'cheerio';
 
-await conn.sendMessage(m.chat, { document: { url: URL }, mimetype: 'application/vnd.android.package-archive', fileName: name + '.apk', caption: ''}, { quoted: m });
+const apkpureApi = 'https://apkpure.com/api/v2/search?q=';
+const apkpureDownloadApi = 'https://apkpure.com/api/v2/download?id=';
+
+async function searchApk(text) {
+  const response = await axios.get(`${apkpureApi}${encodeURIComponent(text)}`);
+  const data = response.data;
+  return data.results;
 }
-handler.command = ['apk2','dapk2']
-handler.group = false;
-handler.help = ['apk2']
-handler.tags = ['descargas']
-export default handler
+
+async function downloadApk(id) {
+  const response = await axios.get(`${apkpureDownloadApi}${id}`);
+  const data = response.data;
+  return data;
+}
+
+let handler = async (m, { conn, usedPrefix, command, text }) => {
+  if (!text) throw `${lenguajeGB['smsAvisoMG']()} ${mid.smsApk}`;
+  try {
+    const searchResults = await searchApk(text);
+    const apkData = await downloadApk(searchResults[0].id);
+    const response = `${eg}
+┃┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+┃💫 ${mid.name}: ${apkData.name}
+┃📦 𝙋𝘼𝘾𝙆𝘼𝙂𝙀: ${apkData.package}
+┃🕒 ${mid.smsApk2}: ${apkData.lastup}
+┃💪 ${mid.smsYT11} ${apkData.size}
+┃┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈
+┃ ${mid.smsApk3} 🚀🚀🚀`;
+    await conn.sendMessage(m.chat, { image: { url: apkData.icon }, caption: response }, { quoted: m });
+    if (apkData.size.includes('GB') || apkData.size.replace(' MB', '') > 999) {
+      return await conn.sendMessage(m.chat, { text: mid.smsApk4 }, { quoted: m });
+    }
+    await conn.sendMessage(m.chat, { document: { url: apkData.dllink }, mimetype: 'application/vnd.android.package-archive', fileName: apkData.name + '.apk', caption: null }, { quoted: m });
+  } catch (e) {
+    await conn.reply(m.chat, `${lenguajeGB['smsMalError3']()}#report ${lenguajeGB['smsMensError2']()} ${usedPrefix + command}\n\n${wm}`, m);
+    console.log(`❗❗ ${lenguajeGB['smsMensError2']()} ${usedPrefix + command} ❗❗`);
+    console.log(e);
+    handler.limit = false;
+  }
+};
+
+handler.command = /^(apkp|apkpure|apkdl)$/i;
+handler.register = true;
+handler.limit = 2;
+export default handler;
