@@ -1,5 +1,5 @@
 const handler = async (m, { conn }) => {
-  let gifUrl = "https://f.uguu.se/KHvFzwMD.jpg";
+  let gifUrl = "https://qu.ax/llZLr.jpg";
 
   let text = `
  ──────── ⚔ ────────  
