@@ -1,75 +1,55 @@
 import axios from 'axios';
 import fetch from 'node-fetch';
-import * as cheerio from 'cheerio';
-import {mediafiredl} from '@bochilteam/scraper';
 
-const handler = async (m, {conn, args, usedPrefix, command}) => {
-    if (!args[0]) throw `*⚡Ingresa un link de mediafire junto al comando. Ejemplo:* \n${usedPrefix + command} https://www.mediafire.com/file/941xczxhn27qbby/GBWA_V12.25FF-By.SamMods-.apk\n\n> *Powered By Barboza*`;
-m.react('⚡')
+// Decodificar la API desde Base64
+const apiBase64 = 'aHR0cHM6Ly9yZXN0YXBpLmFwaWJvdHdhLmJpei5pZC9hcGkvbWVkaWFmaXJlP3VybD0=';
+const apiUrl = Buffer.from(apiBase64, 'base64').toString('utf-8');
+
+let handler = async (m, { conn, args, usedPrefix, command }) => {
+  if (!args[0]) return conn.reply(m.chat, '🚩 Ingrese el enlace de un archivo de Mediafire.', m);
+  if (!args[0].match(/mediafire/gi)) return conn.reply(m.chat, '🌸 El enlace debe ser de un archivo de Mediafire.', m);
+
   try {
-    const resEX = await mediafiredl(args[0]);
-    let text = `𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑\n\n`
-    text += `│  ✦ *Nombre:* ${name}\n\n`
-    text += `│  ✦ *Peso:* ${size}\n\n`
-    text += `│  ✦ *Tipo:* ${mime}\n\n`
-    text += `╚──────────────\n`
-    text += `> 🎄Espere Un Momento Enviando Archivo Tenga Paciencia❄️`
+    await m.react('⚡');
+    
+    // Llamada a la API
+    let response = await axios.get(`${apiUrl}${args[0]}`);
+    let { datos } = response.data;
+    let { respuesta } = datos;
+    let { 
+      "Nombre del archivo": title, 
+      tipo, 
+      tamaño: size, 
+      subido: uploaded, 
+      mimetype, 
+      descargar: downloadUrl 
+    } = respuesta;
+    
+    // Mensaje informativo
+    let txt = `乂  *¡MEDIAFIRE - DESCARGAS!*  乂\n\n`;
+    txt += `✩ *Nombre* : ${title}\n`;
+    txt += `✩ *Peso* : ${size}\n`;
+    txt += `✩ *Publicado* : ${uploaded || 'Desconocido'}\n`;
+    txt += `✩ *MimeType* : ${mimetype}\n\n`;
+    txt += `*- ↻ El archivo se está enviando, espera un momento...*\n`;
 
-    await conn.reply(m.chat, text, m, {
-contextInfo: { externalAdReply :{ showAdAttribution: true,
-                        sourceUrl: 'https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18',
-                        mediaType: 2,
-                        description: `Sigue El Canal Por Favor`,
-                        title: `👑 Gracias Por Usar A BarbozaBot, WhatsApp Bot⛄`,
-                        body: `🎄 Powered By Barboza`,          previewType: 0,
-                        thumbnail: await (await fetch('https://i.ibb.co/ZfjXNy0/file.jpg')).buffer(),
-                        mediaUrl: canal
+    let img = await (await fetch('https://i.ibb.co/wLQFn7q/logo-mediafire.jpg')).buffer();
 
-                      }}
-})
-    await conn.sendFile(m.chat, resEX.url, resEX.filename, '', m, null, {mimetype: resEX.ext, asDocument: true});
-  } catch {
-    try {
-      const res = await mediafireDl(args[0]);
-      const {name, size, date, mime, link} = res;
-      let text2 = `𝐌𝐄𝐃𝐈𝐀𝐅𝐈𝐑𝐄 - 𝐃𝐎𝐖𝐍𝐋𝐎𝐀𝐃𝐄𝐑\n\n`
-    text2 += `│  ✦ *Nombre:* ${name}\n\n`
-    text2 += `│  ✦ *Peso:* ${size}\n\n`
-    text2 += `│  ✦ *Tipo:* ${mime}\n\n`
-    text2 += `╚──────────────\n`
-    text2 += `> 🎄Espera Un Momento, Enviando Archivo Tenga Paciencia❄️`
-      await conn.reply(m.chat, text2, m, {
-contextInfo: { externalAdReply :{ showAdAttribution: true,
-                        sourceUrl: 'https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18',
-                        mediaType: 2,
-                        description: `❤️‍🔥Sigue El Canal Por Favor❤️‍🔥`,
-                        title: `❄️ Gracias Por Usar BarbozaBot, Sigue El Canal⛄`,
-                        body: `🎄 Powered By Barboza`,          previewType: 0,
-                        thumbnail: await (await fetch('https://i.ibb.co/ZfjXNy0/file.jpg')).buffer(),
-                        mediaUrl: canal
-
-                      }}
-})
-      await conn.sendFile(m.chat, link, name, '', m, null, {mimetype: mime, asDocument: true});
-    } catch {
-      await m.reply(`*🎄Ingresa un link de mediafire junto al comando. Ejemplo:* \n${usedPrefix + command} https://www.mediafire.com/file/941xczxhn27qbby/GBWA_V12.25FF-By.SamMods-.apk\n\n> *Powered By Barboza*`);
-    }
+    // Envío del archivo y mensaje
+    await conn.sendFile(m.chat, img, 'thumbnail.jpg', txt, null, null, { asDocument: false });
+    await conn.sendFile(m.chat, downloadUrl, title, null, null, null, { mimetype, asDocument: true });
+    
+    await m.react('✅');
+  } catch (err) {
+    console.error(err);
+    await conn.reply(m.chat, '❌ Hubo un error al procesar tu solicitud.', m);
+    await m.react('✖️');
   }
 };
-handler.help = ['mediafire'].map((v) => v + ' <url>');
-handler.tags = ['descargas'];
-handler.command = /^(mediafire|mediafiredl|dlmediafire|mf)$/i;
-export default handler;
 
-async function mediafireDl(url) {
-  const res = await axios.get(`https://www-mediafire-com.translate.goog/${url.replace('https://www.mediafire.com/', '')}?_x_tr_sl=en&_x_tr_tl=fr&_x_tr_hl=en&_x_tr_pto=wapp`);
-  const $ = cheerio.load(res.data);
-  const link = $('#downloadButton').attr('href');
-  const name = $('body > main > div.content > div.center > div > div.dl-btn-cont > div.dl-btn-labelWrap > div.promoDownloadName.notranslate > div').attr('title').replaceAll(' ', '').replaceAll('\n', '');
-  const date = $('body > main > div.content > div.center > div > div.dl-info > ul > li:nth-child(2) > span').text();
-  const size = $('#downloadButton').text().replace('Download', '').replace('(', '').replace(')', '').replace('\n', '').replace('\n', '').replace('                         ', '').replaceAll(' ', '');
-  let mime = '';
-  const rese = await axios.head(link);
-  mime = rese.headers['content-type'];
-  return {name, size, date, mime, link};
-}
+handler.help = ['mediafire'];
+handler.tags = ['descargas'];
+handler.command = ['mediafire2', 'mdfire2', 'mf2'];
+handler.premium = false;
+
+export default handler;
