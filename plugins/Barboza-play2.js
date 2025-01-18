@@ -1,101 +1,53 @@
-import fetch from "node-fetch";
-import yts from "yt-search"; // Asegúrate de tener instalado yt-search
+import fetch from 'node-fetch';
+import yts from 'yt-search';
 
-// Función para decodificar Base64
-const decodeBase64 = (encoded) => Buffer.from(encoded, "base64").toString("utf-8");
-
-const fetchWithRetries = async (url, maxRetries = 2) => {
-  let attempt = 0;
-  while (attempt <= maxRetries) {
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (data && data.status === 200 && data.data && data.data.download && data.data.download.url) {
-        return data.data; // Retorna el resultado si es válido
-      }
-    } catch (error) {
-      console.error(`Error en el intento ${attempt + 1}:`, error.message);
-    }
-    attempt++;
-  }
-  throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
-};
-
-let handler = async (m, { conn, text, usedPrefix, command }) => {
+let handler = async (m, { conn, text, args }) => {
   if (!text) {
-    return conn.sendMessage(m.chat, {
-      text: `⚠️ *¡Atención!*\n\n💡 *Por favor ingresa un término de búsqueda para encontrar el video.*\n\n📌 *Ejemplo:* ${usedPrefix}play2 Never Gonna Give You Up`,
-    });
+    return m.reply("❀ Ingresa un texto de lo que quieres buscar");
   }
+
+  let ytres = await search(args.join(" "));
+  if (ytres.length === 0) {
+    return m.reply("❀ No se encontraron resultados");
+  }
+
+  let txt = ` ᚚᚚᩳᚚ͜ᩬᚚᷤ͜ᚚᷴ͜ᚚᷟ͜ᚚᷝ͜ᚚ͜ᚚᷤ͜ᚚᷧ͜ᚚᷜ͜ᚚᷴ͜ᚚᷢ͜ᚚᷧ͜ᚚᷦ͜ᚚᷧ͜ᚚᷱ͜ᚚᷴ͜ᚚᷧ͜ᚚᩬᚚᩳᚚᚚ
+꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦
+❥⏤͟͟͞͞Título:❥⊱ ${ytres[0].title}
+❥⏤͟͟͞͞Duración:❥⊱ ${ytres[0].timestamp}
+❥⏤͟͟͞͞Publicado:❥⊱ ${ytres[0].ago}
+❥⏤͟͟͞͞Canal:❥⊱ ${ytres[0].author.name || 'Desconocido'}
+❥⏤͟͟͞͞Url:❥⊱ https://youtu.be/${ytres[0].videoId}
+꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦
+
+🌸➥𝙀𝙨𝙥𝙚𝙧𝙚 𝙪𝙣 𝙢𝙤𝙢𝙚𝙣𝙩𝙤 𝙙𝙚𝙨𝙘𝙖𝙧𝙜𝙖𝙣𝙙𝙤 𝙨𝙪 𝙫𝙞́𝙙𝙚𝙤...`;
+
+  await conn.sendFile(m.chat, ytres[0].image, 'thumbnail.jpg', txt, m);
 
   try {
-    await conn.sendMessage(m.chat, {
-      text: `
-╭━━━🌐📡━━━╮  
-   🔍 **Buscando en ☆Barboza Bot Ai☆** 🔍  
-╰━━━🌐📡━━━╯  
+    let apiResponse = await fetch(`https://api.vreden.web.id/api/ytplaymp4?query=${ytres[0].url}&apikey=0a2cc90e`);
+    let json = await apiResponse.json();
 
-✨ *Estamos localizando tu video...*  
-📥 *Por favor espera unos instantes mientras procesamos tu solicitud.*  
+    if (json.result && json.result.download && json.result.download.url) {
+      let { title, url: mp4 } = json.result.download;
 
-⏳ *Esto puede tardar unos segundos.*  
-      `,
-    });
+      await conn.sendMessage(m.chat, { video: { url: mp4 }, caption: `*❀ Sumi Sakurazawa:*  ${text}`, mimetype: 'video/mp4', fileName: `Sumi Sakurazawa - ${title}.mp4` }, { quoted: m });
 
-    // Búsqueda en YouTube
-    const searchResults = await yts(text);
-    const video = searchResults.videos[0]; // Tomamos el primer resultado
-
-    if (!video) {
-      return conn.sendMessage(m.chat, {
-        text: `❌ *No se encontraron resultados para:* ${text}`,
-      });
+      await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
+    } else {
+      throw new Error('La API no devolvió los datos esperados.');
     }
-
-    const { title, url: videoUrl, timestamp, views, author, image, ago } = video;
-
-    // URL de la API ofuscada
-    const encodedApiUrl = "aHR0cHM6Ly9yZXN0YXBpLmFwaWJvdHdhLmJpei5pZC9hcGkveXRtcDQ=";
-    const encodedErrorMessage = "QXBpIHN1c3BlbmRpZGEgU2llcmVzIEVsIFByb3BpZXRhcmlvIFBhZ2EgTGEgRGV1ZGEgJDEw";
-
-    // Información del video
-    const videoInfo = `
-╭━━━☆☆☆━━━╮  
- *★ ☆Barboza Bot Ai☆ ★*
-╰━━━☆☆☆━━━╯  
-🎵 **Título:**  ${title}  
-
-📅 **Subido hace:**  ${ago}  
-
-⏱️ **Duración:**  ${timestamp}  
-
-👀 **Vistas:**  ${views.toLocaleString()}  
-
-👤 **Autor:**  ${author.name}  
-
-🔗 **Enlace del video:**  ${videoUrl}  
-╭━━━━━━☆☆☆━━━━━━━╮    
- > Por favor espera 🔄 ....  
-╰━━━━━━☆☆☆━━━━━━━╯  
-    `;
-
-    // Envía la información del video
-    await conn.sendMessage(m.chat, { image: { url: image }, caption: videoInfo });
-
-    // Enviar mensaje de error ofuscado
-    const errorMessage = decodeBase64(encodedErrorMessage); // Decodifica el mensaje
-    await conn.sendMessage(m.chat, {
-      text: `❌ *${errorMessage}*`,
-    });
   } catch (error) {
-    console.error("Error al procesar la solicitud:", error);
-    await conn.sendMessage(m.chat, {
-      text: `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
-    });
+    console.error(error);
+    m.reply("❀ Ocurrió un error al intentar descargar el video");
   }
 };
 
-handler.command = /^play2$/i; // Solo funciona con play2
+handler.command = /^(play2)$/i;
 
 export default handler;
+
+async function search(query, options = {}) {
+  let searchResults = await yts.search({ query, hl: "es", gl: "ES", ...options });
+  return searchResults.videos;
+}
