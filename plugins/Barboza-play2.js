@@ -11,7 +11,7 @@ let handler = async (m, { conn, text, args }) => {
     return m.reply("❀ No se encontraron resultados");
   }
 
-  let txt = ` ᚚᚚᩳᚚ͜ᩬᚚᷤ͜ᚚᷴ͜ᚚᷟ͜ᚚᷝ͜ᚚ͜ᚚᷤ͜ᚚᷧ͜ᚚᷜ͜ᚚᷴ͜ᚚᷢ͜ᚚᷧ͜ᚚᷦ͜ᚚᷧ͜ᚚᷱ͜ᚚᷴ͜ᚚᷧ͜ᚚᩬᚚᩳᚚᚚ
+  let txt = ` Bot Barboza
 ꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦
 ❥⏤͟͟͞͞Título:❥⊱ ${ytres[0].title}
 ❥⏤͟͟͞͞Duración:❥⊱ ${ytres[0].timestamp}
@@ -31,7 +31,7 @@ let handler = async (m, { conn, text, args }) => {
     if (json.result && json.result.download && json.result.download.url) {
       let { title, url: mp4 } = json.result.download;
 
-      await conn.sendMessage(m.chat, { video: { url: mp4 }, caption: `*❀ Sumi Sakurazawa:*  ${text}`, mimetype: 'video/mp4', fileName: `Sumi Sakurazawa - ${title}.mp4` }, { quoted: m });
+      await conn.sendMessage(m.chat, { video: { url: mp4 }, caption: `*❀ Sumi Sakurazawa:*  ${text}`, mimetype: 'video/mp4', fileName: `Bot Barboza - ${title}.mp4` }, { quoted: m });
 
       await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
     } else {
