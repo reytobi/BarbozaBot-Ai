@@ -53,17 +53,17 @@ Hola *%name* soy *Barboza*
 ║  ♛ Barboza
 ╚═════ ♢.✰.♢ ══════
 ╔══════ •『 𝑰𝑵𝑭𝑶-𝑩𝑶𝑻 』
-║  ✎ Cliente: %name
-║  ✎ Exp: %exp
-║  ✎ Nivel: %level
+║  👤 Cliente: %name
+║  ⭐ Exp: %exp
+║  ⚡ Nivel: %level
 ╚═════ ♢.✰.♢ ═══════
 
 ╔══════ •『 𝑰𝑵𝑭𝑶-𝑼𝑺𝑬𝑹』
-║  ✎ Bot: ©Bot-Barboza-Ai®
-║  ✎ Modo Público
-║  ✎ Baileys: Multi Device
-║  ✎ Tiempo Activo: %muptime
-║  ✎ Usuarios: %totalreg 
+║  🤖 Bot: ©Bot-Barboza-Ai®
+║  💎 Modo Público
+║  💨 Baileys: Multi Device
+║  🪄 Tiempo Activo: %muptime
+║  🎩 Usuarios: %totalreg 
 ╚═════ ♢.✰.♢ ════════
 
 *─ׄ─ׄ─⭒─ׄ─ׅ─ׄ⭒─ׄ─ׄ─⭒─ׄ─ׄ─⭒─ׄ─ׅ─*
