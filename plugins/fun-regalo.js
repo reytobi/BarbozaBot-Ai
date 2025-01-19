@@ -1,8 +1,8 @@
-
 import { promises as fs } from 'fs';
 
 const charactersFilePath = './src/database/characters.json';
 
+// Carga los personajes desde el archivo JSON
 async function loadCharacters() {
     try {
         const data = await fs.readFile(charactersFilePath, 'utf-8');
@@ -12,6 +12,7 @@ async function loadCharacters() {
     }
 }
 
+// Guarda los personajes en el archivo JSON
 async function saveCharacters(characters) {
     try {
         await fs.writeFile(charactersFilePath, JSON.stringify(characters, null, 2), 'utf-8');
@@ -20,18 +21,21 @@ async function saveCharacters(characters) {
     }
 }
 
+// Manejador para regalar personajes
 let givecharHandler = async (m, { conn, args }) => {
     const userId = m.sender;
 
+    // Verifica que se proporcionen suficientes argumentos
     if (args.length < 2) {
         await conn.reply(m.chat, '《✧》Debes especificar el nombre del personaje y mencionar a quien quieras regalarlo.', m);
         return;
     }
 
     const characterName = args.slice(0, -1).join(' ').toLowerCase().trim();
-    const mentionedUser = args[args.length - 1];
+    const mentionedUser  = args[args.length - 1];
 
-    if (!mentionedUser.startsWith('@')) {
+    // Verifica que el usuario mencionado sea válido
+    if (!mentionedUser .startsWith('@')) {
         await conn.reply(m.chat, '《✧》Debes mencionar a un usuario válido.', m);
         return;
     }
@@ -40,20 +44,23 @@ let givecharHandler = async (m, { conn, args }) => {
         const characters = await loadCharacters();
         const character = characters.find(c => c.name.toLowerCase() === characterName && c.user === userId);
 
+        // Verifica si el personaje pertenece al usuario
         if (!character) {
             await conn.reply(m.chat, `《✧》*${characterName}* no está reclamado por ti.`, m);
             return;
         }
 
-        character.user = mentionedUser.replace('@', '');
+        // Asigna el personaje al usuario mencionado
+        character.user = mentionedUser .replace('@', '');
         await saveCharacters(characters);
 
-        await conn.reply(m.chat, `✰ *${character.name}* ha sido regalado a ${mentionedUser}!`, m);
+        await conn.reply(m.chat, `✰ *${character.name}* ha sido regalado a ${mentionedUser }!`, m);
     } catch (error) {
         await conn.reply(m.chat, `✘ Error al regalar el personaje: ${error.message}`, m);
     }
 };
 
+// Ayuda y configuración del comando
 givecharHandler.help = ['givechar <nombre del personaje> @usuario', 'givewaifu <nombre del personaje> @usuario', 'regalar <nombre del personaje> @usuario'];
 givecharHandler.tags = ['gacha'];
 givecharHandler.command = ['regalar', 'givewaifu', 'givechar'];
