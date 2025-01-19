@@ -8,7 +8,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 > ${text}`
     await conn.reply('5491166401905@s.whatsapp.net', m.quoted ? teks + m.quoted.text : teks, m, { mentions: conn.parseMention(teks) })
 
-    m.reply('☁️ La sugerencia se envió a mi propietario.')
+    m.reply('☁️ La sugerencia se envió a mi propietario🖥️.')
 }
 handler.help = ['newcommand']
 handler.tags = ['info']
