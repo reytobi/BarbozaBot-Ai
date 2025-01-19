@@ -29,7 +29,6 @@ let tags = {
   'rpg': '🌐 RPG 🥇',
   'rg': '🎑 REGISTRO 🎟️',
   'sticker': '💟 STICKER 🏷️',
-  'img': '🖼️ IMAGE 🎇',
   'group': '👥 GROUPS 📢',
 //  'logo': 'MAKER',
   'nable': '🎛️ ON / OFF 🔌', 
@@ -38,10 +37,8 @@ let tags = {
   'tools': '🔧 TOOLS 🛠️',
   'fun': '🎉 FUN 🎊',
   'nsfw': '🔞 NSFW 📛', 
-  'cmd': '🧮 DATABASE 🖥️',
   'owner': '👤 OWNER 👁️', 
   'audio': '📣 AUDIOS 🔊', 
-  'advanced': '🗝️ ADVANCED 📍',
 }
 
 const defaultMenu = {
