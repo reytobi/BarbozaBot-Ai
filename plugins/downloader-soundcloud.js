@@ -18,7 +18,7 @@ let { title, thumbnail, timestamp, views, ago, url } = video
 
 let vistas = parseInt(views).toLocaleString("es-ES") + " vistas"
 
-let HS = `𔓕꯭  ꯭ 𓏲꯭֟፝੭ ꯭⌑(꯭𝐄).꯭SUMI-BOT⌑꯭ 𓏲꯭֟፝੭ ꯭  ꯭𔓕
+let HS = `𔓕꯭  ꯭ 𓏲꯭֟፝੭ ꯭⌑(꯭𝐄).꯭Bot Barboza⌑꯭ 𓏲꯭֟፝੭ ꯭  ꯭𔓕
  ▭͞▬͞▭͞▬͞▭͞▬͞▭͞▬͞▭͞▬͞▭͞▬͞▭͞▬͞
 ꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦
 ❥⊰⏤͟͟͞͞Duración:⊱ ${timestamp}
