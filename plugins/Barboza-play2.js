@@ -1,53 +1,64 @@
-import fetch from 'node-fetch';
 import yts from 'yt-search';
+const handler = async (m, { conn, text, usedPrefix, command }) => {
+  if (!text) throw `\`\`\`[ 🌴 ] Por favor ingresa un texto. Ejemplo:\n${usedPrefix + command} Did i tell u that i miss you\`\`\``;
 
-let handler = async (m, { conn, text, args }) => {
-  if (!text) {
-    return m.reply("❀ Ingresa un texto de lo que quieres buscar");
+  const isVideo = /vid|2|mp4|v$/.test(command);
+  const search = await yts(text);
+
+  if (!search.all || search.all.length === 0) {
+    throw "No se encontraron resultados para tu búsqueda.";
   }
 
-  let ytres = await search(args.join(" "));
-  if (ytres.length === 0) {
-    return m.reply("❀ No se encontraron resultados");
-  }
+  const videoInfo = search.all[0];
+  const body = `\`\`\`⊜─⌈ 📻 ◜YouTube Play◞ 📻 ⌋─⊜
 
-  let txt = ` Bot Barboza
-꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦
-❥⏤͟͟͞͞Título:❥⊱ ${ytres[0].title}
-❥⏤͟͟͞͞Duración:❥⊱ ${ytres[0].timestamp}
-❥⏤͟͟͞͞Publicado:❥⊱ ${ytres[0].ago}
-❥⏤͟͟͞͞Canal:❥⊱ ${ytres[0].author.name || 'Desconocido'}
-❥⏤͟͟͞͞Url:❥⊱ https://youtu.be/${ytres[0].videoId}
-꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦
+    ≡ Título : » ${videoInfo.title}
+    ≡ Views : » ${videoInfo.views}
+    ≡ Duration : » ${videoInfo.timestamp}
+    ≡ Uploaded : » ${videoInfo.ago}
+    ≡ URL : » ${videoInfo.url}
 
-🌸➥𝙀𝙨𝙥𝙚𝙧𝙚 𝙪𝙣 𝙢𝙤𝙢𝙚𝙣𝙩𝙤 𝙙𝙚𝙨𝙘𝙖𝙧𝙜𝙖𝙣𝙙𝙤 𝙨𝙪 𝙫𝙞́𝙙𝙚𝙤...`;
+# 🌴 Su ${isVideo ? 'Video' : 'Audio'} se está enviando, espere un momento...\`\`\``;
 
-  await conn.sendFile(m.chat, ytres[0].image, 'thumbnail.jpg', txt, m);
+  conn.sendMessage(m.chat, {
+    image: { url: videoInfo.thumbnail },
+    caption: body,
+  }, { quoted: fkontak });
 
+  let result;
   try {
-    let apiResponse = await fetch(`https://api.vreden.web.id/api/ytplaymp4?query=${ytres[0].url}&apikey=0a2cc90e`);
-    let json = await apiResponse.json();
-
-    if (json.result && json.result.download && json.result.download.url) {
-      let { title, url: mp4 } = json.result.download;
-
-      await conn.sendMessage(m.chat, { video: { url: mp4 }, caption: `*⭐ Barboza Bot:*  ${text}`, mimetype: 'video/mp4', fileName: `Bot Barboza - ${title}.mp4` }, { quoted: m });
-
-      await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
+    if (command === 'play' || command === 'yta' || command === 'ytmp3') {
+      let hh = await fetch(`https://api.siputzx.my.id/api/dl/youtube/mp3?url=${videoInfo.url}`);
+      result = await hh.json()
+    } else if (command === 'playvid' || command === 'ytv' || command === 'play2' || command === 'ytmp4') {
+    let rr = await fetch(`https://deliriussapi-oficial.vercel.app/download/ytmp4?url=${videoInfo.url}`);
+      result = await rr.json()
     } else {
-      throw new Error('La API no devolvió los datos esperados.');
+      throw "Comando no reconocido.";
     }
+let url_dl = isVideo ? result.data.download.url : result.data
+    conn.sendMessage(m.chat, {
+      [isVideo ? 'video' : 'audio']: { url: url_dl },
+      mimetype: isVideo ? "video/mp4" : "audio/mpeg",
+      caption: isVideo ? `URL: ${videoInfo.url}` : '',
+    }, { quoted: m });
+
   } catch (error) {
-    console.error(error);
-    m.reply("❀ Ocurrió un error al intentar descargar el video");
+    throw "Ocurrió un error al procesar tu solicitud.";
   }
 };
 
-handler.command = /^(play2)$/i;
+handler.command = handler.help = ['play', 'playvid', 'ytv', 'ytmp4', 'yta', 'play2', 'ytmp3'];
+handler.tags = ['dl'];
+handler.diamond = 4;
 
 export default handler;
 
-async function search(query, options = {}) {
-  let searchResults = await yts.search({ query, hl: "es", gl: "ES", ...options });
-  return searchResults.videos;
-}
+const getVideoId = (url) => {
+  const regex = /(?:v=|\/)([0-9A-Za-z_-]{11}).*/;
+  const match = url.match(regex);
+  if (match) {
+    return match[1];
+  }
+  throw new Error("Invalid YouTube URL");
+};
