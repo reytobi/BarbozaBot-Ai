@@ -140,7 +140,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
   const { name, albumname, artist, thumb, duration, download } = musicData;
 
-  // Enviar información detallada
+  // Enviar información detallada con una miniatura
   const infoMessage = {
     image: { url: thumb },
     caption: `🎵 *Información del Audio:*\n\n` +
@@ -162,21 +162,11 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
   await conn.sendMessage(m.chat, infoMessage);
 
-  // Enviar el audio
+  // Enviar solo el audio sin miniatura
   const audioMessage = {
     audio: { url: download },
     mimetype: 'audio/mp4',
-    fileName: `${name}.mp3`,
-    contextInfo: {
-      externalAdReply: {
-        title: name,
-        body: `${artist} • ${albumname}`,
-        mediaType: 2,
-        mediaUrl: searchResults[0].link,
-        thumbnailUrl: thumb,
-        showAdAttribution: true
-      }
-    }
+    fileName: `${name}.mp3`
   };
 
   await conn.sendMessage(m.chat, audioMessage, { quoted: m });
@@ -185,6 +175,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
 handler.help = ['play'];
 handler.tags = ['downloader'];
+handler.limit = 3;
 handler.command = /^(applemusicplay|play|song)$/i;
 
 export default handler;
