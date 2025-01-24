@@ -18,11 +18,11 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
         mediaUrl: null,
         mediaType: 1,
         showAdAttribution: true,
-        title: packname,
-        body: wm,
+        title: packname, // Asegúrate de que esta variable esté definida
+        body: wm, // Asegúrate de que esta variable esté definida
         previewType: 0,
-        thumbnail: icons,
-        sourceUrl: channel
+        thumbnail: icons, // Asegúrate de que esta variable esté definida
+        sourceUrl: channel // Asegúrate de que esta variable esté definida
       }
     }
   });
@@ -62,7 +62,7 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
         'text': "Imagen - " + index++
       }),
       'footer': proto.Message.InteractiveMessage.Footer.fromObject({
-        'text': textbot
+        'text': textbot // Asegúrate de que esta variable esté definida
       }),
       'header': proto.Message.InteractiveMessage.Header.fromObject({
         'title': '',
