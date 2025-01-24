@@ -1,5 +1,5 @@
 
-// Código Hecho Por THE CARLOS wa.me/525544876071
+// Código Hecho Por Barboza
 let handler = async (m, { conn }) => {
     // React con un emoji al mensaje
     m.react('💫');
