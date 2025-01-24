@@ -10,7 +10,7 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
   if (!text) {
     return conn.reply(message.chat, "🖼️ *¿Qué quieres buscar en Pinterest?*", message);
   }
-  
+
   await message.react(rwait);
   conn.reply(message.chat, '⏬ *Descargando su imagen...*', message, {
     contextInfo: {
@@ -18,11 +18,11 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
         mediaUrl: null,
         mediaType: 1,
         showAdAttribution: true,
-        title: packname,
-        body: wm,
+        title: packname, // Asegúrate de que esta variable esté definida
+        body: wm, // Asegúrate de que esta variable esté definida
         previewType: 0,
-        thumbnail: icons,
-        sourceUrl: channel
+        thumbnail: icons, // Asegúrate de que esta variable esté definida
+        sourceUrl: channel // Asegúrate de que esta variable esté definida
       }
     }
   });
@@ -49,10 +49,10 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
 
   let imageCards = [];
   let { data } = await axios.get(`https://www.pinterest.com/resource/BaseSearchResource/get/?source_url=%2Fsearch%2Fpins%2F%3Fq%3D${text}&data=%7B%22options%22%3A%7B%22isPrefetch%22%3Afalse%2C%22query%22%3A%22${text}%22%2C%22scope%22%3A%22pins%22%2C%22no_fetch_context_on_resource%22%3Afalse%7D%2C%22context%22%3A%7B%7D%7D&_=1619980301559`);
-  
+
   let imageUrls = data.resource_response.data.results.map(item => item.images.orig.url);
   shuffleArray(imageUrls);
-  
+
   let selectedImages = imageUrls.splice(0, 5);
   let index = 1;
 
@@ -62,7 +62,7 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
         'text': "Imagen - " + index++
       }),
       'footer': proto.Message.InteractiveMessage.Footer.fromObject({
-        'text': textbot
+        'text': textbot // Asegúrate de que esta variable esté definida
       }),
       'header': proto.Message.InteractiveMessage.Header.fromObject({
         'title': '',
