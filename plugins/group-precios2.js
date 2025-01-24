@@ -12,7 +12,7 @@ let handler = async (m, { conn }) => {
                     "> Bot Para Grupos💫";
     if (m.isGroup) {
         // URL de la imagen
-        const imageUrl = 'https://qu.ax/bBWiH.jpg'; // Cambia esta URL por la de la imagen que deseas enviar
+        const imageUrl = 'https://d.uguu.se/uUzXRzud.jpg'; // Cambia esta URL por la de la imagen que deseas enviar
         // Envía el mensaje
         // Envía la imagen
         await conn.sendMessage(m.chat, { image: { url: imageUrl }, caption: message }, { mimetype: 'image/jpeg' });
