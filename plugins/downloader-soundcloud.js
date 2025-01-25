@@ -1,8 +1,13 @@
+
 import fetch from "node-fetch";
 import yts from "yt-search";
 import ffmpeg from "fluent-ffmpeg";
 import fs from "fs";
 import path from "path";
+import { pipeline } from "stream";
+import { promisify } from "util";
+
+const streamPipeline = promisify(pipeline);
 
 // API en formato Base64
 const encodedApi = "aHR0cHM6Ly9hcGkudnJlZGVuLndlYi5pZC9hcGkveXRtcDM=";
@@ -26,10 +31,17 @@ const fetchWithRetries = async (url, maxRetries = 2) => {
   throw new Error("No se pudo obtener la música después de varios intentos.");
 };
 
+// Función para descargar el archivo de audio
+const downloadFile = async (url, outputPath) => {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Error al descargar el archivo: ${response.statusText}`);
+  await streamPipeline(response.body, fs.createWriteStream(outputPath));
+};
+
 // Función para convertir el audio a un formato válido
-const convertAudio = async (inputUrl, outputPath) => {
+const convertAudio = async (inputPath, outputPath) => {
   return new Promise((resolve, reject) => {
-    ffmpeg(inputUrl)
+    ffmpeg(inputPath)
       .audioCodec("libmp3lame")
       .format("mp3")
       .on("error", (error) => reject(error))
@@ -65,9 +77,17 @@ let handler = async (m, { conn, text }) => {
     const apiUrl = `${getApiUrl()}?url=${encodeURIComponent(video.url)}`;
     const apiData = await fetchWithRetries(apiUrl);
 
+    // Definir rutas temporales
+    const tempDir = "./temp";
+    if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir); // Crear directorio si no existe
+    const tempInputPath = path.resolve(tempDir, `${video.title}-input.mp3`);
+    const tempOutputPath = path.resolve(tempDir, `${video.title}.mp3`);
+
+    // Descargar el archivo de audio
+    await downloadFile(apiData.download.url, tempInputPath);
+
     // Convertir el audio descargado
-    const outputFilePath = path.resolve(`./temp/${video.title}.mp3`);
-    await convertAudio(apiData.download.url, outputFilePath);
+    await convertAudio(tempInputPath, tempOutputPath);
 
     // Enviar información del video con miniatura
     await conn.sendMessage(m.chat, {
@@ -77,7 +97,7 @@ let handler = async (m, { conn, text }) => {
 
     // Enviar el archivo de audio convertido
     const audioMessage = {
-      audio: { url: outputFilePath },
+      audio: { url: tempOutputPath },
       mimetype: "audio/mpeg",
       fileName: `${video.title}.mp3`,
     };
@@ -87,8 +107,9 @@ let handler = async (m, { conn, text }) => {
     // Reaccionar al mensaje original con ✅
     await conn.sendMessage(m.chat, { react: { text: "✅", key: m.key } });
 
-    // Eliminar el archivo temporal
-    fs.unlinkSync(outputFilePath);
+    // Eliminar archivos temporales
+    fs.unlinkSync(tempInputPath);
+    fs.unlinkSync(tempOutputPath);
   } catch (error) {
     console.error("Error:", error);
 
