@@ -14,7 +14,7 @@ let texto = ` \`\`\`
     
 ## Su aplicación se enviará en un momento . . .
 
-   - ${botName} -          
+   - ${botbarboza} -          
 \`\`\`     
 `
 await conn.sendFile(m.chat, icon, name + '.jpg', texto, m)
