@@ -10,7 +10,7 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
   if (!Reg.test(text)) return m.reply(`⚡ 𝐅𝐎𝐑𝐌𝐀𝐓𝐎 𝐈𝐍𝐂𝐎𝐑𝐄𝐂𝐓𝐎.\n\nUSO 𝐃𝐄𝐋 𝐂𝐎𝐌𝐀𝐍𝐃𝐎: *${usedPrefix + command} 𝑵𝑶𝑴𝑩𝑹𝑬.𝑬𝑫𝑨𝑫*\n𝑬𝑱𝑬𝑴𝑷𝑳𝑶 : *${usedPrefix + command} ${name2}.16*`)
   let [_, name, splitter, age] = text.match(Reg)
   if (!name) return m.reply('👻 𝑬𝑳 𝑵𝑶𝑴𝑩𝑹𝑬 𝑵𝑶 𝑷𝑼𝑬𝑫𝑬 𝑬𝑺𝑻𝑨𝑹 𝑽𝑨𝑪𝑰𝑶.')
-  if (!age) return m.reply('👻 𝑳𝑨 𝑬𝑫𝑨𝑫 𝑵𝑶 𝑷𝑼𝑬𝑫𝑬 𝑬𝑺𝑻𝑨𝑹 𝑽𝑨𝑪𝑰𝑨.')
+  if (!age) return m.reply('👻 𝑳𝑨 𝑬𝑫𝑨𝑫 𝑵𝑶 𝑷𝑼𝑫𝑬 𝑬𝑺𝑻𝑨𝑹 𝑽𝑨𝑪𝑰𝑨.')
   if (name.length >= 100) return m.reply('🫥 𝑬𝑳 𝑵𝑶𝑴𝑩𝑹𝑬 𝑬𝑺𝑻𝑨 𝑴𝑼𝒀 𝑳𝑨𝑹𝑮𝑶.' )
   age = parseInt(age)
   if (age > 100) return m.reply('👴🏻 𝑾𝑶𝑾 𝑬𝑳 𝑨𝑩𝑼𝑬𝑳𝑶 𝑸𝑼𝑰𝑬𝑹𝑬 𝑱𝑼𝑮𝑨𝑹 𝑨𝑳 𝑩𝑶𝑻.')
@@ -24,9 +24,13 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
   let txt = ` –  *𝐑 𝐄 𝐆 𝐈 𝐒 𝐓 𝐑 𝐎  -  𝐁 𝐀 𝐑 𝐁*\n\n`
       txt += `╔  👤  *NOMBRE* : ${name}\n`
       txt += `╠  💎  *EDAD* : ${age} años\n`
-      txt += `╚𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃𝐎 𝐀 𝐁𝐀𝐑𝐁𝐎𝐙𝐀-𝐁𝐎𝐓☁️`
-await conn.sendAi(m.chat, botname, textbot, txt, img, img, canal, m)
-await m.react('✅')
+      txt += `╠  _Recompensa💰_\n`
+      txt += `╠  245 experiencia\n`
+      txt += `╠  15 estrellas⭐\n`
+      txt += `╠  Barbozacoins🪙\n`
+      txt += `╚ 𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃𝐎 𝐀 𝐁𝐀𝐑𝐁𝐎𝐙𝐀-𝐁𝐎𝐓☁️`
+  await conn.sendAi(m.chat, botname, textbot, txt, img, img, canal, m)
+  await m.react('✅')
 }
 handler.help = ['reg'].map(v => v + ' *<nombre.edad>*')
 handler.tags = ['rg']
