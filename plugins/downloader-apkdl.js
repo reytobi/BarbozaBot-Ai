@@ -1,7 +1,7 @@
 
 let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
     // Definimos botName aquí
-    let botName = 'Barboza'
+    let botName = 'Barboza'; // Cambia 'TuBot' por el nombre de tu bot
 
     if (!args[0]) throw `\`\`\`[ 🌟 ] Ingresa el nombre de la aplicación que quieres descargar. Ejemplo:\n${usedPrefix + command} Clash Royale\`\`\``;
     
@@ -37,11 +37,3 @@ handler.command = ['apk', 'apkdl', 'modapk'];
 handler.help = ['apkdl'];
 handler.tags = ['dl'];
 export default handler;
-```
-
-### Cambios realizados:
-1. **Definición de `botName`**: Se agregó la línea `let botName = 'TuBot';` al inicio del handler. Asegúrate de cambiar `'TuBot'` por el nombre real de tu bot.
-
-2. **Corrección de la palabra "Actualizado"**: Se corrigió "Actulizado" a "Actualizado" en el texto.
-
-¡Ahora tu código debería funcionar sin problemas! Si necesitas más ayuda, ¡aquí estoy listo para explotar de alegría! 💥😄
