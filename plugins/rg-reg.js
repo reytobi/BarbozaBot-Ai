@@ -24,11 +24,6 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
   let txt = ` –  *𝐑 𝐄 𝐆 𝐈 𝐒 𝐓 𝐑 𝐎  -  𝐁 𝐀 𝐑 𝐁*\n\n`
       txt += `╔  👤  *NOMBRE* : ${name}\n`
       txt += `╠  💎  *EDAD* : ${age} años\n`
-     txt *=. `╠ _Recompensa💰_
- _245 experiencia_
- _15 estrellas⭐_
- _Barbozacoins🪙_
-
       txt += `╚𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃𝐎 𝐀 𝐁𝐀𝐑𝐁𝐎𝐙𝐀-𝐁𝐎𝐓☁️`
 await conn.sendAi(m.chat, botname, textbot, txt, img, img, canal, m)
 await m.react('✅')
