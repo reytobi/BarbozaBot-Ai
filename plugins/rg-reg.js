@@ -28,6 +28,7 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
       txt += `╠  245 experiencia\n`
       txt += `╠  15 estrellas⭐\n`
       txt += `╠  Coins 25🪙\n`
+      txt += `╠  _Dolares 200 💸_\n`
       txt += `╚ 𝐁𝐈𝐄𝐍𝐕𝐄𝐍𝐈𝐃𝐎 𝐀 𝐁𝐀𝐑𝐁𝐎𝐙𝐀-𝐁𝐎𝐓☁️`
   await conn.sendAi(m.chat, botname, textbot, txt, img, img, canal, m)
   await m.react('✅')
