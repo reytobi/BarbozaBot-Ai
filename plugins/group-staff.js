@@ -4,7 +4,7 @@ let handler = async (m, { conn }) => {
 ╭[🚀 *EQUIPO DE AYUDANTES* 🚀]╮
 ┃
 ┃ 🤖 *Bot:* ${global.botname || "Bot Desconocido"}
-┃ 🌟 *Versión:* ${global.vs || "1.0"}
+┃ 🌟 *Versión:* ${global.vs || "2.0"}
 ┃
 ┣━━━━━👑 *Propietario* ━━━━━┫
 ┃ • *Nombre:* Barboza
@@ -26,7 +26,7 @@ let handler = async (m, { conn }) => {
 
   try {
     // Verificar variables globales con valores predeterminados
-    const imageUrl = global.imageUrl || "https://qu.ax/llZLr.jpg"; // Imagen predeterminada
+    const imageUrl = global.imageUrl || "https://qu.ax/LJEVX.jpg"; // Imagen predeterminada
     const sourceUrl = global.redes || "https://github.com/Deylinel/TECNO-BOT-OFICIAL"; // URL del proyecto
     const thumbnailUrl = global.icono || "https://files.catbox.moe/owl2rl.jpg"; // Miniatura
 
