@@ -7,7 +7,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
     return m.reply(`✳️ Ingrese un nombre de usuario\n📌Ejemplo: *${usedPrefix + command}* auronplay`);
   }
 
-  m.react(rwait); // Reacción mientras se procesa
+  m.react('⏳'); // Reacción mientras se procesa, asegurémonos de que 'rwait' sea un emoji válido
 
   try {
     // Verifica si fg.igstory es una función
@@ -28,7 +28,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
       await conn.sendFile(m.chat, url, 'igstory.bin', `✅ Historia de *${res.username}*`, m);
     }
 
-    m.react(done); // Reacción al finalizar
+    m.react('✅'); // Reacción al finalizar, asegurémonos de que 'done' sea un emoji válido
   } catch (error) {
     console.error(error); // Muestra el error en la consola
     m.reply(`❌ Error: ${error.message}`); // Responde al usuario con el error
