@@ -13,7 +13,7 @@ let grupos = `*Hola!, te invito a unirte a los grupos oficiales del Bot para con
 ⭐ Canal :
 *✰* https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18
 
-> .`
+> By Barboza Bot`
 
 await conn.sendFile(m.chat, imagen2, "ian.jpg", grupos, m, null, rcanal)
 
