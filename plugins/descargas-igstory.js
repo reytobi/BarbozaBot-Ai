@@ -3,7 +3,9 @@ import fg from 'api-dylux';
 
 let handler = async (m, { conn, args, usedPrefix, command }) => {
   // Verifica si se ingresó un nombre de usuario
-  if (!args[0]) throw `✳️ Ingrese un nombre de usuario\n📌Ejemplo: *${usedPrefix + command}* auronplay`;
+  if (!args[0]) {
+    return m.reply(`✳️ Ingrese un nombre de usuario\n📌Ejemplo: *${usedPrefix + command}* auronplay`);
+  }
 
   m.react(rwait); // Reacción mientras se procesa
 
@@ -23,7 +25,7 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
 
     // Envía las historias al chat
     for (let { url, type } of res.results) {
-      conn.sendFile(m.chat, url, 'igstory.bin', `✅ Historia de *${res.username}*`, m);
+      await conn.sendFile(m.chat, url, 'igstory.bin', `✅ Historia de *${res.username}*`, m);
     }
 
     m.react(done); // Reacción al finalizar
