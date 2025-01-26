@@ -1,13 +1,12 @@
-
 import fg from 'api-dylux';
 
-let handler = async (m, { conn, args, usedPrefix, command }) => {
+const obtenerHistoriasInstagram = async (m, { conn, args, usedPrefix, command }) => {
   // Verifica si se ingresó un nombre de usuario
   if (!args[0]) {
     return m.reply(`✳️ Ingrese un nombre de usuario\n📌Ejemplo: *${usedPrefix + command}* auronplay`);
   }
 
-  m.react('⏳'); // Reacción mientras se procesa, asegurémonos de que 'rwait' sea un emoji válido
+  m.react('⏳'); // Reacción mientras se procesa
 
   try {
     // Verifica si fg.igstory es una función
@@ -28,11 +27,16 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
       await conn.sendFile(m.chat, url, 'igstory.bin', `✅ Historia de *${res.username}*`, m);
     }
 
-    m.react('✅'); // Reacción al finalizar, asegurémonos de que 'done' sea un emoji válido
+    m.react('✅'); // Reacción al finalizar
   } catch (error) {
     console.error(error); // Muestra el error en la consola
     m.reply(`❌ Error: ${error.message}`); // Responde al usuario con el error
   }
+};
+
+// Definimos el handler para usar la función
+let handler = async (m, { conn, args, usedPrefix, command }) => {
+  await obtenerHistoriasInstagram(m, { conn, args, usedPrefix, command });
 }
 
 handler.help = ['igstory'];
