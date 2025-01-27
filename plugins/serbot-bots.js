@@ -1,3 +1,4 @@
+
 import ws from 'ws';
 
 async function handler(m, { conn: stars, usedPrefix }) {
@@ -23,9 +24,19 @@ async function handler(m, { conn: stars, usedPrefix }) {
   let totalUsers = users.length;
   let responseMessage = `*Total de Bots* : ${totalUsers || '0'}\n\n${replyMessage.trim()}`.trim();
 
+  // Aquí es donde añadimos la imagen
+  let imageUrl = 'https://qu.ax/PsPcV.jpg'; // Reemplaza esto con la URL de tu imagen
+
   await stars.sendMessage(
     m.chat,
     { text: responseMessage, mentions: stars.parseMention(responseMessage) },
+    { quoted: m }
+  );
+
+  // Enviamos la imagen
+  await stars.sendMessage(
+    m.chat,
+    { image: { url: imageUrl }, caption: 'Aquí tienes una imagen!' },
     { quoted: m }
   );
 }
