@@ -1,58 +1,33 @@
+const claimedCharacters = []; // Aquí se almacenarán los personajes "comprados"
 
-// Código elaborado por: https://github.com/elrebelde21
+// Lista de personajes predefinidos
+const mainCharacters = [
+  { name: "Naruto Uzumaki", url: "https://example.com/naruto.jpg", price: 100, claimedBy: null },
+  { name: "Sakura Haruno", url: "https://example.com/sakura.jpg", price: 120, claimedBy: null },
+  { name: "Sasuke Uchiha", url: "https://example.com/sasuke.jpg", price: 150, claimedBy: null }
+];
 
-import fs from 'fs';
-import path from 'path';
-
-const mainFilePath = path.resolve('./src/characters.json');
-const claimedFilePath = path.resolve('./database/claimed_characters.json');
-
-function loadCharacters(filePath) {
-  if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, '[]', 'utf-8');
-  }
-  try {
-    const data = fs.readFileSync(filePath, 'utf-8');
-    return data ? JSON.parse(data) : [];
-  } catch (error) {
-    console.error(`Error al leer el archivo JSON (${filePath}):`, error);
-    return [];
-  }
-}
-
-function saveCharacters(filePath, characters) {
-  try {
-    fs.writeFileSync(filePath, JSON.stringify(characters, null, 2), 'utf-8');
-  } catch (error) {
-    console.error(`Error al guardar el archivo JSON (${filePath}):`, error);
-  }
-}
-
+// Sincronizar personajes
 function syncCharacters() {
-  const mainCharacters = loadCharacters(mainFilePath);
-  const claimedCharacters = loadCharacters(claimedFilePath);
-
   const newCharacters = mainCharacters.filter(mainChar =>
     !claimedCharacters.some(claimedChar => claimedChar.url === mainChar.url)
   );
 
   if (newCharacters.length > 0) {
-    const updatedCharacters = [...claimedCharacters, ...newCharacters];
-    saveCharacters(claimedFilePath, updatedCharacters);
+    claimedCharacters.push(...newCharacters);
     console.log(`${newCharacters.length} personaje(s) agregado(s) a "claimed".`);
-    return updatedCharacters;
   }
   return claimedCharacters;
 }
 
 async function handler(m, { conn }) {
   let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
-  let pp = await conn.profilePictureUrl(who, 'image').catch(_ => imageUrl.getRandom());
+  let pp = await conn.profilePictureUrl(who, 'image').catch(() => 'https://example.com/default-profile.jpg');
   const availableCharacters = syncCharacters();
 
   let time = global.db.data.users[m.sender].timeRy + 300000; // 5min
   if (new Date() - global.db.data.users[m.sender].timeRy < 300000) {
-    return conn.fakeReply(m.chat, `Bueno pa 🤚 para con emoción esperar ${msToTime(time - new Date())} para volver usar este comando`, m.sender, `No haga spam perra`, 'status@broadcast', null, fake);
+    return conn.fakeReply(m.chat, `Espera ${msToTime(time - new Date())} antes de usar este comando de nuevo`, m.sender, `No hagas spam`, 'status@broadcast', null, fake);
   }
 
   if (!availableCharacters || availableCharacters.length === 0) {
@@ -85,8 +60,7 @@ handler.before = async (m, { conn }) => {
 
   if (m.quoted && m.text.toLowerCase() === 'c' && character && character.messageId === m.quoted.id) {
     const user = global.db.data.users[m.sender];
-    const characters = syncCharacters();
-    const claimedCharacter = characters.find(c => c.url === character.url);
+    const claimedCharacter = claimedCharacters.find(c => c.url === character.url);
 
     if (claimedCharacter.claimedBy) {
       return await conn.sendMessage(m.chat, {
@@ -101,7 +75,6 @@ handler.before = async (m, { conn }) => {
 
     user.exp -= character.price;
     claimedCharacter.claimedBy = m.sender;
-    saveCharacters(claimedFilePath, characters);
     await conn.sendMessage(m.chat, { text: `🎉 ¡Has comprado a ${character.name} por ${character.price} exp!`, image: { url: character.url } }, { quoted: m });
     delete global.db.data.tempCharacter;
   }
@@ -116,8 +89,8 @@ export default handler;
 
 function msToTime(duration) {
   let milliseconds = parseInt((duration % 1000) / 100),
-      seconds = Math.floor((duration / 1000) % 60),
-      minutes = Math.floor((duration / (1000 * 60)) % 60);
+    seconds = Math.floor((duration / 1000) % 60),
+    minutes = Math.floor((duration / (1000 * 60)) % 60);
 
   minutes = (minutes < 10) ? "0" + minutes : minutes;
   seconds = (seconds < 10) ? "0" + seconds : seconds;
