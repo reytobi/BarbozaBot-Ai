@@ -25,7 +25,7 @@ async function handler(m, { conn: stars, usedPrefix }) {
   let responseMessage = `*Total de Bots* : ${totalUsers || '0'}\n\n${replyMessage.trim()}`.trim();
 
   // Aquí es donde añadimos la imagen
-  let imageUrl = 'https://qu.ax/PsPcV.jpg'; // Reemplaza esto con la URL de tu imagen
+  let imageUrl = 'https://qu.ax/LJEVX.jpg'; // Reemplaza esto con la URL de tu imagen
 
   await stars.sendMessage(
     m.chat,
