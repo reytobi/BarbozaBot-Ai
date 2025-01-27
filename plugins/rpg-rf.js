@@ -2,9 +2,9 @@ const claimedCharacters = []; // Aquí se almacenarán los personajes "comprados
 
 // Lista de personajes predefinidos
 const mainCharacters = [
-  { name: "Naruto Uzumaki", url: "https://example.com/naruto.jpg", price: 100, claimedBy: null },
-  { name: "Sakura Haruno", url: "https://example.com/sakura.jpg", price: 120, claimedBy: null },
-  { name: "Sasuke Uchiha", url: "https://example.com/sasuke.jpg", price: 150, claimedBy: null }
+  { name: "Naruto Uzumaki", url:"https://qu.ax/llZLr.jpg", price: 100, claimedBy: null },
+  { name: "Sakura Haruno", url: "https://qu.ax/llZLr.jpg", price: 120, claimedBy: null },
+  { name: "Sasuke Uchiha", url: "https://qu.ax/llZLr.jpg", price: 150, claimedBy: null }
 ];
 
 // Sincronizar personajes
