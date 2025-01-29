@@ -1,3 +1,4 @@
+
 import fetch from 'node-fetch';
 
 let handler = async (m, { conn }) => {
@@ -12,6 +13,7 @@ let handler = async (m, { conn }) => {
         let timeLeft = 1500000 - (new Date() - user.lastAdventure);
         return conn.reply(m.chat, `⏳ Debés esperar. ${msToTime(timeLeft)} antes de aventurarte de nuevo.`, m);
     }
+    
     let kingdoms = [
         'Reino de Eldoria',
         'Reino de Drakonia',
@@ -24,6 +26,7 @@ let handler = async (m, { conn }) => {
         'Reino de Galadorn',
         'Reino de Elenaria'
     ];
+    
     let randomKingdom = pickRandom(kingdoms);
     let coin = pickRandom([20, 5, 7, 8, 88, 40, 50, 70, 90, 999, 300]);
     let emerald = pickRandom([1, 5, 7, 8]);
@@ -33,6 +36,7 @@ let handler = async (m, { conn }) => {
     let stone = pickRandom([200, 500, 700, 800, 900, 4000, 300]);
     let diamonds = pickRandom([1, 2, 3, 4, 5]);
     let exp = pickRandom([10, 20, 30, 40, 50]);
+    
     user.coin += coin;
     user.emerald += emerald;
     user.iron += iron;
@@ -43,9 +47,14 @@ let handler = async (m, { conn }) => {
     user.exp += exp;
     user.health -= 50;
     user.lastAdventure = new Date();
+    
     if (user.health < 0) {
         user.health = 0;
     }
+    
+    // Definimos la variable moneda
+    let moneda = 'monedas'; // O puedes usar el símbolo de la moneda que prefieras
+    
     let info = `🛫 *Te has aventurado en el ${randomKingdom}*\n` +
                `🏞️ *Aventura Finalizada* 🏞️\n` +
                `💸 *${moneda} Ganados:* ${coin}\n` +
@@ -57,6 +66,7 @@ let handler = async (m, { conn }) => {
                `💎 *Diamantes Ganados:* ${diamonds}\n` +
                `✨ *Experiencia Ganada:* ${exp}\n` +
                `❤️ *Salud Actual:* ${user.health}`;
+    
     await conn.sendMessage(m.chat, { text: info }, { quoted: m });
 };
 
