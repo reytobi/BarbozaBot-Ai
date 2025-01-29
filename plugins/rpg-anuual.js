@@ -45,7 +45,6 @@ Recursos:
 handler.help = ['annual', 'yearly']; 
 handler.tags = ['rpg']; 
 handler.command = ['annual', 'yearly']; 
-handler.group = true; 
 handler.register = true; 
 export default handler; 
 function msToTime(duration) { 
