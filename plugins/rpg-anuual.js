@@ -4,42 +4,53 @@ const annualReward = {
     exp: 5000, 
     diamond: 50, 
 }; 
-var handler = async (m, { conn, text }) =&gt; { // Añadido 'text' para manejar comandos con argumentos 
-    const user = global.db.data.users[m.sender] || {}; // Manejo de usuarios inexistentes 
-    const lastClaim = user.lastAnnualClaim || 0; 
-    const currentTime = Date.now(); // Más eficiente que new Date().getTime() 
-    const oneYear = 31536000000; // Milisegundos en un año (más preciso) 
-<pre><code>if (currentTime - lastClaim &lt; oneYear) { 
-    const remainingTime = msToTime(oneYear - (currentTime - lastClaim)); 
+const oneYearMs = 31536000000; // Miliseconds in a year (more precise) 
+var handler = async (m, { conn, text }) =&gt; { 
+    let user = global.db.data.users[m.sender]; 
+    //More robust user handling: creates a default user if none exists 
+    if (!user) { 
+        user = global.db.data.users[m.sender] = { 
+            coin: 0, 
+            diamond: 0, 
+            exp: 0, 
+            lastAnnualClaim: 0, 
+        }; 
+    } 
+<pre><code>const lastClaim = user.lastAnnualClaim || 0; 
+const currentTime = Date.now(); 
+ 
+if (currentTime - lastClaim &lt; oneYearMs) { 
+    const remainingTime = msToTime(oneYearMs - (currentTime - lastClaim)); 
     return conn.reply(m.chat, `🕚 *Ya has reclamado tu recompensa anual. Vuelve en ${remainingTime}*`, m); 
 } 
  
-// Actualización de recompensas con manejo de errores de datos faltantes 
-user.coin = (user.coin || 0) + annualReward.coin; 
-user.diamond = (user.diamond || 0) + annualReward.diamond; 
-user.exp = (user.exp || 0) + annualReward.exp; 
+// Update rewards using destructuring for conciseness and better readability 
+user.coin += annualReward.coin; 
+user.diamond += annualReward.diamond; 
+user.exp += annualReward.exp; 
 user.lastAnnualClaim = currentTime; 
-global.db.data.users[m.sender] = user; // Guardar los cambios 
  
-// Mejor manejo de la moneda (asume que 'moneda' está definida globalmente) 
-const moneda = global.moneda || 'Moneda'; // Define un valor por defecto si 'moneda' no existe 
+ 
+// Safer way to handle potential undefined 'moneda' 
+const moneda = global.moneda ?? 'Moneda'; 
  
 conn.reply(m.chat, `🎉 *Recompensa Anual Reclamada* 
 ``` 
 Recursos: 
-💸 ${moneda} : <em>+${annualReward.coin}</em> 
-💎 Diamantes : <em>+${annualReward.diamond}</em> 
-✨ XP : <em>+${annualReward.exp}</em>`, m); 
+💸 ${moneda}: &lt;em&gt;+${annualReward.coin}&lt;/em&gt; 
+💎 Diamantes: &lt;em&gt;+${annualReward.diamond}&lt;/em&gt; 
+✨ XP: &lt;em&gt;+${annualReward.exp}&lt;/em&gt;`, m); 
+``` 
 }; 
-handler.help = ['annual', 'yearly'] 
-handler.tags = ['rpg'] 
-handler.command = ['annual', 'yearly'] 
+handler.help = ['annual', 'yearly']; 
+handler.tags = ['rpg']; 
+handler.command = ['annual', 'yearly']; 
 handler.group = true; 
-handler.register = true 
+handler.register = true; 
 export default handler; 
 function msToTime(duration) { 
+    const seconds = Math.floor((duration / 1000) % 60); 
+    const minutes = Math.floor((duration / (1000 * 60)) % 60); 
+    const hours = Math.floor((duration / (1000 * 60 * 60)) % 24); 
     const days = Math.floor(duration / (1000 * 60 * 60 * 24)); 
-    const hours = Math.floor((duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); 
-    const minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60)); 
-    const seconds = Math.floor((duration % (1000 * 60)) / 1000); 
 <pre><code>return `${days} Día${days !== 1 ? 's' : ''} ${hours} Hora${hours !== 1 ? 's' : ''} ${minutes} Minuto${minutes !== 1 ? 's' : ''} ${seconds} Segundo${seconds !== 1 ? 's' : ''}`; 
