@@ -1,4 +1,3 @@
-
 const { generateWAMessageFromContent, proto } = (await import('@whiskeysockets/baileys')).default;
 
 var handler = async (m, { conn, text }) => {
@@ -11,7 +10,7 @@ var handler = async (m, { conn, text }) => {
                 title: packname || 'Título por defecto',
                 body: dev || 'Desarrollador por defecto',
                 previewType: 0,
-                thumbnail: icons || null,
+                thumbnail: null, // Sin miniatura
                 sourceUrl: channel || null
             }
         }
@@ -66,5 +65,26 @@ global.factos = [
     "Si fueras un clima, serías una tormenta: oscuro y destructivo.",
     "Eres como una cadena de mensajes: nadie te quiere, pero todos te reciben.",
     "Tu vida es como un rompecabezas con piezas que nunca encajan.",
-    "Si fueras una película, serías una secuela que nadie pidió."
+    "Si fueras una película, serías una secuela que nadie pidió.",
+    "Eres la razón por la que los gatos miran fijamente a la nada.",
+    "Si fueras un meme, serías uno que nadie comparte.",
+    "Tu vida es como un spoiler: nadie quiere saber cómo termina.",
+    "Eres como una contraseña débil: fácil de olvidar.",
+    "Si fueras un postre, serías uno sin azúcar.",
+    "Eres como una nube: siempre estás ahí, pero no sirves para nada.",
+    "Tu vida es como un error 404: no se encuentra.",
+    "Si fueras un deporte, serías uno que nadie practica.",
+    "Eres como una canción mal cantada: todos quieren que pares.",
+    "Tu vida es como un mal sueño: todos quieren despertar.",
+    "Si fueras un videojuego, serías uno que nadie juega.",
+    "Eres como una película de terror: todos quieren evitarte.",
+    "Tu vida es como un mal restaurante: nadie quiere volver.",
+    "Si fueras un libro, serías uno que nadie recomienda.",
+    "Eres como una película sin final: todos se aburren.",
+    "Tu vida es como un mal chiste: nadie se ríe.",
+    "Si fueras un día festivo, serías uno que nadie celebra.",
+    "Eres como una mala señal de tráfico: todos te ignoran.",
+    "Tu vida es como un mal café: nadie lo quiere tomar.",
+    "Si fueras un superhéroe, serías uno sin poderes.",
+    "Eres como una mala película: todos quieren salir del cine."
 ];
