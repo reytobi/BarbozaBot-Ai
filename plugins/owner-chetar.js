@@ -14,6 +14,7 @@ const handler = async (m, { conn }) => {
         user.estrellas = Infinity;
         user.level = Infinity;
         user.exp = Infinity;
+        user.dulce = Infinity;
         console.log(`Recursos cheteados para ${username}`); // Registro para depuración
     } catch (error) {
         console.error("Error al chetear recursos:", error);
