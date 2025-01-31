@@ -1,4 +1,7 @@
 import fetch from 'node-fetch';
+import fs from 'fs';
+import { exec } from 'child_process';
+import path from 'path';
 
 var handler = async (m, { conn, args, usedPrefix, command }) => {
     if (!args[0]) {
@@ -6,32 +9,43 @@ var handler = async (m, { conn, args, usedPrefix, command }) => {
     }
 
     try {
-        await conn.reply(m.chat, "🌷 *Espere un momento, estoy descargando su audio...*", m);
+        await conn.reply(m.chat, "🌷 *Espere un momento, estoy descargando y convirtiendo el audio...*", m);
 
         const tiktokData = await tiktokdl(args[0]);
 
-        // Validar si la respuesta de la API es correcta
         if (!tiktokData || !tiktokData.data || !tiktokData.data.music) {
-            throw new Error("❌ *Error:* No se pudo obtener el audio. Verifica el enlace o intenta más tarde.");
+            throw new Error("❌ *Error:* No se pudo obtener el audio.");
         }
 
-        const { music, title, create_time, digg_count, comment_count, share_count, play_count, download_count, author } = tiktokData.data;
+        const audioURL = tiktokData.data.music;
+        const filePath = path.join(process.cwd(), "tiktok_audio.mp3");
 
-        const infonya_gan = `*📖 Descripción:* ${title}\n*🚀 Publicado:* ${create_time}\n\n*⚜️ Estado:*\n=====================\nLikes = ${digg_count}\nComentarios = ${comment_count}\nCompartidas = ${share_count}\nVistas = ${play_count}\nDescargas = ${download_count}\n=====================\n\nUploader: ${author.nickname || "No info"}\n(${author.unique_id} - https://www.tiktok.com/@${author.unique_id})\n*🔊 Sonido:* ${music}\n`;
+        // Descargar el archivo de audio
+        const response = await fetch(audioURL);
+        const buffer = await response.buffer();
+        fs.writeFileSync(filePath, buffer);
 
-        // Enviar el audio como archivo MP3 (no como nota de voz)
+        // Convertir a MP3 si es necesario
+        const convertedPath = path.join(process.cwd(), "tiktok_audio_converted.mp3");
+        await convertAudio(filePath, convertedPath);
+
+        // Enviar el archivo convertido
         await conn.sendMessage(
             m.chat,
             {
-                audio: { url: music },
+                audio: fs.readFileSync(convertedPath),
                 mimetype: "audio/mp3",
                 fileName: "tiktok_audio.mp3",
-                ptt: false // Esto evita que WhatsApp lo interprete como nota de voz
+                ptt: false // No enviarlo como nota de voz
             },
             { quoted: m }
         );
 
-        await conn.reply(m.chat, "`🎶 AUDIO DESCARGADO DE TIKTOK`" + `\n\n${infonya_gan}`, m);
+        // Borrar archivos temporales
+        fs.unlinkSync(filePath);
+        fs.unlinkSync(convertedPath);
+
+        await conn.reply(m.chat, "✅ *Audio convertido y enviado correctamente.*", m);
     } catch (error) {
         console.error(error);
         conn.reply(m.chat, `❌ *Error:* ${error.message || "No se pudo procesar la solicitud."}`, m);
@@ -63,4 +77,17 @@ async function tiktokdl(url) {
         console.error("Error en la función tiktokdl:", error);
         return null;
     }
+}
+
+// Función para convertir audio a MP3 con FFmpeg
+async function convertAudio(inputPath, outputPath) {
+    return new Promise((resolve, reject) => {
+        exec(`ffmpeg -i "${inputPath}" -codec:a libmp3lame -qscale:a 2 "${outputPath}"`, (error, stdout, stderr) => {
+            if (error) {
+                console.error(`Error en la conversión de audio: ${stderr}`);
+                return reject(error);
+            }
+            resolve(true);
+        });
+    });
 }
