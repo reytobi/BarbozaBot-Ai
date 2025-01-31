@@ -10,20 +10,28 @@ var handler = async (m, { conn, args, usedPrefix, command }) => {
 
         const tiktokData = await tiktokdl(args[0]);
 
-        if (!tiktokData) {
-            throw m.reply("Error api!");
+        if (!tiktokData || !tiktokData.data.music) {
+            throw m.reply("❌ *Error:* No se pudo obtener el audio.");
         }
 
-        const audioURL = tiktokData.data.music; // URL del audio
+        const audioURL = tiktokData.data.music;
         const infonya_gan = `*📖 Descripción:* ${tiktokData.data.title}\n*🚀 Publicado:* ${tiktokData.data.create_time}\n\n*⚜️ Estado:*\n=====================\nLikes = ${tiktokData.data.digg_count}\nComentarios = ${tiktokData.data.comment_count}\nCompartidas = ${tiktokData.data.share_count}\nVistas = ${tiktokData.data.play_count}\nDescargas = ${tiktokData.data.download_count}\n=====================\n\nUploader: ${tiktokData.data.author.nickname || "No info"}\n(${tiktokData.data.author.unique_id} - https://www.tiktok.com/@${tiktokData.data.author.unique_id})\n*🔊 Sonido:* ${tiktokData.data.music}\n`;
 
-        if (audioURL) {
-            await conn.sendFile(m.chat, audioURL, "audio.mp3", "`DESCARGA DE AUDIO DE TIKTOK`" + `\n\n${infonya_gan}`, m);
-        } else {
-            throw m.reply("🥀 *No se pudo descargar el audio.*");
-        }
-    } catch (error1) {
-        conn.reply(m.chat, `Error: ${error1}`, m);
+        // Enviar el audio como archivo en lugar de nota de voz
+        await conn.sendMessage(
+            m.chat,
+            {
+                audio: { url: audioURL },
+                mimetype: "audio/mp3", // Especificar que es un archivo de audio
+                fileName: "tiktok_audio.mp3",
+                ptt: false // Esto evita que WhatsApp lo detecte como nota de voz
+            },
+            { quoted: m }
+        );
+
+        await conn.reply(m.chat, "`🎶 AUDIO DESCARGADO DE TIKTOK`" + `\n\n${infonya_gan}`, m);
+    } catch (error) {
+        conn.reply(m.chat, `❌ *Error:* ${error.message || error}`, m);
     }
 };
 
@@ -38,7 +46,8 @@ handler.limit = true;
 export default handler;
 
 async function tiktokdl(url) {
-    let tikwm = `https://www.tikwm.com/api/?url=${url}?hd=1`;
-    let response = await (await fetch(tikwm)).json();
-    return response;
+    let apiUrl = `https://www.tikwm.com/api/?url=${url}&hd=1`;
+    let response = await fetch(apiUrl);
+    let json = await response.json();
+    return json;
 }
