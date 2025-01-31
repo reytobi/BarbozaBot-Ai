@@ -10,28 +10,31 @@ var handler = async (m, { conn, args, usedPrefix, command }) => {
 
         const tiktokData = await tiktokdl(args[0]);
 
-        if (!tiktokData || !tiktokData.data.music) {
-            throw m.reply("❌ *Error:* No se pudo obtener el audio.");
+        // Validar si la respuesta de la API es correcta
+        if (!tiktokData || !tiktokData.data || !tiktokData.data.music) {
+            throw new Error("❌ *Error:* No se pudo obtener el audio. Verifica el enlace o intenta más tarde.");
         }
 
-        const audioURL = tiktokData.data.music;
-        const infonya_gan = `*📖 Descripción:* ${tiktokData.data.title}\n*🚀 Publicado:* ${tiktokData.data.create_time}\n\n*⚜️ Estado:*\n=====================\nLikes = ${tiktokData.data.digg_count}\nComentarios = ${tiktokData.data.comment_count}\nCompartidas = ${tiktokData.data.share_count}\nVistas = ${tiktokData.data.play_count}\nDescargas = ${tiktokData.data.download_count}\n=====================\n\nUploader: ${tiktokData.data.author.nickname || "No info"}\n(${tiktokData.data.author.unique_id} - https://www.tiktok.com/@${tiktokData.data.author.unique_id})\n*🔊 Sonido:* ${tiktokData.data.music}\n`;
+        const { music, title, create_time, digg_count, comment_count, share_count, play_count, download_count, author } = tiktokData.data;
 
-        // Enviar el audio como archivo en lugar de nota de voz
+        const infonya_gan = `*📖 Descripción:* ${title}\n*🚀 Publicado:* ${create_time}\n\n*⚜️ Estado:*\n=====================\nLikes = ${digg_count}\nComentarios = ${comment_count}\nCompartidas = ${share_count}\nVistas = ${play_count}\nDescargas = ${download_count}\n=====================\n\nUploader: ${author.nickname || "No info"}\n(${author.unique_id} - https://www.tiktok.com/@${author.unique_id})\n*🔊 Sonido:* ${music}\n`;
+
+        // Enviar el audio como archivo MP3 (no como nota de voz)
         await conn.sendMessage(
             m.chat,
             {
-                audio: { url: audioURL },
-                mimetype: "audio/mp3", // Especificar que es un archivo de audio
+                audio: { url: music },
+                mimetype: "audio/mp3",
                 fileName: "tiktok_audio.mp3",
-                ptt: false // Esto evita que WhatsApp lo detecte como nota de voz
+                ptt: false // Esto evita que WhatsApp lo interprete como nota de voz
             },
             { quoted: m }
         );
 
         await conn.reply(m.chat, "`🎶 AUDIO DESCARGADO DE TIKTOK`" + `\n\n${infonya_gan}`, m);
     } catch (error) {
-        conn.reply(m.chat, `❌ *Error:* ${error.message || error}`, m);
+        console.error(error);
+        conn.reply(m.chat, `❌ *Error:* ${error.message || "No se pudo procesar la solicitud."}`, m);
     }
 };
 
@@ -46,8 +49,18 @@ handler.limit = true;
 export default handler;
 
 async function tiktokdl(url) {
-    let apiUrl = `https://www.tikwm.com/api/?url=${url}&hd=1`;
-    let response = await fetch(apiUrl);
-    let json = await response.json();
-    return json;
+    try {
+        let apiUrl = `https://www.tikwm.com/api/?url=${url}&hd=1`;
+        let response = await fetch(apiUrl);
+        let json = await response.json();
+
+        if (!json || !json.data) {
+            throw new Error("❌ La API no devolvió una respuesta válida.");
+        }
+
+        return json;
+    } catch (error) {
+        console.error("Error en la función tiktokdl:", error);
+        return null;
+    }
 }
