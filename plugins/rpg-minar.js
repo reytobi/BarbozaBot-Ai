@@ -1,32 +1,59 @@
+import fs from 'fs'
+
 let cooldowns = {}
+const filePath = './mineria.json'
+
+// Verifica si el archivo existe, si no, lo crea
+if (!fs.existsSync(filePath)) {
+  fs.writeFileSync(filePath, JSON.stringify({}, null, 2))
+}
 
 let handler = async (m, { conn }) => {
-
-  let hasil = Math.floor(Math.random() * 5000)
+  let data = JSON.parse(fs.readFileSync(filePath)) // Cargar datos de minería
+  
   let name = conn.getName(m.sender)
-
-  let tiempoEspera = 5 * 60
+  let tiempoEspera = 5 * 60 // 5 minutos
   if (cooldowns[m.sender] && Date.now() - cooldowns[m.sender] < tiempoEspera * 1000) {
     let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[m.sender] + tiempoEspera * 1000 - Date.now()) / 1000))
-    conn.reply(m.chat, `🚩 Hola ${name}, Ya has minado recientemente, espera ⏱ *${tiempoRestante}* para regresar a la Mina.`, m, rcanal)
+    conn.reply(m.chat, `🚩 Hola ${name}, ya has minado recientemente, espera ⏱ *${tiempoRestante}* para regresar a la mina.`, m)
     return
   }
 
-  global.db.data.users[m.sender].exp += hasil
-  let txt = `🚩 Genial! minaste *${hasil} 💫 XP.*`
+  let xp = Math.floor(Math.random() * 5000) 
+  let barbozaCoins = Math.floor(Math.random() * (70 - 40 + 1)) + 40
+  let diamantes = Math.floor(Math.random() * (30 - 10 + 1)) + 10
+
+  // Asegurar que el usuario tiene datos en el JSON
+  if (!data[m.sender]) {
+    data[m.sender] = { xp: 0, barbozaCoins: 0, diamantes: 0 }
+  }
+
+  // Sumar recompensas
+  data[m.sender].xp += xp
+  data[m.sender].barbozaCoins += barbozaCoins
+  data[m.sender].diamantes += diamantes
+
+  // Guardar datos actualizados
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
+
+  let txt = `🚩 Genial ${name}! Minaste:
+  - *${xp}* 💫 XP
+  - *${barbozaCoins}*🪙 Barboza Coins 
+  - *${diamantes}* 💎 Diamantes`
+  
   await m.react('⛏')
-  await conn.reply(m.chat, txt, m, rcanal)
+  await conn.reply(m.chat, txt, m)
 
   cooldowns[m.sender] = Date.now()
 }
+
 handler.help = ['minar']
 handler.tags = ['fun']
-handler.command = ['minar', 'miming', 'mine'] 
-handler.register = true 
+handler.command = ['minar', 'miming', 'mine']
+handler.register = null
 export default handler
 
 function segundosAHMS(segundos) {
-  let horas = Math.floor(segundos / 3600)
   let minutos = Math.floor((segundos % 3600) / 60)
   let segundosRestantes = segundos % 60
   return `${minutos} minutos y ${segundosRestantes} segundos`
