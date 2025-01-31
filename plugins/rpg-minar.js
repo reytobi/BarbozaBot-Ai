@@ -36,11 +36,12 @@ let handler = async (m, { conn }) => {
   // Guardar datos actualizados
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
 
-  let txt = `🚩 Genial ${name}! Minaste:
-  - *${xp}* 💫 XP
-  - *${barbozaCoins}*🪙 Barboza Coins 
-  - *${diamantes}* 💎 Diamantes`
-  
+  let txt = `🛠️ *¡Minería Exitosa ${name}!*
+▢ *Recolectaste:*
+┠ ➺ *${barbozaCoins}* 🪙 Monedas
+┠ ➺ *${diamantes}* 💎 Diamantes
+┖ ➺ *${xp}* 💫 XP`
+
   await m.react('⛏')
   await conn.reply(m.chat, txt, m)
 
@@ -50,7 +51,7 @@ let handler = async (m, { conn }) => {
 handler.help = ['minar']
 handler.tags = ['fun']
 handler.command = ['minar', 'miming', 'mine']
-handler.register = null
+handler.register = true
 export default handler
 
 function segundosAHMS(segundos) {
