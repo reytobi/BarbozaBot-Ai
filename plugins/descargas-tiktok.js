@@ -31,3 +31,19 @@ var handler = async (m, { conn, args, usedPrefix, command }) => {
         conn.reply(m.chat, `Error: ${error1}`, m);
     }
 };
+
+handler.help = ['tiktok'].map((v) => v + ' *<link>*')
+handler.tags = ['descargas']
+handler.command = /^t(t|iktok(d(own(load(er)?)?|l))?|td(own(load(er)?)?|l))$/i
+
+handler.disable = false
+handler.register = true
+handler.limit = true
+
+export default handler
+
+async function tiktokdl(url) {
+    let tikwm = `https://www.tikwm.com/api/?url=${url}?hd=1`
+    let response = await (await fetch(tikwm)).json()
+    return response
+}
