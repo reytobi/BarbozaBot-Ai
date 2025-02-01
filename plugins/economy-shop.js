@@ -1,27 +1,48 @@
-const xpperyenes = 350;
-const handler = async (m, {conn, command, args}) => {
-  let count = command.replace(/^buy/i, '');
-  count = count ? /all/i.test(count) ? Math.floor(global.db.data.users[m.sender].exp / xpperdulces) : parseInt(count) : args[0] ? parseInt(args[0]) : 1;
-  count = Math.max(1, count);
-  if (global.db.data.users[m.sender].exp >= xpperdulces * count) {
-    global.db.data.users[m.sender].exp -= xpperdulces * count;
-    global.db.data.users[m.sender].dulces += count;
-    conn.reply(m.chat, `
+import fs from 'fs'
+
+const filePath = './mineria.json'
+const xpperdulces = 350 // Costo de 1 Dulce en XP
+
+const handler = async (m, { conn, command, args }) => {
+    // Cargar datos desde el archivo JSON
+    let data = fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath)) : {}
+
+    let sender = m.sender
+    if (!data[sender]) throw '🚩 No tienes datos en el sistema. Usa un comando de minería primero.'
+
+    // Determinar la cantidad a comprar
+    let count = command.replace(/^buy/i, '')
+    count = count ? /all/i.test(count) ? Math.floor(data[sender].xp / xpperdulces) : parseInt(count) : args[0] ? parseInt(args[0]) : 1
+    count = Math.max(1, count)
+
+    if (data[sender].xp >= xpperdulces * count) {
+        // Descontar XP y dar dulces
+        data[sender].xp -= xpperdulces * count
+        data[sender].dulces = (data[sender].dulces || 0) + count
+
+        // Guardar cambios en el archivo JSON
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
+
+        // Confirmación de compra
+        conn.reply(m.chat, `
 ╔═══════⩽✰⩾═══════╗
 ║    𝐍𝐨𝐭𝐚 𝐃𝐞 𝐏𝐚𝐠𝐨 
 ╠═══════⩽✰⩾═══════╝
 ║╭──────────────┄
-║│ *Compra Nominal* : + ${count} 🍬
+║│ *Compra Nominal* : +${count} 🍬 Dulces
 ║│ *Gastado* : -${xpperdulces * count} XP
 ║╰──────────────┄
-╚═══════⩽✰⩾═══════╝`, m, rcanal);
-  } else conn.reply(m.chat, `😔 Lo siento, no tienes suficiente *XP* para comprar *${count}* Dulces 🍬`, m, rcanal);
-};
-handler.help = ['Buy', 'Buyall'];
-handler.tags = ['economy'];
+╚═══════⩽✰⩾═══════╝`, m)
+    } else {
+        conn.reply(m.chat, `😔 Lo siento, no tienes suficiente *XP* para comprar *${count}* Dulces 🍬`, m)
+    }
+}
+
+handler.help = ['buy', 'buyall']
+handler.tags = ['economy']
 handler.register = true
-handler.command = ['buy', 'buyall'];
+handler.command = ['buy', 'buyall']
 
-handler.disabled = false;
+handler.disabled = false
 
-export default handler;
+export default handler
