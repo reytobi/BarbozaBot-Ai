@@ -1,38 +1,34 @@
+/* Imagen Search By WillZek 
+- Free Codes Titan 
+- https://whatsapp.com/channel/0029ValMlRS6buMFL9d0iQ0S
+*/
+
 import fetch from 'node-fetch';
 
-const handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) throw `*🚩 Uso Correcto: ${usedPrefix + command} gatos*`;
+let handler = async(m, { conn, text, usedPrefix, command }) => {
 
-  // API ofuscada con Base64
-  const encodedApiUrl = 'aHR0cHM6Ly9hcGkudnJlZGVuLm15LmlkL2FwaS9naW1hZ2U/cXVlcnk9';
-  const decodeApiUrl = (base64) => Buffer.from(base64, 'base64').toString('utf-8');
+if (!text) return m.reply('🍭 Ingrese Un Texto Para Buscar Una Imagen');
 
-  const apiUrl = decodeApiUrl(encodedApiUrl) + encodeURIComponent(text);
+try {
+let api = `https://api.dorratz.com/v3/ai-image?prompt=${text}`;
+let response = await fetch(api);
+let json = await response.json();
+let res = json.data;
 
-  conn.reply(m.chat, '🚩 *Buscando imágenes, espere un momento...*', m);
+m.react('🕑');
+let txt = `> *Resultado De: ${text}*`;
+let img = res.image_link;
+let link = img;
 
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+await conn.sendMessage(m.chat, { image: { url: link }, caption: txt }, {quoted: fkontak});   
+m.react('✅');
 
-    if (data.status !== 200 || !data.result || data.result.length === 0) {
-      throw '🚩 *No se encontraron imágenes para tu búsqueda.*';
-    }
+} catch (e) {
+m.reply(`Error: ${e.message}`);
+m.react('✖️');
+ }
+}
 
-    // Obtener una URL aleatoria de la lista de resultados
-    const imageUrl = data.result[Math.floor(Math.random() * data.result.length)];
-
-    // Enviar la imagen al chat
-    conn.sendFile(m.chat, imageUrl, 'image.jpg', `*🔎 Resultado para: ${text}*`, m);
-  } catch (error) {
-    console.error(error);
-    conn.reply(m.chat, '🚩 *Hubo un problema al obtener las imágenes.*', m);
-  }
-};
-
-handler.help = ['imagen <query>'];
-handler.tags = ['buscador', 'tools', 'descargas'];
-handler.command = /^(image|imagen)$/i;
-handler.register = true;
+handler.command = ['imagen', 'image'];
 
 export default handler;
