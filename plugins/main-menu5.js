@@ -14,7 +14,9 @@ let handler = async (m, { conn }) => {
 
 5. `Usa .cotos para ver el costo de cada mascota.`
 
-6.`Importante: Para poder hacer todo eso, tienes que conseguir dulces con los comandos: .claim, .crimen, .w, .trabajar, .buy y minar.`
+6.excavar pon a tu mascota a excavar
+
+7.`Importante: Para poder hacer todo eso, tienes que conseguir dulces con los comandos: .claim, .crimen, .w, .trabajar, .buy y minar.`
 
     `.trim();
 
