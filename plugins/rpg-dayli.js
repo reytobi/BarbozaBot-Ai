@@ -12,7 +12,7 @@ if (!fs.existsSync(filePath)) {
 
 let handler = async (m, { conn, isPrems }) => {
   let data = JSON.parse(fs.readFileSync(filePath)) // Cargar datos de minería
-  
+
   const tiempoEspera = 24 * 60 * 60 // 24 horas
   if (cooldowns[m.sender] && Date.now() - cooldowns[m.sender] < tiempoEspera * 1000) {
     const tiempoRestante = segundosAHMS(Math.ceil((cooldowns[m.sender] + tiempoEspera * 1000 - Date.now()) / 1000))
@@ -23,7 +23,7 @@ let handler = async (m, { conn, isPrems }) => {
   let xp = isPrems ? premXP : freeXP
   let barbozaCoins = Math.floor(Math.random() * (100 - 50 + 1)) + 50
   let diamantes = Math.floor(Math.random() * (40 - 20 + 1)) + 20
-  let dulces = Math.floor(Math.random() * (10 - 5 + 1)) + 5
+  let dulces = Math.floor(Math.random() * (300 - 50 + 1)) + 50 // Aumentado el rango de dulces
 
   // Asegurar que el usuario tiene datos en el JSON
   if (!data[m.sender]) {
