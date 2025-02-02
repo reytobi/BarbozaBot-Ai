@@ -8,8 +8,11 @@ let handler = async (m, { conn, args }) => {
     // Obtener el ID del usuario mencionado
     let userMentioned = m.mentionedJid[0];
     
+    // Generar un porcentaje aleatorio entre 1 y 100
+    let porcentaje = Math.floor(Math.random() * 100) + 1;
+
     // Mensaje que se enviará
-    const mensaje = `💫 *CALCULADORA*\n\n🤮 Los cálculos han arrojado que @${userMentioned.split('@')[0]} es *251%* peruano 🇵🇪\n> ✰ Despegala De Aqui Cacorro!`;
+    const mensaje = `💫 *CALCULADORA*\n\n🤮 Los cálculos han arrojado que @${userMentioned.split('@')[0]} es *${porcentaje}%* peruano 🇵🇪\n> ✰ Despegala De Aqui Cacorro!\n\n➤ ¡Sorpresa!`;
 
     // Enviar el mensaje al chat
     await conn.sendMessage(m.chat, { text: mensaje.replace('@', '') }, { quoted: m });
