@@ -45,17 +45,81 @@ let handler = async (m, { command, args, usedPrefix }) => {
         dulces: 100, 
         mascota: null, 
         comida: 0, 
-        tiempoUltimaComida: Date.now() // Inicializamos con la hora actual
+        tiempoUltimaComida: Date.now()
     };
 
     switch (command) {
-        // ... otros casos permanecen igual ...
+        case 'mimascota':
+            if (usuario.mascota) {
+                return m.reply(`🐾 Ya tienes una mascota: *${usuario.mascota}*.\nUsa *${usedPrefix}mascota* para ver su estado.`);
+            }
+            let listaMascotas = Object.keys(mascotas).map(m => `${m} - ${mascotas[m].precio} 🍬`).join('\n');
+            return m.reply(`🐾 *Mascotas disponibles:*\n${listaMascotas}\n\nUsa *${usedPrefix}comprar [nombre]* para adoptar una.`);
+
+        case 'comprar':
+            let nombreMascota = args.join(' ');
+            if (!mascotas[nombreMascota]) return m.reply("❌ Mascota no encontrada. Usa *mimascota* para ver la lista.");
+            if (usuario.dulces < mascotas[nombreMascota].precio) return m.reply("❌ No tienes suficientes 🍬 dulces.");
+
+            usuario.dulces -= mascotas[nombreMascota].precio;
+            usuario.mascota = nombreMascota;
+            usuario.tiempoUltimaComida = Date.now(); // Inicializar tiempo al comprar
+            usuarios[m.sender] = usuario;
+            guardarDatos(usuarios);
+
+            return m.reply(`🎉 ¡Has adoptado a ${nombreMascota}! Usa *${usedPrefix}mascota* para ver su estado.`);
+
+        case 'costos':
+            let costos = Object.keys(mascotas).map(m => `${m} - ${mascotas[m].precio} 🍬`).join('\n');
+            return m.reply(`📜 *Lista de precios de mascotas:*\n${costos}`);
+
+        case 'comprarcomida':
+            let cantidad = parseInt(args[0]);
+            if (!cantidad || cantidad <= 0) return m.reply("❌ Ingresa una cantidad válida.");
+            let costoComida = cantidad * 5;
+            if (usuario.dulces < costoComida) return m.reply("❌ No tienes suficientes 🍬 dulces.");
+
+            usuario.dulces -= costoComida;
+            usuario.comida += cantidad;
+            usuarios[m.sender] = usuario;
+            guardarDatos(usuarios);
+
+            return m.reply(`🍖 Compraste ${cantidad} comida. Ahora tienes ${usuario.comida} comida.`);
+
+        case 'alimentar':
+            if (!usuario.mascota) return m.reply(`❌ No tienes una mascota. Usa *${usedPrefix}mimascota* para adoptar una.`);
+            
+            let cantidadComida = parseInt(args[0]);
+            if (!cantidadComida || cantidadComida <= 0) return m.reply("❌ Ingresa una cantidad válida.");
+            if (usuario.comida < cantidadComida) return m.reply("❌ No tienes suficiente comida.");
+
+            let ahora = Date.now();
+            let tiempoDesdeUltimaComida = ahora - (usuario.tiempoUltimaComida || ahora);
+            
+            if (tiempoDesdeUltimaComida < FEEDING_COOLDOWN) {
+                let tiempoRestante = calcularTiempoRestante(FEEDING_COOLDOWN - tiempoDesdeUltimaComida);
+                return m.reply(`❌ Debes esperar ${tiempoRestante} para volver a alimentar a tu mascota.`);
+            }
+
+            usuario.comida -= cantidadComida;
+            usuario.tiempoUltimaComida = ahora;
+            usuarios[m.sender] = usuario;
+            guardarDatos(usuarios);
+
+            // Calcular felicidad adicional basada en la cantidad de comida
+            let felicidadBase = mascotas[usuario.mascota].felicidad;
+            let felicidadAdicional = Math.floor(cantidadComida * (felicidadBase / 10));
+
+            return m.reply(
+                `🐾 Has alimentado a *${usuario.mascota}* con ${cantidadComida} comida.\n` +
+                `💖 ¡Su felicidad aumentó en +${felicidadAdicional} puntos!`
+            );
 
         case 'mascota':
             if (!usuario.mascota) return m.reply("❌ No tienes una mascota.");
 
-            let ahora = Date.now();
-            let tiempoTranscurrido = ahora - (usuario.tiempoUltimaComida || ahora);
+            let tiempoActual = Date.now();
+            let tiempoTranscurrido = tiempoActual - (usuario.tiempoUltimaComida || tiempoActual);
             let tiempoSinComer = Math.max(0, tiempoTranscurrido / 3600000); // En horas, mínimo 0
 
             let estadoMascota = "😊 Feliz";
@@ -76,7 +140,8 @@ let handler = async (m, { command, args, usedPrefix }) => {
                 `⏳ *Debes esperar* ${calcularTiempoRestante(tiempoRestanteParaAlimentar)}`
             );
 
-        // ... resto del código ...
+        default:
+            return m.reply("❌ Comando no reconocido.");
     }
 };
 
