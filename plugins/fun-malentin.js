@@ -13,5 +13,5 @@ const handler = async (m) => {
     }
 };
 
-handler.command = /^(maletin)$/i;
+handler.command = /^(maletin|maleta)$/i;
 export default handler;
