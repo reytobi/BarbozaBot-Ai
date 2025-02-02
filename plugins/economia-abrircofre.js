@@ -1,23 +1,34 @@
 
 let handler = async (m, { conn }) => {
-    let users = global.db.data.users;
+    const userId = m.sender; // ID del usuario que usa el comando
+    const dailyKey = `daily_${userId}`; // Clave única para el usuario
 
-    // Generar recompensas aleatorias
-    let dulces = Math.floor(Math.random() * 100) + 1; // entre 1 y 100 dulces
-    let monedas = Math.floor(Math.random() * 50) + 1; // entre 1 y 50 monedas
-    let experiencia = Math.floor(Math.random() * 200) + 1; // entre 1 y 200 puntos de experiencia
+    // Obtener la fecha actual
+    const now = new Date();
+    const today = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
 
-    // Sumar recompensas al usuario
-    users[m.sender].dulces += dulces;
-    users[m.sender].monedas += monedas;
-    users[m.sender].exp += experiencia;
+    // Verificar si el usuario ya ha abierto el cofre hoy
+    let lastOpened = global.db.data.users[userId]?.lastOpenedCofre;
 
-    // Respuesta al usuario
-    await m.reply(`🎉 ¡Has abierto un cofre! 🎁\n\n- *Dulces:* +${dulces}\n- *Monedas:* +${monedas}\n- *Experiencia:* +${experiencia}`);
+    if (lastOpened === today) {
+        return conn.sendMessage(m.chat, { text: "⚠️ Ya has abierto tu cofre hoy. ¡Vuelve mañana!" }, { quoted: m });
+    }
+
+    // Otorgar los premios
+    global.db.data.users[userId].exp += 500; // Añadir experiencia
+    global.db.data.users[userId].dulces += 50; // Añadir dulces
+    global.db.data.users[userId].monedas += 100; // Añadir monedas
+
+    // Actualizar la fecha de apertura del cofre
+    global.db.data.users[userId].lastOpenedCofre = today;
+
+    // Mensaje de éxito
+    const mensaje = `🎉 ¡Has abierto el cofre! 🎉\n\n- **Experiencia:** +500\n- **Dulces:** +50\n- **Monedas:** +100`;
+    
+    await conn.sendMessage(m.chat, { text: mensaje }, { quoted: m });
 }
-
-handler.help = ['abrirCofre'];
+handler.help = ['abrircofre'];
 handler.tags = ['economía'];
-handler.command = ['abrirCofre'];
+handler.command = ['abrircofre'];
 
 export default handler;
