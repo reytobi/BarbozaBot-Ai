@@ -1,79 +1,3 @@
-import fs from 'fs';
-
-const filePath = './cultivos.json';
-
-// Configuración de frutas disponibles
-const frutas = {
-    "🍎 Manzana": {
-        precio: 50,
-        tiempoCrecimiento: 1800000, // 30 minutos
-        produccionBase: 3,
-        recompensa: 15,
-        nivelMax: 5
-    },
-    "🍊 Naranja": {
-        precio: 75,
-        tiempoCrecimiento: 3600000, // 1 hora
-        produccionBase: 5,
-        recompensa: 25,
-        nivelMax: 5
-    },
-    "🍇 Uvas": {
-        precio: 100,
-        tiempoCrecimiento: 7200000, // 2 horas
-        produccionBase: 8,
-        recompensa: 40,
-        nivelMax: 5
-    },
-    "🍓 Fresa": {
-        precio: 60,
-        tiempoCrecimiento: 900000, // 15 minutos
-        produccionBase: 4,
-        recompensa: 20,
-        nivelMax: 5
-    },
-    "🍐 Pera": {
-        precio: 85,
-        tiempoCrecimiento: 5400000, // 1.5 horas
-        produccionBase: 6,
-        recompensa: 30,
-        nivelMax: 5
-    }
-};
-
-// Funciones de utilidad
-const leerDatos = () => {
-    if (!fs.existsSync(filePath)) {
-        fs.writeFileSync(filePath, JSON.stringify({}, null, 2));
-    }
-    return JSON.parse(fs.readFileSync(filePath));
-};
-
-const guardarDatos = (data) => {
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-};
-
-const calcularTiempoRestante = (tiempoRestante) => {
-    if (tiempoRestante <= 0) return "0 minutos";
-    
-    let horas = Math.floor(tiempoRestante / 3600000);
-    let minutos = Math.floor((tiempoRestante % 3600000) / 60000);
-    
-    if (horas > 0) {
-        return `${horas} horas y ${minutos} minutos`;
-    }
-    return `${minutos} minutos`;
-};
-
-const obtenerEstadoCultivo = (tiempoTranscurrido, tiempoCrecimiento) => {
-    const porcentaje = (tiempoTranscurrido / tiempoCrecimiento) * 100;
-    if (porcentaje >= 100) return "✅ Listo para cosechar";
-    if (porcentaje >= 75) return "🌳 Casi maduro";
-    if (porcentaje >= 50) return "🌱 Creciendo bien";
-    if (porcentaje >= 25) return "🌱 Pequeño";
-    return "🌱 Recién plantado";
-};
-
 let handler = async (m, { conn, command, args, usedPrefix }) => {
     let usuarios = leerDatos();
     let usuario = usuarios[m.sender] || {
@@ -308,4 +232,8 @@ let handler = async (m, { conn, command, args, usedPrefix }) => {
             );
 
         default:
-            return m</antArtifact>
+            return m.reply("❌ Comando no reconocido.");
+    }
+};
+
+export default handler;
