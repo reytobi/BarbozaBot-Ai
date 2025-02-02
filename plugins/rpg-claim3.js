@@ -3,11 +3,12 @@ let handler = async (m, { conn }) => {
     const usuarioId = m.sender; // ID del usuario
     const dulcesGanados = 500; // Cantidad de dulces a ganar
 
-    // Aquí deberías tener una forma de acceder a la base de datos o almacenamiento
+    // Obtener los datos del usuario (deberías tener una función para esto)
     let usuarioData = await obtenerDatosUsuario(usuarioId); // Función ficticia para obtener datos del usuario
 
     const hoy = new Date().toISOString().split('T')[0]; // Fecha actual en formato YYYY-MM-DD
 
+    // Verificar si ya reclamó hoy
     if (usuarioData.ultimoReclamo === hoy) {
         return conn.sendMessage(m.chat, { text: "¡Ya has reclamado tus 500 dulces hoy! Espera hasta mañana para volver a reclamar." }, { quoted: m });
     }
