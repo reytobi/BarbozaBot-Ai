@@ -1,22 +1,28 @@
 
 let handler = async (m, { conn }) => {
-    const mascotas = [
-        { nombre: "Perro", puntos: 1000 },
-        { nombre: "Gato", puntos: 800 },
-        { nombre: "Loro", puntos: 600 },
-        { nombre: "Conejo", puntos: 500 },
-        { nombre: "Hámster", puntos: 300 }
-    ];
+    // Suponemos que tienes una función para obtener los datos de mascotas de los amigos
+    const amigosData = await obtenerDatosMascotasDeAmigos(); // Función ficticia que debes implementar
 
-    // Ordenar las mascotas por puntos en orden descendente
-    mascotas.sort((a, b) => b.puntos - a.puntos);
+    // Asegúrate de que amigosData sea un arreglo con objetos { nombre: "amigo", mascota: "mascota", puntos: puntos }
+    const ranking = amigosData.map(amigo => ({
+        nombre: amigo.nombre,
+        mascota: amigo.mascota,
+        puntos: amigo.puntos
+    }));
+
+    // Ordenar el ranking por puntos en orden descendente
+    ranking.sort((a, b) => b.puntos - a.puntos);
 
     // Construir el mensaje del ranking
-    let mensajeRanking = "🏆 Ranking de Mascotas 🏆\n\n";
+    let mensajeRanking = "🏆 Ranking de Mascotas de Amigos 🏆\n\n";
     
-    mascotas.forEach((mascota, index) => {
-        mensajeRanking += `${index + 1}. ${mascota.nombre} - ${mascota.puntos} puntos\n`;
+    ranking.forEach((item, index) => {
+        mensajeRanking += `${index + 1}. ${item.nombre} - ${item.mascota} - ${item.puntos} puntos\n`;
     });
+
+    if (ranking.length === 0) {
+        mensajeRanking = "No hay datos disponibles para mostrar el ranking.";
+    }
 
     await conn.sendMessage(m.chat, { text: mensajeRanking }, { quoted: m });
 }
