@@ -32,6 +32,13 @@ const guardarDatos = (data) => {
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 };
 
+// Función para calcular el tiempo restante en formato de horas y minutos
+const calcularTiempoRestante = (tiempoRestante) => {
+    let horas = Math.floor(tiempoRestante / 3600000); // Dividir por 3600000 para obtener horas
+    let minutos = Math.floor((tiempoRestante % 3600000) / 60000); // Dividir por 60000 para obtener minutos
+    return `${horas} horas y ${minutos} minutos`;
+};
+
 let handler = async (m, { command, args, usedPrefix }) => {
     let usuarios = leerDatos();
     let usuario = usuarios[m.sender] || { dulces: 100, mascota: null, comida: 0, tiempoUltimaComida: 0 };
@@ -89,24 +96,28 @@ let handler = async (m, { command, args, usedPrefix }) => {
         case 'mascota':
             if (!usuario.mascota) return m.reply("❌ No tienes una mascota.");
 
-            // Verificar que 'tiempoUltimaComida' no sea 0 o undefined
-            let tiempoUltimaComida = usuario.tiempoUltimaComida || Date.now(); // Si no hay tiempo de última comida, usar el momento actual
+            let ahora = Date.now();
+            let tiempoRestante = ahora - usuario.tiempoUltimaComida;
+            let tiempoSinComer = ((ahora - usuario.tiempoUltimaComida) / 3600000).toFixed(1); // En horas
 
-            let tiempoSinComer = ((Date.now() - tiempoUltimaComida) / 3600000).toFixed(1); // En horas
             let estadoMascota = "😊 Feliz";
-            let tiempoRestante = 8 - (tiempoSinComer % 8);  // Para ver cuántas horas faltan para alimentarla nuevamente
+            let tiempoFaltante = 8 - (tiempoSinComer % 8); // Para ver cuántas horas faltan para alimentarla nuevamente
 
-            // Si han pasado más de 8 horas, se considera hambrienta
             if (tiempoSinComer >= 8) {
                 estadoMascota = "😢 Hambrienta";
             }
 
+            // Calcular el tiempo restante para la próxima alimentación (en milisegundos)
+            let tiempoRestanteParaAlimentar = 8 * 3600000 - tiempoRestante; // 8 horas en milisegundos
+            let tiempoRestanteStr = calcularTiempoRestante(tiempoRestanteParaAlimentar);
+
             return m.reply(
                 `🐾 *Estado de ${usuario.mascota}:*\n` +
-                `🍖 Comida restante: ${usuario.comida}\n` +
+                `🍖 Comida restante: ${usuario.comida || 0}\n` +
                 `⏳ Última comida hace: ${tiempoSinComer} horas\n` +
                 `💖 Estado: ${estadoMascota}\n` +
-                `⏰ Recibirás un aviso en ${tiempoRestante} horas para alimentarla.`
+                `⏰ Recibirás un aviso en ${tiempoFaltante} horas para alimentarla.\n` +
+                `⏳ *Debes esperar* ${tiempoRestanteStr} para alimentar nuevamente a tu mascota.`
             );
 
         default:
