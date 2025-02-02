@@ -1,15 +1,14 @@
 
-let handler = async (m) => {
-    const usuarioId = m.sender; // ID del usuario que envió el mensaje
+const handler = async (m) => {
+    if (m.text.startsWith('.mamaguevo') || m.text.startsWith('.mmgvo')) {
+        const usuario = m.sender; // Obtener el identificador del usuario
 
-    // Mensaje de respuesta con mención al usuario y la frase divertida
-    const mensajeRespuesta = `@${usuarioId.split('@')[0]} 🗣️ Eres más mamaguevo que tu padre 😂 *%*`;
+        // Mensaje a enviar
+        const mensaje = `💫 *CALCULADORA*\n\n💅🏻 Los cálculos han arrojado que @${usuario} es *%* mmgvo 🏳️‍🌈\n> ✰ La Propia Puta Mamando!\n\n➤ ¡Sorpresa!`;
 
-    await conn.sendMessage(m.chat, { text: mensajeRespuesta, mentions: [usuarioId] }, { quoted: m });
-}
+        return m.reply(mensaje);
+    }
+};
 
-handler.help = ['mamaguevo'];
-handler.tags = ['diversión'];
-handler.command = ['mamaguevo'];
-
+handler.command = /^(mamaguevo|mmgvo)$/i;
 export default handler;
