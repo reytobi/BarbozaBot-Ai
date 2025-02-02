@@ -1,6 +1,5 @@
 
 let handler = async (m, { conn }) => {
-    // Suponiendo que tienes un sistema para almacenar la cantidad de dulces y la fecha del último reclamo
     const usuarioId = m.sender; // ID del usuario
     const dulcesGanados = 500; // Cantidad de dulces a ganar
 
