@@ -88,12 +88,16 @@ let handler = async (m, { command, args, usedPrefix }) => {
 
         case 'mascota':
             if (!usuario.mascota) return m.reply("❌ No tienes una mascota.");
-            let tiempoSinComer = ((Date.now() - usuario.tiempoUltimaComida) / 3600000).toFixed(1);
+
+            // Verificar que 'tiempoUltimaComida' no sea 0 o undefined
+            let tiempoUltimaComida = usuario.tiempoUltimaComida || Date.now(); // Si no hay tiempo de última comida, usar el momento actual
+
+            let tiempoSinComer = ((Date.now() - tiempoUltimaComida) / 3600000).toFixed(1); // En horas
             let estadoMascota = "😊 Feliz";
             let tiempoRestante = 8 - (tiempoSinComer % 8);  // Para ver cuántas horas faltan para alimentarla nuevamente
 
             // Si han pasado más de 8 horas, se considera hambrienta
-            if (tiempoSinComer > 8) {
+            if (tiempoSinComer >= 8) {
                 estadoMascota = "😢 Hambrienta";
             }
 
