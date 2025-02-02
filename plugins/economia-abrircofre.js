@@ -23,7 +23,7 @@ let handler = async (m, { conn }) => {
     global.db.data.users[userId].lastOpenedCofre = today;
 
     // Mensaje de éxito
-    const mensaje = `🎉 ¡Has abierto el cofre! 🎉\n\n- **Experiencia:** +500\n- **Dulces:** +50\n- **Monedas:** +100`;
+    const mensaje = `🎉 ¡Has abierto el cofre! 🎉\n\n- *Experiencia:* +500\n- *Dulces:* +50\n- *Monedas:* +100`;
     
     await conn.sendMessage(m.chat, { text: mensaje }, { quoted: m });
 }
