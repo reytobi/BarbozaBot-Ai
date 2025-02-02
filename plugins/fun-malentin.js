@@ -1,4 +1,7 @@
 
+// Definir el objeto carteras para almacenar la información de cada usuario
+const carteras = {}; // { userId: { monedas: 0, dulces: 0, xp: 0 } }
+
 const handler = async (m) => {
     if (m.text.startsWith('.maleta')) {
         const usuarioId = m.sender; // Obtener el identificador del usuario
