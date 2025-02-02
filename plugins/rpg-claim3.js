@@ -1,14 +1,31 @@
-let usuarios = {}; 
+import fs from 'fs';
+
+const filePath = './mineria.json';
+
+const leerDatos = () => {
+    if (!fs.existsSync(filePath)) {
+        fs.writeFileSync(filePath, JSON.stringify({}, null, 2));
+    }
+    return JSON.parse(fs.readFileSync(filePath));
+};
+
+const guardarDatos = (datos) => {
+    fs.writeFileSync(filePath, JSON.stringify(datos, null, 2));
+};
 
 const obtenerDatosUsuario = async (usuarioId) => {
+    let usuarios = leerDatos();
     if (!usuarios[usuarioId]) {
         usuarios[usuarioId] = { dulces: 0, ultimoReclamo: "" };
+        guardarDatos(usuarios);
     }
     return usuarios[usuarioId];
 };
 
 const guardarDatosUsuario = async (usuarioId, usuarioData) => {
+    let usuarios = leerDatos();
     usuarios[usuarioId] = usuarioData;
+    guardarDatos(usuarios);
 };
 
 let handler = async (m, { conn }) => {
