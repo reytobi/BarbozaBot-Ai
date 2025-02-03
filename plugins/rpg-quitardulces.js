@@ -1,37 +1,37 @@
 
 const handler = async (m, { conn, args }) => {
-    const user = global.db.data.users[m.sender];
-    if (!user) {
-        console.error("Usuario no encontrado en la base de datos:", m.sender);
-        return; // Manejo del error si el usuario no existe
+    // Verificamos si se han proporcionado argumentos
+    if (!args[0] || !args[1]) {
+        return conn.sendMessage(m.chat, { text: "Por favor, usa el formato correcto: .quitardulces <cantidad> @usuario" }, { quoted: m });
     }
 
-    if (!args[0]) {
-        return conn.sendMessage(m.chat, { text: "Por favor indica la cantidad de dulces a quitar." }, { quoted: m });
-    }
+    const cantidad = parseInt(args[0]); // Convertimos la cantidad a número
+    const usuarioID = args[1]; // ID del usuario al que le quieres quitar los dulces
 
-    const cantidad = parseInt(args[0]);
+    // Validamos la cantidad
     if (isNaN(cantidad) || cantidad <= 0) {
         return conn.sendMessage(m.chat, { text: "La cantidad debe ser un número positivo." }, { quoted: m });
     }
 
-    const usuarioID = args[1]; // ID del usuario al que le quieres quitar los dulces
+    // Obtenemos el usuario objetivo
     const targetUser = global.db.data.users[usuarioID];
     
     if (!targetUser) {
         return conn.sendMessage(m.chat, { text: "El usuario especificado no se encontró." }, { quoted: m });
     }
 
+    // Verificamos si el usuario tiene suficientes dulces
     if (targetUser.dulce < cantidad) {
         return conn.sendMessage(m.chat, { text: "El usuario no tiene suficientes dulces para quitar." }, { quoted: m });
     }
 
-    targetUser.dulce -= cantidad; // Quitar la cantidad especificada de dulces
+    // Restamos la cantidad de dulces
+    targetUser.dulce -= cantidad; 
     const message = `🚩 Se le han quitado ${cantidad} dulces a *@${usuarioID.split('@')[0]}*. Ahora tiene ${targetUser.dulce} dulces restantes.`;
 
     try {
         await conn.sendMessage(m.chat, { text: message, mentions: [usuarioID] }, { quoted: m });
-        console.log(`Se han quitado ${cantidad} dulces a ${usuarioID}`); // Registro para depuración
+        console.log(`Se han quitado ${cantidad} dulces a ${usuarioID}`); 
     } catch (error) {
         console.error("Error al quitar los dulces:", error);
         await conn.sendMessage(m.chat, { text: "Hubo un error al intentar quitar los dulces. Intenta de nuevo más tarde." }, { quoted: m });
