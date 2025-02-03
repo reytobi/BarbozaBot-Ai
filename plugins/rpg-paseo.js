@@ -1,3 +1,33 @@
+ 
+import fs from 'fs';
+
+const filePath = './carteraDulces.json';
+
+const leerDatos = () => {
+    if (!fs.existsSync(filePath)) {
+        fs.writeFileSync(filePath, JSON.stringify({}, null, 2));
+    }
+    return JSON.parse(fs.readFileSync(filePath));
+};
+
+const guardarDatos = (datos) => {
+    fs.writeFileSync(filePath, JSON.stringify(datos, null, 2));
+};
+
+const obtenerDatosUsuario = async (usuarioId) => {
+    let usuarios = leerDatos();
+    if (!usuarios[usuarioId]) {
+        usuarios[usuarioId] = { dulces: 0 };
+        guardarDatos(usuarios);
+    }
+    return usuarios[usuarioId];
+};
+
+const guardarDatosUsuario = async (usuarioId, usuarioData) => {
+    let usuarios = leerDatos();
+    usuarios[usuarioId] = usuarioData;
+    guardarDatos(usuarios);
+};
 
 let handler = async (m, { conn }) => {
     // Simulamos un paseo
@@ -12,8 +42,18 @@ let handler = async (m, { conn }) => {
     // Elegimos un resultado aleatorio
     let resultado = resultados[Math.floor(Math.random() * resultados.length)];
 
+    // Obtenemos los datos del usuario
+    const usuarioId = m.sender;
+    let usuarioData = await obtenerDatosUsuario(usuarioId);
+
+    // Sumamos los dulces ganados
+    usuarioData.dulces += resultado.dulces;
+
+    // Guardamos los datos actualizados
+    await guardarDatosUsuario(usuarioId, usuarioData);
+
     // Mensaje final con dulces y experiencia ganada
-    let mensajeFinal = `${resultado.mensaje}\nHas ganado ${resultado.dulces} dulces y ${resultado.experiencia} puntos de experiencia. 🎉`;
+    let mensajeFinal = `${resultado.mensaje}\nHas ganado ${resultado.dulces} dulces y ${resultado.experiencia} puntos de experiencia. 🎉\nAhora tienes ${usuarioData.dulces} dulces en total.`;
 
     // Enviamos el mensaje al chat
     await conn.sendMessage(m.chat, { text: mensajeFinal }, { quoted: m });
