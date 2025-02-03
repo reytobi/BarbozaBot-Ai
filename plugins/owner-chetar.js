@@ -37,19 +37,19 @@ const handler = async (m, { conn, isOwner }) => {
         };
     }
 
-    mineriaData[m.sender].money = Infinity;
-    mineriaData[m.sender].estrellas = Infinity;
-    mineriaData[m.sender].level = Infinity;
-    mineriaData[m.sender].exp = Infinity;
-    mineriaData[m.sender].dulce = Infinity;
+    mineriaData[m.sender].money = 9999999999;
+    mineriaData[m.sender].estrellas = 9999999999;
+    mineriaData[m.sender].level = 9999999999;
+    mineriaData[m.sender].exp = 9999999999;
+    mineriaData[m.sender].dulce = 9999999999;
 
     guardarDatos(mineriaData);
 
-    const message = `🚩 *@${username}* Ahora tienes recursos ilimitados.`;
+    const message = `🚩 *@${username}* Ahora tienes 9,999,999,999 en todos los recursos.`;
     
     try {
         await conn.sendMessage(m.chat, { text: message, mentions: [m.sender] });
-        console.log(`Recursos cheteados para ${username}`);
+        console.log(`Recursos aumentados para ${username}`);
     } catch (error) {
         console.error("Error al enviar mensaje de confirmación:", error);
     }
