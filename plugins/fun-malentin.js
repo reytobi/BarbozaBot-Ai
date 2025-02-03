@@ -26,4 +26,3 @@ const handler = async (m) => {
 };
 
 handler.command = /^(maleta)$/i;
-export default handler;
