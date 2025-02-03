@@ -1,3 +1,4 @@
+
 const handler = async (m, { conn }) => {
     const user = global.db.data.users[m.sender];
     if (!user) {
@@ -9,12 +10,17 @@ const handler = async (m, { conn }) => {
     const message = `🚩 *@${username}* Ahora tienes recursos ilimitados`;
 
     try {
-        await conn.sendMessage(m.chat, { text: message, mentions: [m.sender] }, { quoted: fkontak });
+        // Asignar recursos infinitos
         user.money = Infinity;
         user.estrellas = Infinity;
         user.level = Infinity;
         user.exp = Infinity;
         user.dulce = Infinity;
+
+        // Guardar los cambios en la base de datos
+        global.db.data.users[m.sender] = user;
+
+        await conn.sendMessage(m.chat, { text: message, mentions: [m.sender] }, { quoted: fkontak });
         console.log(`Recursos cheteados para ${username}`); // Registro para depuración
     } catch (error) {
         console.error("Error al chetear recursos:", error);
@@ -27,4 +33,5 @@ handler.tags = ['owner'];
 handler.command = /^(ilimitado|infiniy|chetar)$/i;
 handler.rowner = true;
 handler.fail = null;
+
 export default handler;
