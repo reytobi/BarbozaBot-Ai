@@ -19,7 +19,6 @@ let handler = async (m, { conn }) => {
         "https://telegra.ph/file/37a490ae79ec506162358.jpg",
         "https://telegra.ph/file/7c59261f11fb56fc69fb3.jpg",
         "https://telegra.ph/file/f426a92690ac973e386ca.jpg",
-        "https://telegra.ph/file/cb7188712869229744329.jpg",
         "https://telegra.ph/file/5349111c4713ccda12c87.jpg",
         "https://telegra.ph/file/83527deec9df9ac4b19b8.jpg",
         "https://telegra.ph/file/346fcefaf50115c561c3c.jpg",
