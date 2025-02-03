@@ -1,7 +1,7 @@
 import fs from 'fs'
 
 const filePath = './mineria.json'
-const xpperdulces = 350 // Costo de 1 Dulce en XP
+const xpperdulce = 350 // Costo de 1 Dulce en XP
 
 const handler = async (m, { conn, command, args }) => {
     // Cargar datos desde el archivo JSON
@@ -12,13 +12,13 @@ const handler = async (m, { conn, command, args }) => {
 
     // Determinar la cantidad a comprar
     let count = command.replace(/^buy/i, '')
-    count = count ? /all/i.test(count) ? Math.floor(data[sender].xp / xpperdulces) : parseInt(count) : args[0] ? parseInt(args[0]) : 1
+    count = count ? /all/i.test(count) ? Math.floor(data[sender].xp / xpperdulce) : parseInt(count) : args[0] ? parseInt(args[0]) : 1
     count = Math.max(1, count)
 
-    if (data[sender].xp >= xpperdulces * count) {
+    if (data[sender].xp >= xpperdulce * count) {
         // Descontar XP y dar dulces
-        data[sender].xp -= xpperdulces * count
-        data[sender].dulces = (data[sender].dulces || 0) + count
+        data[sender].xp -= xpperdulce * count
+        data[sender].dulce = (data[sender].dulce || 0) + count
 
         // Guardar cambios en el archivo JSON
         fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
@@ -30,7 +30,7 @@ const handler = async (m, { conn, command, args }) => {
 ╠═══════⩽✰⩾═══════╝
 ║╭──────────────┄
 ║│ *Compra Nominal* : +${count} 🍬 Dulces
-║│ *Gastado* : -${xpperdulces * count} XP
+║│ *Gastado* : -${xpperdulce * count} XP
 ║╰──────────────┄
 ╚═══════⩽✰⩾═══════╝`, m)
     } else {
