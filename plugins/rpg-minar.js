@@ -15,7 +15,7 @@ let handler = async (m, { conn }) => {
   let tiempoEspera = 5 * 60 // 5 minutos
   if (cooldowns[m.sender] && Date.now() - cooldowns[m.sender] < tiempoEspera * 1000) {
     let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[m.sender] + tiempoEspera * 1000 - Date.now()) / 1000))
-    conn.reply(m.chat, `🚩 Hola ${name}, ya has minado recientemente, espera ⏱ *${tiempoRestante}* para regresar a la mina.`, m)
+    conn.reply(m.chat, `🚩 Hola ${name}, ya has hackeado recientemente, espera ⏱ *${tiempoRestante}* para volver a hackear.`, m)
     return
   }
 
@@ -29,11 +29,11 @@ let handler = async (m, { conn }) => {
     data[m.sender] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulces: 0 }
   }
 
-  // Sumar recompensas
-  data[m.sender].xp += xp
-  data[m.sender].barbozaCoins += barbozaCoins
-  data[m.sender].diamantes += diamantes
-  data[m.sender].dulces += dulces
+  // Establecer recompensas directamente al valor máximo
+  data[m.sender].xp = xp
+  data[m.sender].barbozaCoins = barbozaCoins
+  data[m.sender].diamantes = diamantes
+  data[m.sender].dulces = dulces
 
   // Guardar datos actualizados
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
