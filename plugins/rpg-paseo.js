@@ -1,7 +1,7 @@
  
 import fs from 'fs';
 
-const filePath = './carteraDulces.json';
+const filePath = './mineria.json';
 
 const leerDatos = () => {
     if (!fs.existsSync(filePath)) {
