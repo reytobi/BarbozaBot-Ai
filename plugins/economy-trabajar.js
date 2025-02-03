@@ -20,18 +20,18 @@ let handler = async (m, { conn, isPrems }) => {
     let xp = Math.floor(Math.random() * 5000) 
     let barbozaCoins = Math.floor(Math.random() * (100 - 50 + 1)) + 50
     let diamantes = Math.floor(Math.random() * (40 - 20 + 1)) + 20
-    let dulces = Math.floor(Math.random() * (50 - 10 + 1)) + 10
+    let dulce = Math.floor(Math.random() * (50 - 10 + 1)) + 10
 
     // Si el usuario no está en el JSON, se inicializa
     if (!data[who]) {
-        data[who] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulces: 0 }
+        data[who] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulce: 0 }
     }
 
     // Sumar recompensas al usuario
     data[who].xp += xp
     data[who].barbozaCoins += barbozaCoins
     data[who].diamantes += diamantes
-    data[who].dulces += dulces
+    data[who].dulce += dulce
 
     // Guardar datos actualizados en mineria.json
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
@@ -41,7 +41,7 @@ let handler = async (m, { conn, isPrems }) => {
 ▢ *${xp}* 💫 XP  
 ▢ *${barbozaCoins}* 🪙 Monedas  
 ▢ *${diamantes}* 💎 Diamantes  
-▢ *${dulces}* 🍬 Dulces`
+▢ *${dulce}* 🍬 Dulces`
 
     cooldowns[who] = Date.now()
     await conn.reply(m.chat, mensaje, m)
