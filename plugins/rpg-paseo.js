@@ -53,7 +53,7 @@ let handler = async (m, { conn }) => {
     await guardarDatosUsuario(usuarioId, usuarioData);
 
     // Mensaje final con dulces y experiencia ganada
-    let mensajeFinal = `${resultado.mensaje}\nHas ganado ${resultado.dulces} dulces y ${resultado.experiencia} puntos de experiencia. 🎉\nAhora tienes ${usuarioData.dulces} dulces en total.`;
+   let mensajeFinal = ${resultado.mensaje}\nHas ganado ${resultado.dulces} dulces y ${resultado.experiencia} puntos de experiencia. 🎉\nAhora tienes ${usuarioData.dulces} dulces en total.; .`;
 
     // Enviamos el mensaje al chat
     await conn.sendMessage(m.chat, { text: mensajeFinal }, { quoted: m });
