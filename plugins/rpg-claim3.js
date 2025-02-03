@@ -1,3 +1,4 @@
+
 import fs from 'fs';
 
 const filePath = './mineria.json';
@@ -39,12 +40,12 @@ let handler = async (m, { conn }) => {
         return conn.sendMessage(m.chat, { text: "¡Ya has reclamado tus 500 dulces hoy! Espera hasta mañana para volver a reclamar." }, { quoted: m });
     }
 
-    usuarioData.dulce += dulceGanados;
+    usuarioData.dulce += dulcesGanados; // Corrigiendo el nombre de la variable
     usuarioData.ultimoReclamo = hoy;
 
     await guardarDatosUsuario(usuarioId, usuarioData);
 
-    const mensajeReclamo = `¡Has reclamado 500 dulces! 🎉🍬 Ahora tienes ${usuarioData.dulce} dulces en total.`;
+    const mensajeReclamo = `¡Has reclamado 500 dulces! 🎉🍬 Ahora tienes ${usuarioData.dulce} dulces en total.`; // Corregido con comillas invertidas
     await conn.sendMessage(m.chat, { text: mensajeReclamo }, { quoted: m });
 };
 
