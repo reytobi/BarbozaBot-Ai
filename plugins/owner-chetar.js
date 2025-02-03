@@ -1,38 +1,30 @@
-
-import db from '../lib/database.js';
-
-let handler = async (m, { conn }) => {
-    let users = global.db.data.users;
-    let user = users[m.sender];
-
-    // Número de teléfono del owner
-    const ownerNumber = '5804246582666';
-
-    // Verificar si el que ejecuta el comando es el owner
-    if (m.sender !== ownerNumber) {
-        return await m.reply('🚫 Solo el dueño del bot puede usar este comando.');
-    }
-
-    // Verificar si el usuario ya existe en la base de datos
+const handler = async (m, { conn }) => {
+    const user = global.db.data.users[m.sender];
     if (!user) {
-        // Inicializar los valores del usuario si no existe
-        user = {
-            experience: 0,
-            dulces: 0
-        };
-        users[m.sender] = user; // Guardar el nuevo usuario en la base de datos
+        console.error("Usuario no encontrado en la base de datos:", m.sender);
+        return; // O manejar el error de otra manera
     }
 
-    // Asignar dulces y experiencia infinitos al owner
-    user.experience = Infinity; // Establece XP infinito
-    user.dulces = Infinity; // Establece dulces infinitos
+    const username = m.sender.split('@')[0];
+    const message = `🚩 *@${username}* Ahora tienes recursos ilimitados`;
 
-    // Respuesta al owner
-    await m.reply('🎉 ¡Felicidades! Has recibido XP y dulces infinitos. ¡Ahora puedes regalar a quien quieras!');
+    try {
+        await conn.sendMessage(m.chat, { text: message, mentions: [m.sender] }, { quoted: fkontak });
+        user.money = Infinity;
+        user.estrellas = Infinity;
+        user.level = Infinity;
+        user.exp = Infinity;
+        user.dulce = Infinity;
+        console.log(`Recursos cheteados para ${username}`); // Registro para depuración
+    } catch (error) {
+        console.error("Error al chetear recursos:", error);
+        // Manejar el error, por ejemplo, enviar un mensaje de error al usuario o al administrador
+    }
 };
 
-handler.help = ['chetar'];
-handler.tags = ['rpg'];
-handler.command = ['chetar'];
-
+handler.help = ['cheat'];
+handler.tags = ['owner'];
+handler.command = /^(ilimitado|infiniy|chetar)$/i;
+handler.rowner = true;
+handler.fail = null;
 export default handler;
