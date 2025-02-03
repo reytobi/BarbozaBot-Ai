@@ -1,32 +1,33 @@
 
-let handler = async (m, { conn, text }) => {
-    let quien;
-    if (m.isGroup) quien = m.mentionedJid[0];
-    else quien = m.chat;
+const handler = async (m, { conn }) => {
+    const user = global.db.data.users[m.sender];
+    if (!user) {
+        console.error("Usuario no encontrado en la base de datos:", m.sender);
+        return; // Manejo del error si el usuario no existe
+    }
 
-    if (!quien) throw '🚩 Menciona al usuario con *@user.*';
+    const cantidad = 10; // Cambia este número a la cantidad de dulces que deseas quitar
+    if (user.dulce < cantidad) {
+        await conn.sendMessage(m.chat, { text: "No tienes suficientes dulces para quitar." }, { quoted: fkontak });
+        return;
+    }
 
-    let txt = text.replace('@' + quien.split('@')[0], '').trim();
-    if (!txt) throw '🚩 Ingresa la cantidad de *🍬 Dulces* que quieres quitar.';
-    
-    if (isNaN(txt)) throw 'Solo se permiten números.';
-    
-    let dulcesQuitados = parseInt(txt);
-    
-    let users = global.db.data.users;
+    user.dulce -= cantidad; // Quitar la cantidad especificada de dulces
+    const message = `🚩 *@${m.sender.split('@')[0]}* Se te han quitado ${cantidad} dulces. Ahora tienes ${user.dulce} dulces restantes.`;
 
-    // Verificar si el usuario tiene suficientes dulces para quitar
-    if (users[quien].dulces < dulcesQuitados) throw `${quien.split('@')[0]} no tiene suficientes *🍬 Dulces* para quitar.`;
-    
-    // Restar dulces al usuario mencionado
-    users[quien].dulces -= dulcesQuitados;
+    try {
+        await conn.sendMessage(m.chat, { text: message, mentions: [m.sender] }, { quoted: fkontak });
+        console.log(`Se han quitado ${cantidad} dulces a ${m.sender}`); // Registro para depuración
+    } catch (error) {
+        console.error("Error al quitar los dulces:", error);
+        await conn.sendMessage(m.chat, { text: "Hubo un error al intentar quitar los dulces. Intenta de nuevo más tarde." }, { quoted: fkontak });
+    }
+};
 
-    // Respuesta al usuario
-    await m.reply(`🔻 Has quitado *${dulcesQuitados}* dulces a ${quien.split('@')[0]}!`);
-}
-
-handler.help = ['quitarDulces *@user <cantidad>*'];
-handler.tags = ['economía'];
-handler.command = ['quitarDulces', 'restarDulces'];
+handler.help = ['quitardulces'];
+handler.tags = ['owner'];
+handler.command = /^(quitardulces)$/i;
+handler.rowner = true; // Solo el dueño puede usar este comando
+handler.fail = null;
 
 export default handler;
