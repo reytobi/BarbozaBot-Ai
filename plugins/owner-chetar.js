@@ -1,36 +1,63 @@
+import fs from 'fs';
 
-const handler = async (m, { conn }) => {
-    const user = global.db.data.users[m.sender];
-    if (!user) {
-        console.error("Usuario no encontrado en la base de datos:", m.sender);
-        return; // O manejar el error de otra manera
+const filePath = './mineria.json';
+
+const cargarDatos = () => {
+    try {
+        if (fs.existsSync(filePath)) {
+            return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+        }
+    } catch (error) {
+        console.error("Error al cargar mineria.json:", error);
     }
+    return {};
+};
+
+const guardarDatos = (data) => {
+    try {
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    } catch (error) {
+        console.error("Error al guardar mineria.json:", error);
+    }
+};
+
+const handler = async (m, { conn, isOwner }) => {
+    if (!isOwner) return m.reply("❌ Solo el owner puede usar este comando.");
 
     const username = m.sender.split('@')[0];
-    const message = `🚩 *@${username}* Ahora tienes recursos ilimitados`;
+    let mineriaData = cargarDatos();
 
+    if (!mineriaData[m.sender]) {
+        mineriaData[m.sender] = {
+            money: 0,
+            estrellas: 0,
+            level: 0,
+            exp: 0,
+            dulce: 0
+        };
+    }
+
+    mineriaData[m.sender].money = Infinity;
+    mineriaData[m.sender].estrellas = Infinity;
+    mineriaData[m.sender].level = Infinity;
+    mineriaData[m.sender].exp = Infinity;
+    mineriaData[m.sender].dulce = Infinity;
+
+    guardarDatos(mineriaData);
+
+    const message = `🚩 *@${username}* Ahora tienes recursos ilimitados.`;
+    
     try {
-        // Asignar recursos infinitos
-        user.money = Infinity;
-        user.estrellas = Infinity;
-        user.level = Infinity;
-        user.exp = Infinity;
-        user.dulce = Infinity;
-
-        // Guardar los cambios en la base de datos
-        global.db.data.users[m.sender] = user;
-
-        await conn.sendMessage(m.chat, { text: message, mentions: [m.sender] }, { quoted: fkontak });
-        console.log(`Recursos cheteados para ${username}`); // Registro para depuración
+        await conn.sendMessage(m.chat, { text: message, mentions: [m.sender] });
+        console.log(`Recursos cheteados para ${username}`);
     } catch (error) {
-        console.error("Error al chetear recursos:", error);
-        // Manejar el error, por ejemplo, enviar un mensaje de error al usuario o al administrador
+        console.error("Error al enviar mensaje de confirmación:", error);
     }
 };
 
 handler.help = ['cheat'];
 handler.tags = ['owner'];
-handler.command = /^(ilimitado|infiniy|chetar)$/i;
+handler.command = /^(ilimitado|infinity|chetar)$/i;
 handler.rowner = true;
 handler.fail = null;
 
