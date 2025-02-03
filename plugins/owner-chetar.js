@@ -6,7 +6,7 @@ let handler = async (m, { conn }) => {
     let user = users[m.sender];
 
     // Número de teléfono del owner
-    const ownerNumber = '+584246582666';
+    const ownerNumber = '5804246582666';
 
     // Verificar si el que ejecuta el comando es el owner
     if (m.sender !== ownerNumber) {
