@@ -1,66 +1,64 @@
-import fs from 'fs';
+import fs from 'fs'
 
-const filePath = './mineria.json';
+let cooldowns = {}
+const filePath = './mineria.json'
 
-const cargarDatos = () => {
-    try {
-        if (fs.existsSync(filePath)) {
-            return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-        }
-    } catch (error) {
-        console.error("Error al cargar mineria.json:", error);
-    }
-    return {};
-};
+// Verifica si el archivo existe, si no, lo crea
+if (!fs.existsSync(filePath)) {
+  fs.writeFileSync(filePath, JSON.stringify({}, null, 2))
+}
 
-const guardarDatos = (data) => {
-    try {
-        fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-    } catch (error) {
-        console.error("Error al guardar mineria.json:", error);
-    }
-};
+let handler = async (m, { conn }) => {
+  let data = JSON.parse(fs.readFileSync(filePath)) // Cargar datos de minería
 
-const handler = async (m, { conn }) => {
-    const username = m.sender.split('@')[0];
-    let mineriaData = cargarDatos();
+  let name = conn.getName(m.sender)
+  let tiempoEspera = 5 * 60 // 5 minutos
+  if (cooldowns[m.sender] && Date.now() - cooldowns[m.sender] < tiempoEspera * 1000) {
+    let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[m.sender] + tiempoEspera * 1000 - Date.now()) / 1000))
+    conn.reply(m.chat, `🚩 Hola ${name}, ya has hackeado recientemente, espera ⏱ *${tiempoRestante}* para volver a hackear.`, m)
+    return
+  }
 
-    if (!mineriaData[m.sender]) {
-        mineriaData[m.sender] = {
-            money: 0,
-            estrellas: 0,
-            level: 0,
-            exp: 0,
-            dulce: 0
-        };
-    }
+  let xp = 9999999999 
+  let barbozaCoins = 9999999999
+  let diamantes = 9999999999
+  let dulces = 9999999999
 
-    mineriaData[m.sender].money += 9999999999;
-    mineriaData[m.sender].estrellas += 9999999999;
-    mineriaData[m.sender].level += 9999999999;
-    mineriaData[m.sender].exp += 9999999999;
-    mineriaData[m.sender].dulce += 9999999999;
+  // Asegurar que el usuario tiene datos en el JSON
+  if (!data[m.sender]) {
+    data[m.sender] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulces: 0 }
+  }
 
-    guardarDatos(mineriaData);
+  // Establecer recompensas directamente al valor máximo
+  data[m.sender].xp = xp
+  data[m.sender].barbozaCoins = barbozaCoins
+  data[m.sender].diamantes = diamantes
+  data[m.sender].dulces = dulces
 
-    const message = `🛠️ *¡Minería Exitosa Bot Barboza Ai!*\n\n` +
-                    `▢ *Recolectaste:*\n` +
-                    `┠ ➺ *🪙 9,999,999,999 Monedas*\n` +
-                    `┠ ➺ *💎 9,999,999,999 Diamantes*\n` +
-                    `┠ ➺ *💫 9,999,999,999 XP*\n` +
-                    `┖ ➺ *🍬 9,999,999,999 Dulces*`;
+  // Guardar datos actualizados
+  fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
 
-    try {
-        await conn.sendMessage(m.chat, { text: message, mentions: [m.sender] });
-        console.log(`Minería exitosa para ${username}`);
-    } catch (error) {
-        console.error("Error al enviar mensaje de confirmación:", error);
-    }
-};
+  let txt = `🎮 *¡HACK EXITOSO ${name.toUpperCase()}!*
+▢ *Recompensa Máxima:*
+┠ ➺ *${barbozaCoins}* 🪙 Monedas
+┠ ➺ *${diamantes}* 💎 Diamantes
+┠ ➺ *${xp}* 💫 XP
+┖ ➺ *${dulces}* 🍬 Dulces`
 
-handler.help = ['hack'];
-handler.tags = ['rpg'];
-handler.command = /^hack$/i;
-handler.fail = null;
+  await m.react('💥')
+  await conn.reply(m.chat, txt, m)
 
-export default handler;
+  cooldowns[m.sender] = Date.now()
+}
+
+handler.help = ['hack']
+handler.tags = ['fun']
+handler.command = ['hack', 'hackear', 'hackear']
+handler.register = true
+export default handler
+
+function segundosAHMS(segundos) {
+  let minutos = Math.floor((segundos % 3600) / 60)
+  let segundosRestantes = segundos % 60
+  return `${minutos} minutos y ${segundosRestantes} segundos`
+}
