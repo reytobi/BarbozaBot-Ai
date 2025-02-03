@@ -1,7 +1,6 @@
 
 let handler = async (m, { conn }) => {
     const userId = m.sender; // ID del usuario que usa el comando
-    const dailyKey = `daily_${userId}`; // Clave única para el usuario
 
     // Obtener la fecha actual
     const now = new Date();
@@ -24,9 +23,10 @@ let handler = async (m, { conn }) => {
 
     // Mensaje de éxito
     const mensaje = `🎉 ¡Has abierto el cofre! 🎉\n\n- *Experiencia:* +500\n- *Dulces:* +50\n- *Monedas:* +100`;
-    
+
     await conn.sendMessage(m.chat, { text: mensaje }, { quoted: m });
 }
+
 handler.help = ['abrircofre'];
 handler.tags = ['economía'];
 handler.command = ['abrircofre'];
