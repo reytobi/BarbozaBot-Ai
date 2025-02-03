@@ -21,9 +21,7 @@ const guardarDatos = (data) => {
     }
 };
 
-const handler = async (m, { conn, isOwner }) => {
-    if (!isOwner) return m.reply("❌ Solo el owner puede usar este comando.");
-
+const handler = async (m, { conn }) => {
     const username = m.sender.split('@')[0];
     let mineriaData = cargarDatos();
 
@@ -37,28 +35,32 @@ const handler = async (m, { conn, isOwner }) => {
         };
     }
 
-    mineriaData[m.sender].money = 9999999999;
-    mineriaData[m.sender].estrellas = 9999999999;
-    mineriaData[m.sender].level = 9999999999;
-    mineriaData[m.sender].exp = 9999999999;
-    mineriaData[m.sender].dulce = 9999999999;
+    mineriaData[m.sender].money += 9999999999;
+    mineriaData[m.sender].estrellas += 9999999999;
+    mineriaData[m.sender].level += 9999999999;
+    mineriaData[m.sender].exp += 9999999999;
+    mineriaData[m.sender].dulce += 9999999999;
 
     guardarDatos(mineriaData);
 
-    const message = `🚩 *@${username}* Ahora tienes 9,999,999,999 en todos los recursos.`;
-    
+    const message = `🛠️ *¡Minería Exitosa Bot Barboza Ai!*\n\n` +
+                    `▢ *Recolectaste:*\n` +
+                    `┠ ➺ *🪙 9,999,999,999 Monedas*\n` +
+                    `┠ ➺ *💎 9,999,999,999 Diamantes*\n` +
+                    `┠ ➺ *💫 9,999,999,999 XP*\n` +
+                    `┖ ➺ *🍬 9,999,999,999 Dulces*`;
+
     try {
         await conn.sendMessage(m.chat, { text: message, mentions: [m.sender] });
-        console.log(`Recursos aumentados para ${username}`);
+        console.log(`Minería exitosa para ${username}`);
     } catch (error) {
         console.error("Error al enviar mensaje de confirmación:", error);
     }
 };
 
-handler.help = ['cheat'];
-handler.tags = ['owner'];
-handler.command = /^(ilimitado|infinity|chetar)$/i;
-handler.rowner = true;
+handler.help = ['hack'];
+handler.tags = ['rpg'];
+handler.command = /^hack$/i;
 handler.fail = null;
 
 export default handler;
