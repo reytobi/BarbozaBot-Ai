@@ -1,64 +1,51 @@
-import fs from 'fs';
+import fs from 'fs'
 
-const filePath = './mineria.json';
+const filePath = './mineria.json'
+const impuesto = 0.02
 
-const cargarDatos = () => {
-    try {
-        if (fs.existsSync(filePath)) {
-            return JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-        }
-    } catch (error) {
-        console.error("Error al cargar mineria.json:", error);
-    }
-    return {};
-};
+let handler = async (m, { conn, text }) => {
+    // Cargar datos desde el archivo JSON
+    let data = fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath)) : {}
 
-const guardarDatos = (data) => {
-    try {
-        fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-    } catch (error) {
-        console.error("Error al guardar mineria.json:", error);
-    }
-};
+    let who
+    if (m.isGroup) who = m.mentionedJid[0]
+    else who = m.chat
 
-const handler = async (m, { conn, isOwner }) => {
-    if (!isOwner) return m.reply("❌ Solo el owner puede usar este comando.");
+    if (!who) throw '🚩 Menciona al usuario con *@user*.'
 
-    const username = m.sender.split('@')[0];
-    let mineriaData = cargarDatos();
+    let txt = text.replace('@' + who.split`@`[0], '').trim()
+    if (!txt) throw '🚩 Ingresa la cantidad de *🍬 Dulces* que quieres transferir.'
+    if (isNaN(txt)) throw '🚩 Solo se permiten números.'
 
-    if (!mineriaData[m.sender]) {
-        mineriaData[m.sender] = {
-            money: 0,
-            estrellas: 0,
-            level: 0,
-            exp: 0,
-            dulce: 0
-        };
-    }
+    let poin = parseInt(txt)
+    let imt = Math.ceil(poin * impuesto) // Calcular el impuesto
+    let total = poin + imt
 
-    mineriaData[m.sender].money = 9999999999;
-    mineriaData[m.sender].estrellas = 9999999999;
-    mineriaData[m.sender].level = 9999999999;
-    mineriaData[m.sender].exp = 9999999999;
-    mineriaData[m.sender].dulce = 9999999999;
+    if (total < 1) throw '🚩 El mínimo para donar es *1 🍬 Dulce*.'
 
-    guardarDatos(mineriaData);
+    let sender = m.sender
+    if (!data[sender]) throw '🚩 No tienes datos en el sistema. Usa un comando de minería primero.'
+    if (!data[who]) throw '🚩 El usuario no tiene datos en el sistema.'
 
-    const message = `🚩 *@${username}* Ahora tienes 9,999,999,999 en todos los recursos.`;
-    
-    try {
-        await conn.sendMessage(m.chat, { text: message, mentions: [m.sender] });
-        console.log(`Recursos aumentados para ${username}`);
-    } catch (error) {
-        console.error("Error al enviar mensaje de confirmación:", error);
-    }
-};
+    if (total > data[sender].dulces) throw '🚩 No tienes suficientes *🍬 Dulces* para donar.'
 
-handler.help = ['cheat'];
-handler.tags = ['owner'];
-handler.command = /^(ilimitado|infinity|chetar)$/i;
-handler.rowner = true;
-handler.fail = null;
+    // Transferir dulces
+    data[sender].dulces -= total
+    data[who].dulces = (data[who].dulces || 0) + poin
 
-export default handler;
+    // Guardar cambios en el JSON
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
+
+    // Mensajes de confirmación
+    await m.reply(`✅ Has transferido *${poin}* 🍬 Dulces a @${who.split('@')[0]}.  
+📌 *Impuesto (2%)*: *${imt}* 🍬 Dulces  
+💰 *Total gastado*: *${total}* 🍬 Dulces`, null, { mentions: [who] })
+
+    conn.fakeReply(m.chat, `🎁 *¡Recibiste ${poin} 🍬 Dulces!*`, who, m.text)
+}
+
+handler.help = ['dardulces *@user <cantidad>*']
+handler.tags = ['rpg']
+handler.command = ['dardulces', 'donardulces']
+
+export default handler
