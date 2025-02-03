@@ -17,7 +17,7 @@ const guardarDatos = (datos) => {
 const obtenerDatosUsuario = async (usuarioId) => {
     let usuarios = leerDatos();
     if (!usuarios[usuarioId]) {
-        usuarios[usuarioId] = { dulce: 0, xp: 0, ultimoReclamo: "" };
+        usuarios[usuarioId] = { xp: 0, ultimoReclamo: "" };
         guardarDatos(usuarios);
     }
     return usuarios[usuarioId];
@@ -31,23 +31,21 @@ const guardarDatosUsuario = async (usuarioId, usuarioData) => {
 
 let handler = async (m, { conn }) => {
     const usuarioId = m.sender;
-    const dulcesGanados = 30;
     const xpGanados = 50;
 
     let usuarioData = await obtenerDatosUsuario(usuarioId);
     const hoy = new Date().toISOString().split('T')[0];
 
     if (usuarioData.ultimoReclamo === hoy) {
-        return conn.sendMessage(m.chat, { text: "¡Ya has reclamado tus 30 dulces y 50 XP hoy! Espera hasta mañana para volver a reclamar." }, { quoted: m });
+        return conn.sendMessage(m.chat, { text: "¡Ya has reclamado tu XP hoy! Espera hasta mañana para volver a reclamar." }, { quoted: m });
     }
 
-    usuarioData.dulce += dulcesGanados;
     usuarioData.xp += xpGanados;
     usuarioData.ultimoReclamo = hoy;
 
     await guardarDatosUsuario(usuarioId, usuarioData);
 
-    const mensajeReclamo = `¡Has reclamado 30 dulces y 50 XP! 🎉🍬 Ahora tienes ${usuarioData.dulce} dulces y ${usuarioData.xp} XP en total.`;
+    const mensajeReclamo = `¡Has reclamado ${xpGanados} XP! 🎉 Ahora tienes ${usuarioData.xp} XP en total.`;
     await conn.sendMessage(m.chat, { text: mensajeReclamo }, { quoted: m });
 };
 
