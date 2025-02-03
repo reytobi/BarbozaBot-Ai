@@ -16,7 +16,7 @@ let handler = async (m, { conn }) => {
 
     // Otorgar los premios
     global.db.data.users[userId].exp += 500; // Añadir experiencia
-    global.db.data.users[userId].dulces += 50; // Añadir dulces
+    global.db.data.users[userId].dulce += 50; // Añadir dulces
     global.db.data.users[userId].monedas += 100; // Añadir monedas
 
     // Actualizar la fecha de apertura del cofre
