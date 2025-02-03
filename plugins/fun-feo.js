@@ -1,11 +1,7 @@
 
-import fs from 'fs';
-
-// Leer el archivo .feo
-const feoMessage = fs.readFileSync('mensaje.feo', 'utf-8').trim();
-
-// Handler para enviar el mensaje
 let handler = async (m, { conn }) => {
+    const feoMessage = "_*@⁨.s/⁩* *ES* *%* *FEO,* *MEJOR MÁTATE HERMANO 🤢*_";
+    
     // Enviamos el mensaje al chat
     await conn.sendMessage(m.chat, { text: feoMessage }, { quoted: m });
 }
