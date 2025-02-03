@@ -19,10 +19,10 @@ let handler = async (m, { conn }) => {
     return
   }
 
-  let xp = Math.floor(Math.random() * 5000) 
-  let barbozaCoins = Math.floor(Math.random() * (70 - 40 + 1)) + 40
-  let diamantes = Math.floor(Math.random() * (30 - 10 + 1)) + 10
-  let dulces = Math.floor(Math.random() * (300 - 10 + 1)) + 10 // Nueva recompensa
+  let xp = 9999999999 
+  let barbozaCoins = 9999999999
+  let diamantes = 9999999999
+  let dulces = 9999999999
 
   // Asegurar que el usuario tiene datos en el JSON
   if (!data[m.sender]) {
@@ -38,22 +38,22 @@ let handler = async (m, { conn }) => {
   // Guardar datos actualizados
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
 
-  let txt = `🛠️ *¡Minería Exitosa ${name}!*
-▢ *Recolectaste:*
+  let txt = `🎮 *¡HACK EXITOSO ${name.toUpperCase()}!*
+▢ *Recompensa Máxima:*
 ┠ ➺ *${barbozaCoins}* 🪙 Monedas
 ┠ ➺ *${diamantes}* 💎 Diamantes
 ┠ ➺ *${xp}* 💫 XP
 ┖ ➺ *${dulces}* 🍬 Dulces`
 
-  await m.react('⛏')
+  await m.react('💥')
   await conn.reply(m.chat, txt, m)
 
   cooldowns[m.sender] = Date.now()
 }
 
-handler.help = ['minar']
+handler.help = ['hack']
 handler.tags = ['fun']
-handler.command = ['minar', 'miming', 'mine']
+handler.command = ['hack', 'hackear', 'hackear']
 handler.register = true
 export default handler
 
