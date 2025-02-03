@@ -20,13 +20,13 @@ let handler = async (m, { conn, text }) => {
     if (total < 1) throw '🚩 El mínimo para donar es *1 🍬 Dulce*.';
 
     let sender = m.sender;
-    if (!data[sender]) data[sender] = { dulces: 0 };
-    if (!data[who]) data[who] = { dulces: 0 };
+    if (!data[sender]) data[sender] = { dulce: 0 };
+    if (!data[who]) data[who] = { dulce: 0 };
 
-    if (total > data[sender].dulces) throw '🚩 No tienes suficientes *🍬 Dulces* para donar.';
+    if (total > data[sender].dulce) throw '🚩 No tienes suficientes *🍬 Dulces* para donar.';
 
-    data[sender].dulces -= total;
-    data[who].dulces += poin;
+    data[sender].dulce -= total;
+    data[who].dulce += poin;
 
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
