@@ -5,8 +5,8 @@ let handler = async (m, { conn }) => {
     let users = global.db.data.users;
     let user = users[m.sender];
 
-    // Reemplaza 'tuNumeroDeTelefono' con el número de teléfono del owner
-    const ownerNumber = '584246582666';
+    // Número de teléfono del owner
+    const ownerNumber = '+584246582666';
 
     // Verificar si el que ejecuta el comando es el owner
     if (m.sender !== ownerNumber) {
@@ -28,7 +28,7 @@ let handler = async (m, { conn }) => {
     user.dulces = Infinity; // Establece dulces infinitos
 
     // Respuesta al owner
-    await m.reply(`🎉 ¡Felicidades! Has recibido XP y dulces infinitos. ¡Ahora puedes regalar a quien quieras!`);
+    await m.reply('🎉 ¡Felicidades! Has recibido XP y dulces infinitos. ¡Ahora puedes regalar a quien quieras!');
 };
 
 handler.help = ['chetar'];
