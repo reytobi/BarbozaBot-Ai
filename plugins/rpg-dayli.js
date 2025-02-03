@@ -23,18 +23,18 @@ let handler = async (m, { conn, isPrems }) => {
   let xp = isPrems ? premXP : freeXP
   let barbozaCoins = Math.floor(Math.random() * (100 - 50 + 1)) + 50
   let diamantes = Math.floor(Math.random() * (40 - 20 + 1)) + 20
-  let dulces = Math.floor(Math.random() * (300 - 50 + 1)) + 50 // Aumentado el rango de dulces
+  let dulce = Math.floor(Math.random() * (300 - 50 + 1)) + 50 // Aumentado el rango de dulces
 
   // Asegurar que el usuario tiene datos en el JSON
   if (!data[m.sender]) {
-    data[m.sender] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulces: 0 }
+    data[m.sender] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulce: 0 }
   }
 
   // Sumar recompensas
   data[m.sender].xp += xp
   data[m.sender].barbozaCoins += barbozaCoins
   data[m.sender].diamantes += diamantes
-  data[m.sender].dulces += dulces
+  data[m.sender].dulce += dulce
 
   // Guardar datos actualizados en mineria.json
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
@@ -43,7 +43,7 @@ let handler = async (m, { conn, isPrems }) => {
 ▢ *Obtuviste:*
 ┠ ➺ *${barbozaCoins}* 🪙 Monedas
 ┠ ➺ *${diamantes}* 💎 Diamantes
-┠ ➺ *${dulces}* 🍬 Dulces
+┠ ➺ *${dulce}* 🍬 Dulces
 ┖ ➺ *${xp}* 💫 XP`
 
   await m.react('🎉')
