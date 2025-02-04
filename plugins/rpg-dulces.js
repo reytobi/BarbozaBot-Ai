@@ -22,7 +22,7 @@ let handler = async (m, { conn }) => {
     }
 
     // Aquí puedes definir cuántos dulces quieres sumar
-    const dulcesParaSumar = 10; // Cambia este valor según lo que necesites
+    const dulcesParaSumar = #cantidad; // Cambia este valor según lo que necesites
 
     // Sumar los dulces
     data[who].dulces = (data[who].dulces || 0) + dulcesParaSumar;
