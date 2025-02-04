@@ -1,67 +1,69 @@
-import fs from 'fs'
 
-const filePath = './mineria.json'
-let cooldowns = {}
+import fs from 'fs';
+
+const filePath = './mineria.json';
+let cooldowns = {};
 
 let handler = async (m, { conn, isPrems }) => {
     // Cargar datos de mineria.json
-    let data = fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath)) : {}
+    let data = fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath)) : {};
 
-    let who = m.sender
-    let tiempo = 5 * 60 // 5 minutos de cooldown
+    let who = m.sender;
+    let tiempo = 5 * 60; // 5 minutos de cooldown
 
     if (cooldowns[who] && Date.now() - cooldowns[who] < tiempo * 1000) {
-        const tiempoRestante = segundosAHMS(Math.ceil((cooldowns[who] + tiempo * 1000 - Date.now()) / 1000))
-        conn.reply(m.chat, `🤚 Espera ⏱️ *${tiempoRestante}* para volver a Trabajar.`, m)
-        return
+        const tiempoRestante = segundosAHMS(Math.ceil((cooldowns[who] + tiempo * 1000 - Date.now()) / 1000));
+        conn.reply(m.chat, `🤚 Espera ⏱️ *${tiempoRestante}* para volver a Trabajar.`, m);
+        return;
     }
 
     // Generar recompensas aleatorias
-    let xp = Math.floor(Math.random() * 5000) 
-    let barbozaCoins = Math.floor(Math.random() * (100 - 50 + 1)) + 50
-    let diamantes = Math.floor(Math.random() * (40 - 20 + 1)) + 20
-    let dulce = Math.floor(Math.random() * (50 - 10 + 1)) + 10
+    let xp = Math.floor(Math.random() * 5000);
+    let barbozaCoins = Math.floor(Math.random() * (100 - 50 + 1)) + 50;
+    let diamantes = Math.floor(Math.random() * (40 - 20 + 1)) + 20;
+    let dulces = Math.floor(Math.random() * (50 - 10 + 1)) + 10; // Cambié de 'dulce' a 'dulces'
 
     // Si el usuario no está en el JSON, se inicializa
     if (!data[who]) {
-        data[who] = { exp: 0, barbozaCoins: 0, diamantes: 0, limit: 0 }
+        data[who] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulces: 0 };
     }
 
     // Sumar recompensas al usuario
-    data[who].exp += exp
-    data[who].barbozaCoins += barbozaCoins
-    data[who].diamantes += diamantes
-    data[who].limit += limit
+    data[who].xp += xp; // Cambié 'exp' a 'xp'
+    data[who].barbozaCoins += barbozaCoins;
+    data[who].diamantes += diamantes;
+    data[who].dulces += dulces; // Cambié '${dulces}' a 'dulces'
 
     // Guardar datos actualizados en mineria.json
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
     let mensaje = `👨‍🏭 *${pickRandom(trabajo)}*  
 🎖 *Recompensas obtenidas:*  
 ▢ *${xp}* 💫 XP  
 ▢ *${barbozaCoins}* 🪙 Monedas  
 ▢ *${diamantes}* 💎 Diamantes  
-▢ *${dulce}* 🍬 Dulces`
+▢ *${dulces}* 🍬 Dulces`; // Cambié '${dulce}' a '${dulces}'
 
-    cooldowns[who] = Date.now()
-    await conn.reply(m.chat, mensaje, m)
+    cooldowns[who] = Date.now();
+    await conn.reply(m.chat, mensaje, m);
 }
 
-handler.help = ['trabajar']
-handler.tags = ['economy']
-handler.command = ['w', 'work', 'chambear', 'chamba', 'trabajar']
-handler.group = true
-handler.register = true
-export default handler
+handler.help = ['trabajar'];
+handler.tags = ['economy'];
+handler.command = ['w', 'work', 'chambear', 'chamba', 'trabajar'];
+handler.group = true;
+handler.register = true;
+
+export default handler;
 
 function segundosAHMS(segundos) {
-    let minutos = Math.floor((segundos % 3600) / 60)
-    let segundosRestantes = segundos % 60
-    return `${minutos} minutos y ${segundosRestantes} segundos`
+    let minutos = Math.floor((segundos % 3600) / 60);
+    let segundosRestantes = segundos % 60;
+    return `${minutos} minutos y ${segundosRestantes} segundos`; // Cambié ${minutos} por `${minutos}`
 }
 
 function pickRandom(list) {
-    return list[Math.floor(list.length * Math.random())]
+    return list[Math.floor(list.length * Math.random())];
 }
 
 // Lista de trabajos
@@ -87,4 +89,4 @@ const trabajo = [
    "Hiciste trabajo social y recibiste una recompensa",
    "Fuiste agricultor y obtuviste",
    "Trabajaste como constructor de castillos de arena y ganaste"
-]
+];
