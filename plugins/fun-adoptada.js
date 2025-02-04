@@ -5,8 +5,12 @@ let handler = async (m, { conn, text }) => {
         return conn.sendMessage(m.chat, { text: "Por favor, menciona a un usuario. Ejemplo: .adoptada @usuario" }, { quoted: m });
     }
 
-    let user = text.replace(/[^0-9]/g, ''); // Extraer el ID del usuario mencionado
-    let adoptadaMessage = `_*@⁨${user}/⁩* *ES/IS* *%* *ADOPTADa*_ Sus padres se fueron x pañales 😞😂`;
+    let userMentioned = text.split('@')[1]; // Extraer el ID del usuario mencionado
+
+    // Obtener el nombre del usuario mencionado usando conn.getName()
+    let mentionedName = await conn.getName(userMentioned + '@s.whatsapp.net');
+
+    let adoptadaMessage = `*${mentionedName}* *ES/IS* *%* *ADOPTADa* _Sus padres se fueron x pañales 😞😂_`;
 
     // Enviamos el mensaje al chat
     await conn.sendMessage(m.chat, { text: adoptadaMessage }, { quoted: m });
