@@ -10,7 +10,7 @@ let handler = async (m, { conn, text }) => {
     // Obtener el nombre del usuario mencionado usando conn.getName()
     let mentionedName = await conn.getName(userMentioned + '@s.whatsapp.net');
 
-    let adoptadaMessage = `*${mentionedName}* *ES/IS* *%* *ADOPTADa* _Sus padres se fueron x pañales 😞😂_`;
+    let adoptadaMessage = `*${mentionedName}* *ES/IS* *%* *ADOPTADA* _Sus padres se fueron x pañales 😞😂_`;
 
     // Enviamos el mensaje al chat
     await conn.sendMessage(m.chat, { text: adoptadaMessage }, { quoted: m });
