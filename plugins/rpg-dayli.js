@@ -31,10 +31,10 @@ let handler = async (m, { conn, isPrems }) => {
   }
 
   // Sumar recompensas
-  data[m.sender].xp += xp
+  data[m.sender].exp += exp
   data[m.sender].barbozaCoins += barbozaCoins
   data[m.sender].diamantes += diamantes
-  data[m.sender].dulce += dulce
+  data[m.sender].limit += limit
 
   // Guardar datos actualizados en mineria.json
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
@@ -44,7 +44,7 @@ let handler = async (m, { conn, isPrems }) => {
 ┠ ➺ *${barbozaCoins}* 🪙 Monedas
 ┠ ➺ *${diamantes}* 💎 Diamantes
 ┠ ➺ *${dulce}* 🍬 Dulces
-┖ ➺ *${xp}* 💫 XP`
+┖ ➺ *${exp}* 💫 XP`
 
   await m.react('🎉')
   await conn.reply(m.chat, txt, m)
