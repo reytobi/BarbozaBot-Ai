@@ -24,14 +24,14 @@ let handler = async (m, { conn, isPrems }) => {
 
     // Si el usuario no está en el JSON, se inicializa
     if (!data[who]) {
-        data[who] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulce: 0 }
+        data[who] = { exp: 0, barbozaCoins: 0, diamantes: 0, limit: 0 }
     }
 
     // Sumar recompensas al usuario
-    data[who].xp += xp
+    data[who].exp += exp
     data[who].barbozaCoins += barbozaCoins
     data[who].diamantes += diamantes
-    data[who].dulce += dulce
+    data[who].limit += limit
 
     // Guardar datos actualizados en mineria.json
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
