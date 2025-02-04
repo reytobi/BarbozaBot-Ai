@@ -1,3 +1,4 @@
+
 import fs from 'fs'
 
 const freeXP = 50000
@@ -39,12 +40,7 @@ let handler = async (m, { conn, isPrems }) => {
   // Guardar datos actualizados en mineria.json
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
 
-  let txt = `🎁 *¡Recompensa Diaria para ${conn.getName(m.sender)}!*
-▢ *Obtuviste:*
-┠ ➺ *${barbozaCoins}* 🪙 Monedas
-┠ ➺ *${diamantes}* 💎 Diamantes
-┠ ➺ *${dulces}* 🍬 Dulces
-┖ ➺ *${xp}* 💫 XP`
+  let txt = `🎁 *¡Recompensa Diaria para ${conn.getName(m.sender)}!*\n▢ *Obtuviste:*\n┠ ➺ *${barbozaCoins}* 🪙 Monedas\n┠ ➺ *${diamantes}* 💎 Diamantes\n┠ ➺ *${dulces}* 🍬 Dulces\n┖ ➺ *${xp}* 💫 XP`
 
   await m.react('🎉')
   await conn.reply(m.chat, txt, m)
@@ -58,10 +54,3 @@ handler.command = ['daily', 'claim']
 handler.register = true
 
 export default handler
-
-function segundosAHMS(segundos) {
-  const horas = Math.floor(segundos / 3600)
-  const minutos = Math.floor((segundos % 3600) / 60)
-  const segundosRestantes = segundos % 60
-  return `${horas} horas, ${minutos} minutos y ${segundosRestantes} segundos`;
-}
