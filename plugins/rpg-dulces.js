@@ -1,10 +1,9 @@
 
-
 import fs from 'fs';
 
 const filePath = './mineria.json';
 
-let handler = async (m, { conn }) => {
+let handler = async (m, { conn, args }) => {
     let who = m.mentionedJid[0] 
         ? m.mentionedJid[0] 
         : m.quoted 
@@ -21,8 +20,13 @@ let handler = async (m, { conn }) => {
         return conn.reply(m.chat, '⚠️ El usuario no se encuentra en la base de datos de minería.', m);
     }
 
-    // Aquí puedes definir cuántos dulces quieres sumar
-    const dulcesParaSumar = 0; // Cambia este valor según lo que necesites
+    // Obtener la cantidad de dulces a sumar desde los argumentos
+    const dulcesParaSumar = parseInt(args[0]) || 1; // Por defecto suma 1 si no se proporciona un número
+
+    // Validar que la cantidad sea un número positivo
+    if (dulcesParaSumar <= 0) {
+        return conn.reply(m.chat, '⚠️ Debes comprar al menos 1 dulce.', m);
+    }
 
     // Sumar los dulces
     data[who].dulces = (data[who].dulces || 0) + dulcesParaSumar;
@@ -42,7 +46,7 @@ let handler = async (m, { conn }) => {
     await conn.sendMessage(m.chat, { text: mensaje, mentions: [who] }, { quoted: m });
 };
 
-handler.help = ['dulces'];
+handler.help = ['comprar <cantidad>', 'dulces'];
 handler.tags = ['rpg'];
 handler.command = ['wallet', 'cartera', 'dulces', 'bal', 'coins'];
 
