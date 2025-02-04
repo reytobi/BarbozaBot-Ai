@@ -33,7 +33,7 @@ const guardarDatos = (data) => {
 
 const calcularTiempoRestante = (tiempoRestante) => {
     if (tiempoRestante <= 0) return "0 horas y 0 minutos";
-    
+
     let horas = Math.floor(tiempoRestante / 3600000);
     let minutos = Math.floor((tiempoRestante % 3600000) / 60000);
     return `${horas} horas y ${minutos} minutos`;
@@ -69,36 +69,35 @@ let handler = async (m, { command, args, usedPrefix }) => {
 
             return m.reply(`🎉 ¡Has adoptado a ${nombreMascota}! Usa *${usedPrefix}mascota* para ver su estado.`);
 
-  case 'comprarcomida':
-    let cantidad = parseInt(args[0]);
-    if (!cantidad || cantidad <= 0) return m.reply("❌ Ingresa una cantidad válida.");
-    let costoComida = cantidad * 5;
+        case 'comprarcomida': {
+            let cantidad = parseInt(args[0]);
+            if (!cantidad || cantidad <= 0) return m.reply("❌ Ingresa una cantidad válida.");
+            
+            let costoComida = cantidad * 5;
 
-    // Verificar que el usuario tenga suficientes dulces
-    if (usuario.dulces < costoComida) {
-        return m.reply(`❌ No tienes suficientes 🍬 dulces. Tienes ${usuario.dulces} dulces.`);
-    }
+            if (usuario.dulces < costoComida) {
+                return m.reply(`❌ No tienes suficientes 🍬 dulces. Tienes ${usuario.dulces} dulces.`);
+            }
 
-    // Actualizar los dulces y la comida
-    usuario.dulces -= costoComida;
-    usuario.comida += cantidad;
+            usuario.dulces -= costoComida;
+            usuario.comida = (usuario.comida || 0) + cantidad;
 
-    // Guardar los nuevos datos
-    usuarios[m.sender] = usuario;
-    guardarDatos(usuarios);
+            usuarios[m.sender] = usuario;
+            guardarDatos(usuarios);
 
-    return m.reply(`🍖 Compraste ${cantidad} comida. Ahora tienes ${usuario.comida} comida.`);
+            return m.reply(`🍖 Has comprado ${cantidad} comida.\nTienes ahora:\n- 🍬 Dulces: ${usuario.dulces}\n- 🍖 Comida: ${usuario.comida}`);
+        }
 
         case 'alimentar':
             if (!usuario.mascota) return m.reply(`❌ No tienes una mascota. Usa *${usedPrefix}mimascota* para adoptar una.`);
-            
+
             let cantidadComida = parseInt(args[0]);
             if (!cantidadComida || cantidadComida <= 0) return m.reply("❌ Ingresa una cantidad válida.");
             if (usuario.comida < cantidadComida) return m.reply("❌ No tienes suficiente comida.");
 
             let ahora = Date.now();
             let tiempoDesdeUltimaComida = ahora - (usuario.tiempoUltimaComida || ahora);
-            
+
             if (tiempoDesdeUltimaComida < FEEDING_COOLDOWN) {
                 let tiempoRestante = calcularTiempoRestante(FEEDING_COOLDOWN - tiempoDesdeUltimaComida);
                 return m.reply(`❌ Debes esperar ${tiempoRestante} para volver a alimentar a tu mascota.`);
@@ -109,7 +108,6 @@ let handler = async (m, { command, args, usedPrefix }) => {
             usuarios[m.sender] = usuario;
             guardarDatos(usuarios);
 
-            // Calcular felicidad adicional basada en la cantidad de comida
             let felicidadBase = mascotas[usuario.mascota].felicidad;
             let felicidadAdicional = Math.floor(cantidadComida * (felicidadBase / 10));
 
@@ -123,16 +121,15 @@ let handler = async (m, { command, args, usedPrefix }) => {
 
             let tiempoActual = Date.now();
             let tiempoTranscurrido = tiempoActual - (usuario.tiempoUltimaComida || tiempoActual);
-            let tiempoSinComer = Math.max(0, tiempoTranscurrido / 3600000); // En horas, mínimo 0
+            let tiempoSinComer = Math.max(0, tiempoTranscurrido / 3600000);
 
             let estadoMascota = "😊 Feliz";
             if (tiempoSinComer >= 8) {
                 estadoMascota = "😢 Hambrienta";
             }
 
-            // Calcular tiempo restante para próxima alimentación
             let tiempoRestanteParaAlimentar = Math.max(0, FEEDING_COOLDOWN - tiempoTranscurrido);
-            let tiempoFaltante = Math.max(0, 8 - (tiempoSinComer % 8)); // Horas restantes para alimentar
+            let tiempoFaltante = Math.max(0, 8 - (tiempoSinComer % 8));
 
             return m.reply(
                 `🐾 *Estado de ${usuario.mascota}:*\n` +
@@ -148,5 +145,5 @@ let handler = async (m, { command, args, usedPrefix }) => {
     }
 };
 
-handler.command = /^(mimascota|comprar|costos|comprarcomida|alimentar|mascota)$/i;
+handler.command = /^(mimascota|comprar|comprarcomida|alimentar|mascota)$/i;
 export default handler;
