@@ -23,10 +23,10 @@ let handler = async (m, { conn }) => {
 
     let mensaje = (who === m.sender)
         ? `🎉 *Tu Cartera de Dulces* 🎉\n\n` +
-          `🍬 Dulces: *${dulces}*\n\n` +
+          `🍬 Dulces: *${limit}*\n\n` +
           `📌 Usa el comando nuevamente mencionando a otro usuario para ver su saldo.`
         : `🎈 *Cartera de @${who.split('@')[0]}* 🎈\n\n` +
-          `🍬 Dulces: *${dulce}*`;
+          `🍬 Dulces: *${limit}*`;
 
     await conn.sendMessage(m.chat, { text: mensaje, mentions: [who] }, { quoted: m });
 };
