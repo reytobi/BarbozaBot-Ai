@@ -1,9 +1,8 @@
-
 import fs from 'fs';
 
 const filePath = './mineria.json';
 
-let handler = async (m, { conn, args }) => {
+let handler = async (m, { conn }) => {
     let who = m.mentionedJid[0] 
         ? m.mentionedJid[0] 
         : m.quoted 
@@ -20,21 +19,7 @@ let handler = async (m, { conn, args }) => {
         return conn.reply(m.chat, '⚠️ El usuario no se encuentra en la base de datos de minería.', m);
     }
 
-    // Obtener la cantidad de dulces a comprar del argumento
-    const dulcesParaSumar = parseInt(args[0]) || 1; // Si no se proporciona, sumar 1
-
-    // Validar que la cantidad sea un número positivo
-    if (dulcesParaSumar <= 0) {
-        return conn.reply(m.chat, '⚠️ Debes comprar al menos 1 dulce.', m);
-    }
-
-    // Sumar los dulces
-    data[who].dulces = (data[who].dulces || 0) + dulcesParaSumar;
-
-    // Guardar los cambios en el archivo
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-
-    let dulces = data[who].dulces;
+    let dulces = data[who].dulces || 0;
 
     let mensaje = (who === m.sender)
         ? `🎉 *Tu Cartera de Dulces* 🎉\n\n` +
