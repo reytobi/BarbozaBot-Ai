@@ -1,9 +1,6 @@
-
 import fs from 'fs'
 
-const freeXP = 50000
-const premXP = 100000
-const cooldowns = {}
+let cooldowns = {}
 const filePath = './mineria.json'
 
 // Verifica si el archivo existe, si no, lo crea
@@ -11,46 +8,93 @@ if (!fs.existsSync(filePath)) {
   fs.writeFileSync(filePath, JSON.stringify({}, null, 2))
 }
 
-let handler = async (m, { conn, isPrems }) => {
+let handler = async (m, { conn }) => {
   let data = JSON.parse(fs.readFileSync(filePath)) // Cargar datos de minería
+  
+  let senderId = m.sender
+  let senderName = conn.getName(senderId)
 
-  const tiempoEspera = 24 * 60 * 60 // 24 horas
-  if (cooldowns[m.sender] && Date.now() - cooldowns[m.sender] < tiempoEspera * 1000) {
-    const tiempoRestante = segundosAHMS(Math.ceil((cooldowns[m.sender] + tiempoEspera * 1000 - Date.now()) / 1000))
-    conn.reply(m.chat, `🚩 Ya has realizado tu pedido gratis de hoy.\nRecuerda que solo puedes realizarlo 1 vez cada 24 horas.\n\n*Próximo Monto* : +${isPrems ? premXP : freeXP} 💫 XP\n*En* : ⏱ ${tiempoRestante}`, m)
+  let tiempoEspera = 5 * 60 // 5 minutos
+  if (cooldowns[senderId] && Date.now() - cooldowns[senderId] < tiempoEspera * 1000) {
+    let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[senderId] + tiempoEspera * 1000 - Date.now()) / 1000))
+    m.reply(`🚩 Ya has cometido un crimen recientemente, espera *⏱ ${tiempoRestante}* para volver a intentarlo.`)
     return
   }
 
-  let xp = isPrems ? premXP : freeXP
-  let barbozaCoins = Math.floor(Math.random() * (100 - 50 + 1)) + 50
-  let diamantes = Math.floor(Math.random() * (40 - 20 + 1)) + 20
-  let dulces = Math.floor(Math.random() * (300 - 50 + 1)) + 50 // Aumentado el rango de dulces
+  cooldowns[senderId] = Date.now()
 
-  // Asegurar que el usuario tiene datos en el JSON
-  if (!data[m.sender]) {
-    data[m.sender] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulces: 0 }
+  let randomUserId = Object.keys(data)[Math.floor(Math.random() * Object.keys(data).length)]
+  while (randomUserId === senderId) {
+    randomUserId = Object.keys(data)[Math.floor(Math.random() * Object.keys(data).length)]
   }
 
-  // Sumar recompensas
-  data[m.sender].xp += xp
-  data[m.sender].barbozaCoins += barbozaCoins
-  data[m.sender].diamantes += diamantes
-  data[m.sender].dulces += dulces
+  let minAmount = 15
+  let maxAmount = 50
+
+  let amountTaken = Math.floor(Math.random() * (maxAmount - minAmount + 1)) + minAmount
+  let randomOption = Math.floor(Math.random() * 3)
+
+  let xp = Math.floor(Math.random() * 5000)
+  let barbozaCoins = Math.floor(Math.random() * (70 - 40 + 1)) + 40
+  let diamantes = Math.floor(Math.random() * (30 - 10 + 1)) + 10
+  let limit = Math.floor(Math.random() * (10 - 5 + 1)) + 5
+
+  if (!data[senderId]) {
+    data[senderId] = { exp: 0, barbozaCoins: 0, diamantes: 0, limit: 0 }
+  }
+  if (!data[randomUserId]) {
+    data[randomUserId] = { exp: 0, barbozaCoins: 0, diamantes: 0, limit: 0 }
+  }
+
+  switch (randomOption) {
+    case 0:
+      data[senderId].barbozaCoins += amountTaken
+      data[randomUserId].barbozaCoins -= amountTaken
+      data[senderId].exp += exp
+      data[senderId].diamantes += diamantes
+      data[senderId].limit += limit
+      conn.sendMessage(m.chat, {
+        text: `🚩 *¡Crimen Exitoso ${senderName}!*\n\nLograste robar *${amountTaken} 🪙 Monedas* de @${randomUserId.split("@")[0]}.\n\n🎁 *Recompensas adicionales:*\n➜ *${exp}* 💫 XP\n➜ *${diamantes}* 💎 Diamantes\n➜ *${limit}* 🍬 Dulces`,
+        contextInfo: { mentionedJid: [randomUserId] }
+      }, { quoted: m })
+      break
+
+    case 1:
+      let amountSubtracted = Math.min(amountTaken, data[senderId].barbozaCoins)
+      data[senderId].barbozaCoins -= amountSubtracted
+      conn.reply(m.chat, `🚩 *¡Te atraparon, ${senderName}!*\nPerdiste *-${amountSubtracted} 🪙 Monedas* mientras intentabas cometer un crimen.`, m)
+      break
+
+    case 2:
+      let smallAmountTaken = Math.min(Math.floor(amountTaken / 2), data[randomUserId].barbozaCoins)
+      data[senderId].barbozaCoins += smallAmountTaken
+      data[randomUserId].barbozaCoins -= smallAmountTaken
+      data[senderId].exp += exp
+      data[senderId].diamantes += Math.floor(diamantes / 2)
+      data[senderId].limit += Math.floor(limit / 2)
+      conn.sendMessage(m.chat, {
+        text: `🚩 *¡Crimen Parcialmente Exitoso ${senderName}!*\n\nLograste robar *${smallAmountTaken} 🪙 Monedas* de @${randomUserId.split("@")[0]}, pero fuiste descubierto y tuviste que escapar rápido.\n\n🎁 *Recompensas adicionales:*\n➜ *${exp}* 💫 XP\n➜ *${Math.floor(diamantes / 2)}* 💎 Diamantes\n➜ *${Math.floor(limit / 2)}* 🍬 Dulces`,
+        contextInfo: { mentionedJid: [randomUserId] }
+      }, { quoted: m })
+      break
+  }
 
   // Guardar datos actualizados en mineria.json
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
 
-  let txt = `🎁 *¡Recompensa Diaria para ${conn.getName(m.sender)}!*\n▢ *Obtuviste:*\n┠ ➺ *${barbozaCoins}* 🪙 Monedas\n┠ ➺ *${diamantes}* 💎 Diamantes\n┠ ➺ *${dulces}* 🍬 Dulces\n┖ ➺ *${xp}* 💫 XP`
-
-  await m.react('🎉')
-  await conn.reply(m.chat, txt, m)
-
-  cooldowns[m.sender] = Date.now()
+  global.db.write()
 }
 
-handler.help = ['claim']
-handler.tags = ['fun']
-handler.command = ['daily', 'claim']
+handler.tags = ['rpg']
+handler.help = ['crimen']
+handler.command = ['crimen', 'crime']
 handler.register = true
+handler.group = true
 
 export default handler
+
+function segundosAHMS(segundos) {
+  let minutos = Math.floor((segundos % 3600) / 60)
+  let segundosRestantes = segundos % 60
+  return `${minutos} minutos y ${segundosRestantes} segundos`
+}
