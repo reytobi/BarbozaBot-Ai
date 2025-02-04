@@ -1,4 +1,5 @@
 
+
 import fs from 'fs';
 
 const filePath = './mineria.json';
@@ -20,11 +21,11 @@ let handler = async (m, { conn }) => {
         return conn.reply(m.chat, '⚠️ El usuario no se encuentra en la base de datos de minería.', m);
     }
 
-    // Aquí puedes definir la cantidad de dulces ganados, por ejemplo:
-    let dulcesGanados = 10; // Cambia este valor según sea necesario
+    // Aquí puedes definir cuántos dulces quieres sumar
+    const dulcesParaSumar = 10; // Cambia este valor según lo que necesites
 
-    // Sumar los dulces ganados a la cantidad actual
-    data[who].dulces = (data[who].dulces || 0) + dulcesGanados;
+    // Sumar los dulces
+    data[who].dulces = (data[who].dulces || 0) + dulcesParaSumar;
 
     // Guardar los cambios en el archivo
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
