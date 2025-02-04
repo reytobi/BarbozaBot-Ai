@@ -19,14 +19,14 @@ let handler = async (m, { conn }) => {
         return conn.reply(m.chat, '⚠️ El usuario no se encuentra en la base de datos de minería.', m);
     }
 
-    let dulces = data[who].dulces || 0;
+    let limit = data[who].limit || 0;
 
     let mensaje = (who === m.sender)
         ? `🎉 *Tu Cartera de Dulces* 🎉\n\n` +
-          `🍬 Dulces: *${dulces}*\n\n` +
+          `🍬 Dulces: *${limit}*\n\n` +
           `📌 Usa el comando nuevamente mencionando a otro usuario para ver su saldo.`
         : `🎈 *Cartera de @${who.split('@')[0]}* 🎈\n\n` +
-          `🍬 Dulces: *${dulces}*`;
+          `🍬 Dulces: *${limit}*`;
 
     await conn.sendMessage(m.chat, { text: mensaje, mentions: [who] }, { quoted: m });
 };
