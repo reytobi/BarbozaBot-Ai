@@ -1,3 +1,4 @@
+
 import fs from 'fs';
 
 const filePath = './mineria.json';
@@ -5,8 +6,6 @@ const filePath = './mineria.json';
 let handler = async (m, { conn }) => {
     let who = m.mentionedJid[0] 
         ? m.mentionedJid[0] 
-        : m.quoted 
-        ? m.quoted.sender 
         : m.sender;
 
     if (!fs.existsSync(filePath)) {
@@ -19,7 +18,7 @@ let handler = async (m, { conn }) => {
         return conn.reply(m.chat, '⚠️ El usuario no se encuentra en la base de datos de minería.', m);
     }
 
-    let dulces = data[who].dulces || 0;
+    let dulces = data[who].dulces || 0; // Si no hay dulces, establece 0
 
     let mensaje = (who === m.sender)
         ? `🎉 *Tu Cartera de Dulces* 🎉\n\n` +
@@ -33,6 +32,6 @@ let handler = async (m, { conn }) => {
 
 handler.help = ['dulces'];
 handler.tags = ['rpg'];
-handler.command = ['wallet', 'cartera', 'dulces', 'bal', 'coins'];
+handler.command = ['dulces', 'cartera', 'wallet'];
 
 export default handler;
