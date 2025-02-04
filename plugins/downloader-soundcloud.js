@@ -48,7 +48,7 @@ let handler = async (m, { conn, text }) => {
     await conn.sendMessage(m.chat, {
       image: { url: video.thumbnail },
       caption: `🎵 *Título:* ${video.title}\n👁️ *Vistas:* ${video.views}\n⏳ *Duración:* ${video.timestamp}\n✍️ *Autor:* ${video.author.name}
-        _By Barboza Bot 🔥_`,
+      `> @Barboza - Bot - 𝟢𝟨`,,
     });
 
     // Enviar solo el audio
