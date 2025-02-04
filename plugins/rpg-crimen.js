@@ -40,19 +40,19 @@ let handler = async (m, { conn }) => {
   let dulces = Math.floor(Math.random() * (10 - 5 + 1)) + 5
 
   if (!data[senderId]) {
-    data[senderId] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulces: 0 }
+    data[senderId] = { exp: 0, barbozaCoins: 0, diamantes: 0, limit: 0 }
   }
   if (!data[randomUserId]) {
-    data[randomUserId] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulces: 0 }
+    data[randomUserId] = { exp: 0, barbozaCoins: 0, diamantes: 0, limit: 0 }
   }
 
   switch (randomOption) {
     case 0:
       data[senderId].barbozaCoins += amountTaken
       data[randomUserId].barbozaCoins -= amountTaken
-      data[senderId].xp += xp
+      data[senderId].exp += exp
       data[senderId].diamantes += diamantes
-      data[senderId].dulces += dulces
+      data[senderId].limit += limit
       conn.sendMessage(m.chat, {
         text: `🚩 *¡Crimen Exitoso ${senderName}!*\n\nLograste robar *${amountTaken} 🪙 Monedas* de @${randomUserId.split("@")[0]}.\n\n🎁 *Recompensas adicionales:*\n➜ *${xp}* 💫 XP\n➜ *${diamantes}* 💎 Diamantes\n➜ *${dulces}* 🍬 Dulces`,
         contextInfo: { mentionedJid: [randomUserId] }
