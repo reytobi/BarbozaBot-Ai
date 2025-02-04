@@ -69,22 +69,25 @@ let handler = async (m, { command, args, usedPrefix }) => {
 
             return m.reply(`🎉 ¡Has adoptado a ${nombreMascota}! Usa *${usedPrefix}mascota* para ver su estado.`);
 
-        case 'costos':
-            let costos = Object.keys(mascotas).map(m => `${m} - ${mascotas[m].precio} 🍬`).join('\n');
-            return m.reply(`📜 *Lista de precios de mascotas:*\n${costos}`);
+  case 'comprarcomida':
+    let cantidad = parseInt(args[0]);
+    if (!cantidad || cantidad <= 0) return m.reply("❌ Ingresa una cantidad válida.");
+    let costoComida = cantidad * 5;
 
-        case 'comprarcomida':
-            let cantidad = parseInt(args[0]);
-            if (!cantidad || cantidad <= 0) return m.reply("❌ Ingresa una cantidad válida.");
-            let costoComida = cantidad * 5;
-            if (usuario.dulces < costoComida) return m.reply("❌ No tienes suficientes 🍬 dulces.");
+    // Verificar que el usuario tenga suficientes dulces
+    if (usuario.dulces < costoComida) {
+        return m.reply(`❌ No tienes suficientes 🍬 dulces. Tienes ${usuario.dulces} dulces.`);
+    }
 
-            usuario.dulces -= costoComida;
-            usuario.comida += cantidad;
-            usuarios[m.sender] = usuario;
-            guardarDatos(usuarios);
+    // Actualizar los dulces y la comida
+    usuario.dulces -= costoComida;
+    usuario.comida += cantidad;
 
-            return m.reply(`🍖 Compraste ${cantidad} comida. Ahora tienes ${usuario.comida} comida.`);
+    // Guardar los nuevos datos
+    usuarios[m.sender] = usuario;
+    guardarDatos(usuarios);
+
+    return m.reply(`🍖 Compraste ${cantidad} comida. Ahora tienes ${usuario.comida} comida.`);
 
         case 'alimentar':
             if (!usuario.mascota) return m.reply(`❌ No tienes una mascota. Usa *${usedPrefix}mimascota* para adoptar una.`);
