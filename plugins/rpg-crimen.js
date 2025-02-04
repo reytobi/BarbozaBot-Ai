@@ -40,19 +40,19 @@ let handler = async (m, { conn }) => {
   let limit = Math.floor(Math.random() * (10 - 5 + 1)) + 5
 
   if (!data[senderId]) {
-    data[senderId] = { exp: 0, barbozaCoins: 0, diamantes: 0, limit: 0 }
+    data[senderId] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulces:0 }
   }
   if (!data[randomUserId]) {
-    data[randomUserId] = { exp: 0, barbozaCoins: 0, diamantes: 0, limit: 0 }
+    data[randomUserId] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulces: 0 }
   }
 
   switch (randomOption) {
     case 0:
       data[senderId].barbozaCoins += amountTaken
       data[randomUserId].barbozaCoins -= amountTaken
-      data[senderId].exp += exp
+      data[senderId].xp += xp
       data[senderId].diamantes += diamantes
-      data[senderId].limit += limit
+      data[senderId].${dulces} += dulces 
       conn.sendMessage(m.chat, {
         text: `🚩 *¡Crimen Exitoso ${senderName}!*\n\nLograste robar *${amountTaken} 🪙 Monedas* de @${randomUserId.split("@")[0]}.\n\n🎁 *Recompensas adicionales:*\n➜ *${exp}* 💫 XP\n➜ *${diamantes}* 💎 Diamantes\n➜ *${limit}* 🍬 Dulces`,
         contextInfo: { mentionedJid: [randomUserId] }
@@ -69,7 +69,7 @@ let handler = async (m, { conn }) => {
       let smallAmountTaken = Math.min(Math.floor(amountTaken / 2), data[randomUserId].barbozaCoins)
       data[senderId].barbozaCoins += smallAmountTaken
       data[randomUserId].barbozaCoins -= smallAmountTaken
-      data[senderId].exp += exp
+      data[senderId].${dulces} += dulces 
       data[senderId].diamantes += Math.floor(diamantes / 2)
       data[senderId].limit += Math.floor(limit / 2)
       conn.sendMessage(m.chat, {
