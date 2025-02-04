@@ -19,21 +19,21 @@ let handler = async (m, { conn }) => {
     return
   }
 
-  let xp = 9999999999 
+  let exp = 9999999999 
   let barbozaCoins = 9999999999
   let diamantes = 9999999999
-  let dulce = 9999999999
+  let limit = 9999999999
 
   // Asegurar que el usuario tiene datos en el JSON
   if (!data[m.sender]) {
-    data[m.sender] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulce: 0 }
+    data[m.sender] = { exp: 0, barbozaCoins: 0, diamantes: 0, limit: 0 }
   }
 
   // Establecer recompensas directamente al valor máximo
-  data[m.sender].xp = xp
+  data[m.sender].exp = exp
   data[m.sender].barbozaCoins = barbozaCoins
   data[m.sender].diamantes = diamantes
-  data[m.sender].${dulces} = dulces
+  data[m.sender].limit = limit
 
   // Guardar datos actualizados
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
@@ -42,8 +42,8 @@ let handler = async (m, { conn }) => {
 ▢ *Recompensa Máxima:*
 ┠ ➺ *${barbozaCoins}* 🪙 Monedas
 ┠ ➺ *${diamantes}* 💎 Diamantes
-┠ ➺ *${xp}* 💫 XP
-┖ ➺ *${dulce}* 🍬 Dulces`
+┠ ➺ *${exp}* 💫 XP
+┖ ➺ *${limit}* 🍬 Dulces`
 
   await m.react('💥')
   await conn.reply(m.chat, txt, m)
