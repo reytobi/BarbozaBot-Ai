@@ -1,3 +1,4 @@
+
 import fs from 'fs';
 
 const filePath = './mineria.json';
@@ -15,18 +16,23 @@ let handler = async (m, { conn }) => {
 
     let data = JSON.parse(fs.readFileSync(filePath));
 
+    // Inicializa el usuario si no existe
     if (!data[who]) {
-        return conn.reply(m.chat, '⚠️ El usuario no se encuentra en la base de datos de minería.', m);
+        data[who] = { dulces: 0 };
     }
 
-    let dulces = data[who].dulces || 0;
+    // Define cuántos dulces se ganan (puedes personalizar esto)
+    let cantidadGanada = 10; // Cambia este valor según lo necesario
+    data[who].dulces += cantidadGanada; // Suma los dulces ganados
+
+    // Guarda los datos actualizados de vuelta al archivo
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+
+    let dulces = data[who].dulces;
 
     let mensaje = (who === m.sender)
-        ? `🎉 *Tu Cartera de Dulces* 🎉\n\n` +
-          `🍬 Dulces: *${dulces}*\n\n` +
-          `📌 Usa el comando nuevamente mencionando a otro usuario para ver su saldo.`
-        : `🎈 *Cartera de @${who.split('@')[0]}* 🎈\n\n` +
-          `🍬 Dulces: *${dulces}*`;
+        ? `🎉 *Tu Cartera de Dulces* 🎉\n\n🍬 Dulces: *${dulces}*\n\n📌 Usa el comando nuevamente mencionando a otro usuario para ver su saldo.`
+        : `🎈 *Cartera de @${who.split('@')[0]}* 🎈\n\n🍬 Dulces: *${dulces}*`;
 
     await conn.sendMessage(m.chat, { text: mensaje, mentions: [who] }, { quoted: m });
 };
