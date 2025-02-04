@@ -19,10 +19,10 @@ let handler = async (m, { conn }) => {
     return
   }
 
-  let xp = Math.floor(Math.random() * 5000) 
+  let exp = Math.floor(Math.random() * 5000) 
   let barbozaCoins = Math.floor(Math.random() * (70 - 40 + 1)) + 40
   let diamantes = Math.floor(Math.random() * (30 - 10 + 1)) + 10
-  let dulce = Math.floor(Math.random() * (300 - 10 + 1)) + 10 // Nueva recompensa
+  let limit = Math.floor(Math.random() * (300 - 10 + 1)) + 10 // Nueva recompensa (Dulces)
 
   // Asegurar que el usuario tiene datos en el JSON
   if (!data[m.sender]) {
@@ -30,10 +30,10 @@ let handler = async (m, { conn }) => {
   }
 
   // Sumar recompensas
-  data[m.sender].xp += xp
+  data[m.sender].xp += exp
   data[m.sender].barbozaCoins += barbozaCoins
   data[m.sender].diamantes += diamantes
-  data[m.sender].dulce += dulce
+  data[m.sender].dulce += limit
 
   // Guardar datos actualizados
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
@@ -42,8 +42,8 @@ let handler = async (m, { conn }) => {
 ▢ *Recolectaste:*
 ┠ ➺ *${barbozaCoins}* 🪙 Monedas
 ┠ ➺ *${diamantes}* 💎 Diamantes
-┠ ➺ *${xp}* 💫 XP
-┖ ➺ *${dulce}* 🍬 Dulces`
+┠ ➺ *${exp}* 💫 XP
+┖ ➺ *${limit}* 🍬 Dulces`
 
   await m.react('⛏')
   await conn.reply(m.chat, txt, m)
