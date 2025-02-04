@@ -5,9 +5,14 @@ let handler = async (m, { conn, text }) => {
         return conn.sendMessage(m.chat, { text: "Por favor, menciona a un usuario. Ejemplo: .carta2 @usuario" }, { quoted: m });
     }
 
-    let userMentioned = text.replace(/[^0-9]/g, ''); // Extraer el ID del usuario mencionado
+    let userMentioned = text.split('@')[1]; // Extraer el ID del usuario mencionado
     let userSender = m.sender.split('@')[0]; // Obtener el nombre del usuario que envía el mensaje
-    let cartaMessage = `🌹✨ *De @⁨${userSender}/⁩ para @⁨${userMentioned}/⁩* ✨🌹\n\nQuerido/a @⁨${userMentioned}/⁩,\n\nEres la razón de mi felicidad y cada día contigo es un nuevo capítulo lleno de amor. Espero que siempre sientas lo especial que eres para mí. Gracias por ser tú.\n\nCon todo mi cariño,\n@⁨${userSender}/⁩ 💖`;
+
+    // Obtener el nombre del usuario mencionado usando conn.getName()
+    let mentionedName = await conn.getName(userMentioned + '@s.whatsapp.net');
+    let senderName = await conn.getName(m.sender);
+
+    let cartaMessage = `🌹✨ *De ${senderName} para ${mentionedName}* ✨🌹\n\nQuerido/a ${mentionedName},\n\nEres la razón de mi felicidad y cada día contigo es un nuevo capítulo lleno de amor. Espero que siempre sientas lo especial que eres para mí. Gracias por ser tú.\n\nCon todo mi cariño,\n${senderName} 💖`;
 
     // Enviamos el mensaje al chat
     await conn.sendMessage(m.chat, { text: cartaMessage }, { quoted: m });
