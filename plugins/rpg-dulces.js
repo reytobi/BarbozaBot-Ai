@@ -20,8 +20,8 @@ let handler = async (m, { conn, args }) => {
         return conn.reply(m.chat, '⚠️ El usuario no se encuentra en la base de datos de minería.', m);
     }
 
-    // Obtener la cantidad de dulces a sumar desde los argumentos
-    const dulcesParaSumar = parseInt(args[0]) || 1; // Por defecto suma 1 si no se proporciona un número
+    // Obtener la cantidad de dulces a comprar del argumento
+    const dulcesParaSumar = parseInt(args[0]) || 1; // Si no se proporciona, sumar 1
 
     // Validar que la cantidad sea un número positivo
     if (dulcesParaSumar <= 0) {
@@ -46,7 +46,7 @@ let handler = async (m, { conn, args }) => {
     await conn.sendMessage(m.chat, { text: mensaje, mentions: [who] }, { quoted: m });
 };
 
-handler.help = ['comprar <cantidad>', 'dulces'];
+handler.help = ['dulces'];
 handler.tags = ['rpg'];
 handler.command = ['wallet', 'cartera', 'dulces', 'bal', 'coins'];
 
