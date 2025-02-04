@@ -37,7 +37,7 @@ let handler = async (m, { conn }) => {
   let xp = Math.floor(Math.random() * 5000)
   let barbozaCoins = Math.floor(Math.random() * (70 - 40 + 1)) + 40
   let diamantes = Math.floor(Math.random() * (30 - 10 + 1)) + 10
-  let dulces = Math.floor(Math.random() * (10 - 5 + 1)) + 5
+  let limit = Math.floor(Math.random() * (10 - 5 + 1)) + 5
 
   if (!data[senderId]) {
     data[senderId] = { exp: 0, barbozaCoins: 0, diamantes: 0, limit: 0 }
@@ -54,7 +54,7 @@ let handler = async (m, { conn }) => {
       data[senderId].diamantes += diamantes
       data[senderId].limit += limit
       conn.sendMessage(m.chat, {
-        text: `🚩 *¡Crimen Exitoso ${senderName}!*\n\nLograste robar *${amountTaken} 🪙 Monedas* de @${randomUserId.split("@")[0]}.\n\n🎁 *Recompensas adicionales:*\n➜ *${xp}* 💫 XP\n➜ *${diamantes}* 💎 Diamantes\n➜ *${dulces}* 🍬 Dulces`,
+        text: `🚩 *¡Crimen Exitoso ${senderName}!*\n\nLograste robar *${amountTaken} 🪙 Monedas* de @${randomUserId.split("@")[0]}.\n\n🎁 *Recompensas adicionales:*\n➜ *${exp}* 💫 XP\n➜ *${diamantes}* 💎 Diamantes\n➜ *${limit}* 🍬 Dulces`,
         contextInfo: { mentionedJid: [randomUserId] }
       }, { quoted: m })
       break
@@ -69,11 +69,11 @@ let handler = async (m, { conn }) => {
       let smallAmountTaken = Math.min(Math.floor(amountTaken / 2), data[randomUserId].barbozaCoins)
       data[senderId].barbozaCoins += smallAmountTaken
       data[randomUserId].barbozaCoins -= smallAmountTaken
-      data[senderId].xp += xp
+      data[senderId].exp += exp
       data[senderId].diamantes += Math.floor(diamantes / 2)
-      data[senderId].dulces += Math.floor(dulces / 2)
+      data[senderId].limit += Math.floor(limit / 2)
       conn.sendMessage(m.chat, {
-        text: `🚩 *¡Crimen Parcialmente Exitoso ${senderName}!*\n\nLograste robar *${smallAmountTaken} 🪙 Monedas* de @${randomUserId.split("@")[0]}, pero fuiste descubierto y tuviste que escapar rápido.\n\n🎁 *Recompensas adicionales:*\n➜ *${xp}* 💫 XP\n➜ *${Math.floor(diamantes / 2)}* 💎 Diamantes\n➜ *${Math.floor(dulces / 2)}* 🍬 Dulces`,
+        text: `🚩 *¡Crimen Parcialmente Exitoso ${senderName}!*\n\nLograste robar *${smallAmountTaken} 🪙 Monedas* de @${randomUserId.split("@")[0]}, pero fuiste descubierto y tuviste que escapar rápido.\n\n🎁 *Recompensas adicionales:*\n➜ *${exp}* 💫 XP\n➜ *${Math.floor(diamantes / 2)}* 💎 Diamantes\n➜ *${Math.floor(limit / 2)}* 🍬 Dulces`,
         contextInfo: { mentionedJid: [randomUserId] }
       }, { quoted: m })
       break
