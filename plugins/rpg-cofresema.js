@@ -16,10 +16,11 @@ let handler = async (m, { conn }) => {
     const recompensaDulces = 20;
     const recompensaXP = 20;
 
-    user.sweets += recompensaDulces;
-    user.xp += recompensaXP;
+    // Sumar a la cartera
+    user.walletSweets += recompensaDulces;
+    user.walletXP += recompensaXP;
 
-    conn.reply(m.chat, `🎉 ¡Has abierto el cofre y recibiste ${recompensaDulces} dulces y ${recompensaXP} XP! 🎉 Ahora tienes ${user.sweets} dulces y ${user.xp} XP en total.`, m);
+    conn.reply(m.chat, `🎉 ¡Has abierto el cofre y recibiste ${recompensaDulces} dulces y ${recompensaXP} XP! 🎉 Ahora tienes ${user.walletSweets} dulces en tu cartera y ${user.walletXP} XP en total.`, m);
 };
 
 handler.help = ['cofresema'];
