@@ -1,7 +1,7 @@
 
 let handler = async (m, { conn, args }) => {
     // Verifica que el usuario ha proporcionado una cantidad de dulces y un usuario
-    if (!args[0] || isNaN(args[0]) || !m.mentionedJidList[0]) {
+    if (isNaN(args[0]) || !m.mentionedJidList[0]) {
         return m.reply("Por favor, especifica la cantidad de dulces que deseas apostar y menciona a un usuario.");
     }
 
