@@ -1,56 +1,19 @@
 
-import fs from 'fs';
-
-const filePath = './mineria.json';
-
-const leerDatos = () => {
-    if (!fs.existsSync(filePath)) {
-        fs.writeFileSync(filePath, JSON.stringify({}, null, 2));
-    }
-    return JSON.parse(fs.readFileSync(filePath));
-};
-
-const guardarDatos = (datos) => {
-    fs.writeFileSync(filePath, JSON.stringify(datos, null, 2));
-};
-
-const obtenerDatosUsuario = async (usuarioId) => {
-    let usuarios = leerDatos();
-    if (!usuarios[usuarioId]) {
-        usuarios[usuarioId] = { dulce: 0, ultimoReclamo: "" };
-        guardarDatos(usuarios);
-    }
-    return usuarios[usuarioId];
-};
-
-const guardarDatosUsuario = async (usuarioId, usuarioData) => {
-    let usuarios = leerDatos();
-    usuarios[usuarioId] = usuarioData;
-    guardarDatos(usuarios);
-};
-
 let handler = async (m, { conn }) => {
-    const usuarioId = m.sender;
-    const dulcesGanados = 500;
+   // Define la cantidad de dulces a otorgar
+   const rewardAmount = 400;
 
-    let usuarioData = await obtenerDatosUsuario(usuarioId);
-    const hoy = new Date().toISOString().split('T')[0];
+   // Obtén la información del usuario
+   let user = global.db.data.users[m.sender];
 
-    if (usuarioData.ultimoReclamo === hoy) {
-        return conn.sendMessage(m.chat, { text: "¡Ya has reclamado tus 500 dulces hoy! Espera hasta mañana para volver a reclamar." }, { quoted: m });
-    }
+   // Suma los dulces a la cuenta del usuario
+   user.limit += rewardAmount; // Asumiendo que 'limit' representa la cantidad de dulces
 
-    usuarioData.dulce += dulcesGanados; // Corrigiendo el nombre de la variable
-    usuarioData.ultimoReclamo = hoy;
-
-    await guardarDatosUsuario(usuarioId, usuarioData);
-
-    const mensajeReclamo = `¡Has reclamado 500 dulces! 🎉🍬 Ahora tienes ${usuarioData.dulce} dulces en total.`; // Corregido con comillas invertidas
-    await conn.sendMessage(m.chat, { text: mensajeReclamo }, { quoted: m });
-};
+   await m.reply(`🎉 ¡Has reclamado *${rewardAmount}* 🍬 Dulces! Ahora tienes un total de *${user.limit}* 🍬. ¡Disfrútalos y sigue jugando! 🎊`);
+}
 
 handler.help = ['claim3'];
-handler.tags = ['juegos'];
+handler.tags = ['rpg'];
 handler.command = ['claim3'];
-
+handler.register = true;
 export default handler;
