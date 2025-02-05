@@ -24,7 +24,8 @@ let handler = async (m, { conn }) => {
     user.walletSweets += recompensaDulces;
     user.walletXP += recompensaXP;
 
-    conn.reply(m.chat, `🎉 ¡Has abierto la casa y recibiste ${recompensaDulces} dulces y ${recompensaXP} XP! 🎉 Ahora tienes ${user.walletSweets} dulces en tu cartera y ${user.walletXP} XP en total.`, m);
+    // Mensaje de respuesta con un toque explosivo
+    conn.reply(m.chat, `💥 ¡BOOM! Has abierto la casa y recibiste ${recompensaDulces} dulces y ${recompensaXP} XP! 💥 Ahora tienes un total de ${user.walletSweets} dulces y ${user.walletXP} XP en tu cartera. ¡Sigue así! 🎊`, m);
 };
 
 handler.help = ['abrircasa'];
