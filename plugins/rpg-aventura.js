@@ -11,7 +11,7 @@ let handler = async (m, { conn }) => {
     }
     if (user.lastAdventure && new Date() - user.lastAdventure <= 1500000) {
         let timeLeft = 1500000 - (new Date() - user.lastAdventure);
-        return conn.reply(m.chat, `⏳ Debés esperar. ${msToTime(timeLeft)} antes de aventurarte de nuevo.`, m);
+        return conn.reply(m.chat, `⏳ Debés esperar ${msToTime(timeLeft)} antes de aventurarte de nuevo.`, m);
     }
     
     let kingdoms = [
@@ -32,11 +32,14 @@ let handler = async (m, { conn }) => {
     let emerald = pickRandom([1, 5, 7, 8]);
     let iron = pickRandom([5, 6, 7, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80]);
     let gold = pickRandom([20, 5, 7, 8, 88, 40, 50]);
-    let coal = pickRandom([20, 5, 7, 8, 88, 40, 50, 80, 70, 60, 100, 120, 600, 700, 64]);
-    let stone = pickRandom([200, 500, 700, 800, 900, 4000, 300]);
-    let diamonds = pickRandom([1, 2, 3, 4, 5]);
-    let exp = pickRandom([10, 20, 30, 40, 50]);
+    let coal = pickRandom([20, 5, 7, 8, 88, 40, 50, 80, 70, 60, 100]);
+    let stone = pickRandom([200, 500, 700]);
+    let diamonds = pickRandom([1, 2]);
+    let exp = pickRandom([10, 20]);
     
+    // Agregar dulces
+    let candies = pickRandom([1,2 ,3 ,4 ,5]); // Puedes ajustar el rango según lo que necesites
+
     user.coin += coin;
     user.emerald += emerald;
     user.iron += iron;
@@ -45,8 +48,11 @@ let handler = async (m, { conn }) => {
     user.stone += stone;
     user.diamonds += diamonds;
     user.exp += exp;
+    
+    // Sumar los dulces a la cartera
+    user.candies += candies; // Asegúrate que el atributo candies exista en tu base de datos
+    
     user.health -= 50;
-    user.lastAdventure = new Date();
     
     if (user.health < 0) {
         user.health = 0;
@@ -64,25 +70,26 @@ let handler = async (m, { conn }) => {
                `🕋 *Carbón:* ${coal}\n` +
                `🪨 *Piedra:* ${stone}\n` +
                `💎 *Diamantes Ganados:* ${diamonds}\n` +
+               `🍬 *Dulces Ganados:* ${candies}\n` + // Mostrar dulces ganados
                `✨ *Experiencia Ganada:* ${exp}\n` +
                `❤️ *Salud Actual:* ${user.health}`;
     
-    await conn.sendMessage(m.chat, { text: info }, { quoted: m });
+    await conn.sendMessage(m.chat,{ text: info }, { quoted: m });
 };
 
 handler.help = ['aventura', 'adventure'];
 handler.tags = ['rpg'];
 handler.command = ['adventure', 'aventura']
-handler.cooldown = 1500000;
+handler.cooldown =1500000;
 
 export default handler;
 
 function pickRandom(list) {
-    return list[Math.floor(Math.random() * list.length)];
+   return list[Math.floor(Math.random() * list.length)];
 }
 
 function msToTime(duration) {
-    let minutes = Math.floor((duration / (1000 * 60)) % 60);
-    let seconds = Math.floor((duration / 1000) % 60);
-    return `${minutes} m y ${seconds} s`;
+   let minutes = Math.floor((duration / (1000 *60)) %60);
+   let seconds = Math.floor((duration /1000) %60);
+   return `${minutes} m y ${seconds} s`;
 }
