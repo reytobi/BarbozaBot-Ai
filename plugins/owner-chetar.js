@@ -27,14 +27,14 @@ let handler = async (m, { conn }) => {
 
   // Asegurar que el usuario tiene datos en el JSON
   if (!data[m.sender]) {
-    data[m.sender] = { exp: 0, barbozaCoins: 0, diamantes: 0, limit: 0 }
+    data[m.sender] = { xp: 0, barbozaCoins: 0, diamantes: 0, dulce: 0 }
   }
 
   // Sumar las recompensas a los valores existentes
-  data[m.sender].exp += exp
+  data[m.sender].xp += xp
   data[m.sender].barbozaCoins += barbozaCoins
   data[m.sender].diamantes += diamantes
-  data[m.sender].limit += dulcesGanados
+  data[m.sender].${dulces} += dulcesGanados
 
   // Guardar datos actualizados
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
