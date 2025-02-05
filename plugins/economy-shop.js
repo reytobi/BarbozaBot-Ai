@@ -1,48 +1,34 @@
-import fs from 'fs'
 
-const filePath = './mineria.json'
-const xpperdulce = 350 // Costo de 1 Dulce en XP
+let handler = async (m, { conn, args }) => {
+   // Define el costo de un dulce en XP
+   const costPerCandy = 10; // Cambia este valor según lo que desees
 
-const handler = async (m, { conn, command, args }) => {
-    // Cargar datos desde el archivo JSON
-    let data = fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath)) : {}
+   // Verifica si se proporcionó la cantidad de dulces a comprar
+   let amount = parseInt(args[0]);
+   if (isNaN(amount) || amount <= 0) {
+      return conn.reply(m.chat, 'Por favor, proporciona una cantidad válida de dulces a comprar.', m);
+   }
 
-    let sender = m.sender
-    if (!data[sender]) throw '🚩 No tienes datos en el sistema. Usa un comando de minería primero.'
+   // Obtén la información del usuario
+   let user = global.db.data.users[m.sender];
 
-    // Determinar la cantidad a comprar
-    let count = command.replace(/^buy/i, '')
-    count = count ? /all/i.test(count) ? Math.floor(data[sender].xp / xpperdulce) : parseInt(count) : args[0] ? parseInt(args[0]) : 1
-    count = Math.max(1, count)
+   // Calcula el costo total en XP
+   let totalCost = costPerCandy * amount;
 
-    if (data[sender].xp >= xpperdulce * count) {
-        // Descontar XP y dar dulces
-        data[sender].xp -= xpperdulce * count
-        data[sender].dulce = (data[sender].dulce || 0) + count
+   // Verifica si el usuario tiene suficiente XP
+   if (user.exp < totalCost) {
+      return conn.reply(m.chat, `No tienes suficiente experiencia. Necesitas *${totalCost} XP* para comprar *${amount} dulces*.`, m);
+   }
 
-        // Guardar cambios en el archivo JSON
-        fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
+   // Resta la experiencia y suma los dulces
+   user.exp -= totalCost;
+   user.limit += amount; // Asumiendo que 'limit' representa la cantidad de dulces
 
-        // Confirmación de compra
-        conn.reply(m.chat, `
-╔═══════⩽✰⩾═══════╗
-║    𝐍𝐨𝐭𝐚 𝐃𝐞 𝐏𝐚𝐠𝐨 
-╠═══════⩽✰⩾═══════╝
-║╭──────────────┄
-║│ *Compra Nominal* : +${count} 🍬 Dulces
-║│ *Gastado* : -${xpperdulce * count} XP
-║╰──────────────┄
-╚═══════⩽✰⩾═══════╝`, m)
-    } else {
-        conn.reply(m.chat, `😔 Lo siento, no tienes suficiente *XP* para comprar *${count}* Dulces 🍬`, m)
-    }
+   await m.reply(`¡Has comprado *${amount}* 🍬 Dulces! Ahora tienes *${user.limit}* 🍬 y *${user.exp} XP* restantes.`);
 }
 
-handler.help = ['buy', 'buyall']
-handler.tags = ['economy']
-handler.register = true
-handler.command = ['buy', 'buyall']
-
-handler.disabled = false
-
-export default handler
+handler.help = ['buy <cantidad>'];
+handler.tags = ['rpg'];
+handler.command = ['buy'];
+handler.register = true;
+export default handler;
