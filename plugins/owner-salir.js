@@ -1,12 +1,18 @@
-let handler = async (m, { conn, text, command }) => {
-let id = text ? text : m.chat  
-let pp = 'https://i.ibb.co/s9N9QhG/file.jpg'
-await conn.sendMessage(m.chat, { video: { url: pp }, gifPlayback: true, caption: '*ADIOS, BOTBARBOZA SE DESPIDE!🌠👋*', mentions: [m.sender] }, { quoted: estilo })
-await conn.groupLeave(id)}
-handler.help = ['salir']
-handler.tags = ['owner']
-handler.command = /^(salir|out|leavegc|leave|salirdelgrupo)$/i
-handler.group = true
-handler.rowner = true
+ñ
+let handler = async (m, { conn }) => {
+   // URL de la imagen que quieres enviar (reemplaza esto con la URL de tu imagen)
+   const imageUrl = 'https://qu.ax/LJEVX.jpg';
 
-export default handler
+   // Mensaje que se enviará junto con la imagen
+   const message = "Bot Barboza - Ai se salió, fue genial estar aquí!!";
+
+   // Envía la imagen y el mensaje
+   await conn.sendButton(m.chat, message, null, [{ buttonId: 'menu', buttonText: { displayText: 'Volver al menú' }, type: 1 }], m);
+   await conn.sendImage(m.chat, imageUrl, message, m);
+}
+
+handler.help = ['salir'];
+handler.tags = ['general'];
+handler.command = ['salir'];
+handler.register = true;
+export default handler;
