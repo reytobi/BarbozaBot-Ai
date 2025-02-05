@@ -2,7 +2,7 @@
 let handler = async (m, { conn }) => {
     const user = global.db.data.users[m.sender];
     const now = new Date();
-    
+
     // Verifica si el usuario puede abrir el cofre
     if (user.lastCofreSema && now - user.lastCofreSema < 3600000) { // 1 hora en milisegundos
         const timeLeft = Math.ceil((3600000 - (now - user.lastCofreSema)) / 60000); // Tiempo restante en minutos
@@ -13,10 +13,13 @@ let handler = async (m, { conn }) => {
     user.lastCofreSema = now;
 
     // Añade las recompensas
-    user.sweets += 20;
-    user.xp += 20;
+    const recompensaDulces = 20;
+    const recompensaXP = 20;
 
-    conn.reply(m.chat, `🎉 ¡Has abierto el cofre y recibiste 20 dulces y 20 XP! 🎉`, m);
+    user.sweets += recompensaDulces;
+    user.xp += recompensaXP;
+
+    conn.reply(m.chat, `🎉 ¡Has abierto el cofre y recibiste ${recompensaDulces} dulces y ${recompensaXP} XP! 🎉 Ahora tienes ${user.sweets} dulces y ${user.xp} XP en total.`, m);
 };
 
 handler.help = ['cofresema'];
