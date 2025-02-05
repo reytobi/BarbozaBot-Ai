@@ -1,34 +1,33 @@
 
 let handler = async (m, { conn }) => {
-    const userId = m.sender; // ID del usuario que usa el comando
+   // Define las recompensas
+   const rewardCandies = 50;
+   const rewardXP = 100;
 
-    // Obtener la fecha actual
-    const now = new Date();
-    const today = now.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+   // Obtén la información del usuario
+   let user = global.db.data.users[m.sender];
 
-    // Verificar si el usuario ya ha abierto el cofre hoy
-    let lastOpened = global.db.data.users[userId]?.lastOpenedCofre;
+   // Verifica si el usuario ya ha abierto el cofre hoy
+   let now = new Date();
+   let lastOpened = user.lastCofreOpen || 0;
+   
+   // Si no ha abierto el cofre hoy, se puede abrir
+   if (lastOpened < now.setHours(0, 0, 0, 0)) {
+      // Suma las recompensas al usuario
+      user.limit += rewardCandies; // Asumiendo que 'limit' representa la cantidad de dulces
+      user.exp += rewardXP; // Aumenta la experiencia del usuario
 
-    if (lastOpened === today) {
-        return conn.sendMessage(m.chat, { text: "⚠️ Ya has abierto tu cofre hoy. ¡Vuelve mañana!" }, { quoted: m });
-    }
+      // Actualiza la fecha de apertura del cofre
+      user.lastCofreOpen = now.getTime();
 
-    // Otorgar los premios
-    global.db.data.users[userId].exp += 500; // Añadir experiencia
-    global.db.data.users[userId].dulce += 50; // Añadir dulces
-    global.db.data.users[userId].monedas += 100; // Añadir monedas
-
-    // Actualizar la fecha de apertura del cofre
-    global.db.data.users[userId].lastOpenedCofre = today;
-
-    // Mensaje de éxito
-    const mensaje = `🎉 ¡Has abierto el cofre! 🎉\n\n- *Experiencia:* +500\n- *Dulces:* +50\n- *Monedas:* +100`;
-
-    await conn.sendMessage(m.chat, { text: mensaje }, { quoted: m });
+      await m.reply(`🎉 ¡Has abierto el cofre! Has recibido *${rewardCandies}* 🍬 Dulces y *${rewardXP} XP*! Ahora tienes un total de *${user.limit}* 🍬 y *${user.exp} XP*. ¡Disfrútalos! 🎊`);
+   } else {
+      await m.reply(`😟 Ya has abierto el cofre hoy. Vuelve mañana para reclamar tu recompensa. 🕒`);
+   }
 }
 
 handler.help = ['abrircofre'];
-handler.tags = ['economía'];
+handler.tags = ['rpg'];
 handler.command = ['abrircofre'];
-
+handler.register = true;
 export default handler;
