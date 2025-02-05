@@ -3,6 +3,10 @@ let handler = async (m, { conn }) => {
     const user = global.db.data.users[m.sender];
     const now = new Date();
 
+    // Inicializa las propiedades si no existen
+    if (!user.walletSweets) user.walletSweets = 0;
+    if (!user.walletXP) user.walletXP = 0;
+
     // Verifica si el usuario puede abrir el cofre
     if (user.lastCofreSema && now - user.lastCofreSema < 3600000) { // 1 hora en milisegundos
         const timeLeft = Math.ceil((3600000 - (now - user.lastCofreSema)) / 60000); // Tiempo restante en minutos
