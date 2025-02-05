@@ -1,11 +1,12 @@
 
 let handler = async (m, { conn, args }) => {
-    // Verifica que el usuario ha proporcionado una cantidad de dulces
-    if (!args[0] || isNaN(args[0])) {
-        return m.reply("Por favor, especifica la cantidad de dulces que deseas apostar.");
+    // Verifica que el usuario ha proporcionado una cantidad de dulces y un usuario
+    if (!args[0] || isNaN(args[0]) || !m.mentionedJidList[0]) {
+        return m.reply("Por favor, especifica la cantidad de dulces que deseas apostar y menciona a un usuario.");
     }
 
     let apuesta = parseInt(args[0]);
+    let rival = m.mentionedJidList[0]; // El usuario mencionado
 
     // Verifica si el usuario tiene suficientes dulces
     let userDulces = global.db.data.users[m.sender].dulces || 1; // Cambia esto según cómo almacenes los dulces
@@ -13,28 +14,30 @@ let handler = async (m, { conn, args }) => {
         return m.reply(`No tienes suficientes dulces. Tienes ${userDulces} dulces.`);
     }
 
-    // Resta los dulces apostados del usuario
-    global.db.data.users[m.sender].dulces -= apuesta;
-
-    // Selecciona aleatoriamente un ganador (puedes modificar esta lógica)
-    let participantes = [m.sender]; // Podrías agregar más participantes si deseas
-    let ganador = participantes[Math.floor(Math.random() * participantes.length)];
-
-    // Si el ganador es el mismo que apostó, no puede ganar
-    while (ganador === m.sender) {
-        ganador = participantes[Math.floor(Math.random() * participantes.length)];
+    // Verifica si el rival tiene suficientes dulces
+    let rivalDulces = global.db.data.users[rival]?.dulces || 1; // Asegúrate de que el rival tenga la propiedad 'dulces'
+    if (rivalDulces < apuesta) {
+        return m.reply(`El usuario mencionado no tiene suficientes dulces. Tiene ${rivalDulces} dulces.`);
     }
 
+    // Resta los dulces apostados del usuario y del rival
+    global.db.data.users[m.sender].dulces -= apuesta;
+    global.db.data.users[rival].dulces -= apuesta;
+
+    // Selecciona aleatoriamente un ganador
+    let participantes = [m.sender, rival];
+    let ganador = participantes[Math.floor(Math.random() * participantes.length)];
+
     // El ganador recibe los dulces apostados
-    global.db.data.users[ganador].dulces += apuesta;
+    global.db.data.users[ganador].dulces += apuesta * 2; // El ganador recibe el total de la apuesta
 
     // Mensaje de resultado
     await conn.sendMessage(m.chat, {
-        text: `🎉 ¡Felicidades! ${ganador} ha ganado ${apuesta} dulces. 🎉`
+        text: `🎉 ¡Felicidades! ${ganador} ha ganado ${apuesta * 2} dulces. 🎉`
     }, { quoted: m });
 };
 
-handler.help = ['apostardulces <cantidad>'];
+handler.help = ['apostardulces <cantidad> @usuario'];
 handler.tags = ['juegos'];
 handler.command = ['apostardulces'];
 
