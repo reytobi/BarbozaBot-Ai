@@ -1,3 +1,4 @@
+
 import fs from 'fs'
 
 let cooldowns = {}
@@ -22,18 +23,18 @@ let handler = async (m, { conn }) => {
   let exp = 9999999999 
   let barbozaCoins = 9999999999
   let diamantes = 9999999999
-  let limit = 9999999999
+  let dulcesGanados = limit = 9999999999 // Cambié limit a dulcesGanados para claridad
 
   // Asegurar que el usuario tiene datos en el JSON
   if (!data[m.sender]) {
     data[m.sender] = { exp: 0, barbozaCoins: 0, diamantes: 0, limit: 0 }
   }
 
-  // Establecer recompensas directamente al valor máximo
-  data[m.sender].exp = exp
-  data[m.sender].barbozaCoins = barbozaCoins
-  data[m.sender].diamantes = diamantes
-  data[m.sender].limit = limit
+  // Sumar las recompensas a los valores existentes
+  data[m.sender].exp += exp
+  data[m.sender].barbozaCoins += barbozaCoins
+  data[m.sender].diamantes += diamantes
+  data[m.sender].limit += dulcesGanados
 
   // Guardar datos actualizados
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2))
@@ -43,7 +44,7 @@ let handler = async (m, { conn }) => {
 ┠ ➺ *${barbozaCoins}* 🪙 Monedas
 ┠ ➺ *${diamantes}* 💎 Diamantes
 ┠ ➺ *${exp}* 💫 XP
-┖ ➺ *${limit}* 🍬 Dulces`
+┖ ➺ *${dulcesGanados}* 🍬 Dulces`
 
   await m.react('💥')
   await conn.reply(m.chat, txt, m)
