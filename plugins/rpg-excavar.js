@@ -1,23 +1,18 @@
 
-let handler = async (m, { conn }) => {
-    // Simulamos una excavación
-    let resultados = [
-        "¡Has encontrado 5 dulces! 🍬",
-        "¡Has encontrado una piedra preciosa! 💎",
-        "¡No has encontrado nada! 😢",
-        "¡Has encontrado 10 dulces! 🍬",
-        "¡Has encontrado un juguete para tu mascota! 🧸"
-    ];
+let handler = async (m) => {
+    let user = global.db.data.users[m.sender];
 
-    // Elegimos un resultado aleatorio
-    let resultado = resultados[Math.floor(Math.random() * resultados.length)];
+    // Simular la excavación
+    await m.reply(`${user.nombre}, ¡has comenzado a excavar! ⛏️`);
 
-    // Enviamos el mensaje al chat
-    await conn.sendMessage(m.chat, { text: resultado }, { quoted: m });
+    // Dar la recompensa
+    user.dulces += 100; // Aumentar los dulces en 100
+
+    await m.reply(`🎉 ¡Felicidades! Has encontrado *100 dulces* al excavar.`);
 }
 
-handler.help = ['excavar'];
-handler.tags = ['mascotas'];
-handler.command = ['excavar'];
-
+handler.help = ['excavar']
+handler.tags = ['mascota']
+handler.command = ['dig', 'excavar']
+handler.register = true 
 export default handler;
