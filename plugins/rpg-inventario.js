@@ -33,7 +33,7 @@ let handler = async (m, { conn, usedPrefix }) => {
                `┋ 🎟️ *Tokens:* ${user.joincount || 0}\n` +  
                `┋ ⚜️ *Premium:* ${premium}\n` + 
                `┋ ⏳ *Última Aventura:* ${user.lastAdventure ? moment(user.lastAdventure).fromNow() : 'Nunca'}\n` + 
-               `┋ 📅 *Fecha:* ${new Date().toLocaleString('id-ID')}\n` +
+               `┋ 📅 *Fecha:* ${new Date().toLocaleString('es-ES')}\n` +
                `╰━━━━━━━━━━━━⬣`;
 
     await conn.reply(m.chat, text, m);
