@@ -8,7 +8,7 @@ let handler = async (m, { conn, args }) => {
     let apuesta = parseInt(args[0]);
 
     // Verifica si el usuario tiene suficientes dulces
-    let userDulces = global.db.data.users[m.sender].dulces || 0; // Cambia esto según cómo almacenes los dulces
+    let userDulces = global.db.data.users[m.sender].dulces || 1; // Cambia esto según cómo almacenes los dulces
     if (userDulces < apuesta) {
         return m.reply(`No tienes suficientes dulces. Tienes ${userDulces} dulces.`);
     }
