@@ -51,20 +51,20 @@ const defaultMenu = {
 Hola *%name* soy *Barboza*
 
 ╔══════ •『 𝑪𝑹𝑬𝑨𝑫𝑶𝑹 』
-║  ♛ Barboza
+║  🗣️ Barboza
 ╚═════ ♢.✰.♢ ══════
 ╔══════ •『 𝑰𝑵𝑭𝑶-𝑩𝑶𝑻 』
-║  ✎ Cliente: %name
-║  ✎ Exp: %exp
-║  ✎ Nivel: %level
+║  💨 Cliente: %name
+║  🎲 Exp: %exp
+║  📁 Nivel: %level
 ╚═════ ♢.✰.♢ ═══════
 
 ╔══════ •『 𝑰𝑵𝑭𝑶-𝑼𝑺𝑬𝑹』
-║  ✎ Bot: ©Bot-Barboza-Ai®
-║  ✎ Modo Público
-║  ✎ Baileys: Multi Device
-║  ✎ Tiempo Activo: %muptime
-║  ✎ Usuarios: %totalreg 
+║  🎮 Bot: ©Bot-Barboza-Ai®
+║  🔥 Modo Público
+║  💦 Baileys: Multi Device
+║  🗣️ Tiempo Activo: %muptime
+║  👥 Usuarios: %totalreg 
 ╚═════ ♢.✰.♢ ════════
 
 *─ׄ─ׄ─⭒─ׄ─ׅ─ׄ⭒─ׄ─ׄ─⭒─ׄ─ׄ─⭒─ׄ─ׅ─*
@@ -72,7 +72,7 @@ Hola *%name* soy *Barboza*
 \t\t\t⚙️_*𝐋𝐈𝐒𝐓𝐀 𝐃𝐄 𝐂𝐎𝐌𝐀𝐍𝐃𝐎𝐒*_ 🚀
 `.trimStart(),
   header: '*╭╍╍╍╍❖【 *%category* 】',
-  body: '┋✎›【 %cmd %islimit %isPremium\n',
+  body: '┋💨›【 %cmd %islimit %isPremium\n',
   footer: '*╰╍╍╍╍❖•ೋ° °ೋ•❖╍╍╍╍╯*',
   after: `© ${textbot}`,
 }
@@ -196,9 +196,9 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
     let pp13 = 'https://i.ibb.co/Cs6Tt9V/Sylph.jpg'
     let pp14 = 'https://i.ibb.co/JmcS3kv/Sylph.jpg'
     let pp15 = 'https://i.ibb.co/Cs6Tt9V/Sylph.jpg'
-    let img = 'https://i.ibb.co/hy3G9Rz/file.jpg'
+    let img = 'https://ibb.co/XkX0hGf6'
     let img2 =
-    await m.react('⚡')
+    await m.react('⭐')
    // await conn.sendMessage(m.chat, { video: { url: [pp, pp2, pp3, pp4, pp5, pp6, pp7, pp8, pp9, pp10, pp11, pp12, pp13, pp14, pp15].getRandom() }, gifPlayback: true, caption: text.trim(), mentions: [m.sender] }, { quoted: estilo })
     await conn.sendFile(m.chat, img, 'thumbnail.jpg', text.trim(), m, null, rcanal)
    //await conn.sendAi(m.chat, botname, textbot, text.trim(), img, img, canal, estilo)
