@@ -1,3 +1,10 @@
+/* 
+- Downloader Spotify By Izumi-kzx
+- https://whatsapp.com/channel/0029ValMlRS6buMFL9d0iQ0S
+*/
+
+// *[🍧 SPOTIFY DOWNLOADER]*
+import fetch from 'node-fetch';
 
 let handler = async (m, { conn, text }) => {
 if (!text) return conn.reply(m.chat, '🚩 Ingresa el nombre o enlace de *Spotify*.', m);
@@ -9,7 +16,7 @@ let { title, artists, cover, music } = json.result;
 let msg = `🎵 *Título*: ${title}\n🎤 *Artista*: ${artists}\n📅 *Lanzamiento*: ${json.result.releaseDate}`;
 await conn.sendFile(m.chat, cover, 'cover.jpg', msg, m);
 await conn.sendMessage(m.chat, { audio: { url: music }, fileName: `${title}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m });
-} else conn.reply(m.chat, '🚩 No se pudo obtener la música.', m);
+} else { conn.reply(m.chat, '🚩 No se pudo obtener la música.', m);
 } catch { conn.reply(m.chat, '🚩 Error al procesar la solicitud.', m); }
 };
 
