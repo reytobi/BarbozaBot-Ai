@@ -9,18 +9,20 @@ let handler = async (m, { conn, text }) => {
         return conn.reply(m.chat, '⚠️ El formato es incorrecto. Asegúrate de usar: `.crearcomando nombreComando|respuesta`', m);
     }
 
-    // Verifica si el comando ya existe
-    if (handler.command.includes(commandName)) {
-        return conn.reply(m.chat, '⚠️ Este comando ya existe.', m);
-    }
+    // Crea el código del nuevo comando
+    const newCommandCode = `
+let handler = async (m) => {
+    conn.reply(m.chat, '${commandResponse}', m);
+};
 
-    // Agrega el nuevo comando
-    handler.command.push(commandName);
-    handler[commandName] = async (m) => {
-        conn.reply(m.chat, commandResponse, m);
-    };
+handler.help = ['${commandName}'];
+handler.tags = ['custom'];
+handler.command = ['${commandName}'];
 
-    conn.reply(m.chat, `✅ Comando .${commandName} creado con éxito.`, m);
+export default handler;`;
+
+    // Envía el código generado al usuario
+    conn.reply(m.chat, `✅ Aquí tienes el código para tu nuevo comando:\n\`\`\`${newCommandCode}\`\`\``, m);
 };
 
 handler.help = ['crearcomando <nombre|respuesta>'];
