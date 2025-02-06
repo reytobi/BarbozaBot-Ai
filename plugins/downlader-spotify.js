@@ -16,8 +16,10 @@ let { title, artists, cover, music } = json.result;
 let msg = `🎵 *Título*: ${title}\n🎤 *Artista*: ${artists}\n📅 *Lanzamiento*: ${json.result.releaseDate}`;
 await conn.sendFile(m.chat, cover, 'cover.jpg', msg, m);
 await conn.sendMessage(m.chat, { audio: { url: music }, fileName: `${title}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m });
-} else { conn.reply(m.chat, '🚩 No se pudo obtener la música.', m);
-} catch { conn.reply(m.chat, '🚩 Error al procesar la solicitud.', m); }
+} else { 
+conn.reply(m.chat, '🚩 No se pudo obtener la música.', m);
+} catch (error) { 
+conn.reply(m.chat, '🚩 Error al procesar la solicitud.', m); }
 };
 
 handler.command = /^(spotify|sp)$/i;
