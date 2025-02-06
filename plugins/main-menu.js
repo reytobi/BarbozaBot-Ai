@@ -22,23 +22,23 @@ let Styles = (text, style = 1) => {
 };
 let tags = {
   'anime': '🧧 ANIME 🎐',
-  'main': '❗ INFO ❕',
-  'search': '🔎 SEARCH 🔍',
-  'game': '🕹️ GAME 🎮',
-  'serbot': '⚙️ SUB BOTS 🤖',
+  'main': 'INFO 📚',
+  'search': 'SEARCH 🔍',
+  'game': ' GAME 🎮',
+  'serbot': ' SUB BOTS 🤖',
   'rpg': '🌐 RPG 🥇',
-  'rg': '🎑 REGISTRO 🎟️',
-  'sticker': '💟 STICKER 🏷️',
-  'group': '👥 GROUPS 📢',
+  'rg': 'REGISTRO 📁',
+  'sticker': 'STICKER 🏞️',
+  'group': ' GROUPS 👥',
 //  'logo': 'MAKER',
-  'nable': '🎛️ ON / OFF 🔌', 
-  'premium': '💎 PREMIUM 👑',
-  'downloader': '📥 DOWNLOAD 📤',
-  'tools': '🔧 TOOLS 🛠️',
-  'fun': '🎉 FUN 🎊',
-  'nsfw': '🔞 NSFW 📛', 
-  'owner': '👤 OWNER 👁️', 
-  'audio': '📣 AUDIOS 🔊', 
+  'nable': ' ON / OFF 📴', 
+  'premium': ' PREMIUM 👑',
+  'downloader': 'DOWNLOAD 📤',
+  'tools': ' TOOLS 🔧',
+  'fun': '  FUN 🎲',
+  'nsfw': ' NSFW 🔞', 
+  'owner': 'OWNER 👤 ', 
+  'audio': 'AUDIOS 🔊', 
 }
 
 const defaultMenu = {
@@ -68,7 +68,7 @@ Hola *%name* soy *Barboza*
 \t\t\t⚙️_*𝐋𝐈𝐒𝐓𝐀 𝐃𝐄 𝐂𝐎𝐌𝐀𝐍𝐃𝐎𝐒*_ ⭐
 `.trimStart(),
   header: '*╭╍╍╍╍❖【 *%category* 】',
-  body: '┋💨›【 %cmd %islimit %isPremium\n',
+  body: '|💨›【 %cmd %islimit %isPremium\n',
   footer: '*╰╍╍╍╍❖•ೋ° °ೋ•❖╍╍╍╍╯*',
   after: `© ${textbot}`,
 }
