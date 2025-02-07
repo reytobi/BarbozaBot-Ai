@@ -1,27 +1,33 @@
 /* 
-- Downloader Spotify By Izumi-kzx
-- https://whatsapp.com/channel/0029ValMlRS6buMFL9d0iQ0S
+- Código Creado Por Izumi-kzx
 */
 
-// *[🍧 SPOTIFY DOWNLOADER]*
-import fetch from 'node-fetch';
+// *[ 🍟 SPOTIFY SEARCH ]*
+import fetch from 'node-fetch'
 
-let handler = async (m, { conn, text }) => {
-if (!text) return conn.reply(m.chat, '🚩 Ingresa el nombre o enlace de *Spotify*.', m);
+let handler = async (m, { conn, args, usedPrefix, command }) => {
+if (!args.length) return conn.reply(m.chat, `🔍 *Por favor escribe una canción a buscar.*\nEjemplo: ${usedPrefix}${command} Faded`, m)
+const query = args.join(' ')
 try {
-let res = await fetch(`https://api.vreden.web.id/api/spotify?url=${encodeURIComponent(text)}`);
-let json = await res.json();
-if (json.status === 200 && json.result?.status) {
-let { title, artists, cover, music } = json.result;
-let msg = `🎵 *Título*: ${title}\n🎤 *Artista*: ${artists}\n📅 *Lanzamiento*: ${json.result.releaseDate}`;
-await conn.sendFile(m.chat, cover, 'cover.jpg', msg, m);
-await conn.sendMessage(m.chat, { audio: { url: music }, fileName: `${title}.mp3`, mimetype: 'audio/mpeg' }, { quoted: m });
-} else { 
-conn.reply(m.chat, '🚩 No se pudo obtener la música.', m);
-} catch (error) { 
-conn.reply(m.chat, '🚩 Error al procesar la solicitud.', m); }
-};
+const response = await fetch(`https://api.davidcyriltech.my.id/search/spotify?text=${encodeURIComponent(query)}`)
+const data = await response.json()
+if (!data.success || !data.result || data.result.length === 0) return conn.reply(m.chat, `🚫 No se encontraron resultados para "${query}".`, m)
+let txt = '*🎵 S E A R C H - S P O T I F Y*\n\n'
+data.result.forEach(track => {
+txt += `🎼 *Título*: ${track.trackName}\n`
+txt += `🎤 *Artista*: ${track.artistName}\n`
+txt += `💿 *Álbum*: ${track.albumName}\n`
+txt += `⏱️ *Duración*: ${track.duration}\n`
+txt += `🔗 *Enlace*: ${track.externalUrl}\n\n---------------------------------------------------\n\n`
+})
+await conn.reply(m.chat, txt.trim(), m)
+} catch (error) {
+console.error(error)
+conn.reply(m.chat, '❌ Hubo un error al procesar la solicitud.', m)
+}}
 
-handler.command = /^(spotify|sp)$/i;
+handler.help = ['spotifysearch'];
+handler.tag = ['buscador'];
+handler.command = ['spotifysearch', 'spsearch']
 
-export default handler;
+export default handler
