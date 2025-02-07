@@ -1,5 +1,8 @@
 import fs from 'fs';
 
+const filePath = './mineria.json';
+const impuesto = 0.02;
+
 let handler = async (m, { conn, text }) => {
     let data = fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath)) : {};
 
