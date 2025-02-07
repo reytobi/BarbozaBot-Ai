@@ -1,44 +1,31 @@
-import fs from 'fs';
 
-const filePath = './mineria.json';
-const impuesto = 0.02;
+import fetch from 'node-fetch';
 
-let handler = async (m, { conn, text }) => {
-    let data = fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath)) : {};
+const handler = async (m, { conn, text }) => {
+  try {
+    const user = m.mentionedJid[0] ? m.mentionedJid[0] : m.sender; // Usuario que recibe los dulces
+    const amount = parseInt(text.split(' ')[1]) || 1; // Cantidad de dulces a regalar
 
-    let who = m.mentionedJid && m.mentionedJid.length > 0 ? m.mentionedJid[0] : null;
-    if (!who) throw '🚩 Menciona al usuario con *@user*.';
+    if (isNaN(amount) || amount <= 0) {
+      return conn.sendMessage(m.chat, 'Por favor, especifica una cantidad válida de dulces.', { quoted: m });
+    }
 
-    let txt = text.replace('@' + who.split`@`[0], '').trim();
-    if (!txt) throw '🚩 Ingresa la cantidad de *🍬 Dulces* que quieres transferir.';
-    if (isNaN(txt)) throw '🚩 Solo se permiten números.';
+    // Suponiendo que tienes una función para actualizar la cartera de dulces
+    await updateCandyWallet(user, amount);
 
-    let poin = parseInt(txt);
-    let imt = Math.ceil(poin * impuesto);
-    let total = poin + imt;
-
-    if (total < 1) throw '🚩 El mínimo para donar es *1 🍬 Dulce*.';
-
-    let sender = m.sender;
-    if (!data[sender]) data[sender] = { dulce: 0 };
-    if (!data[who]) data[who] = { dulce: 0 };
-
-    if (total > data[sender].dulce) throw '🚩 No tienes suficientes *🍬 Dulces* para donar.';
-
-    data[sender].dulce -= total;
-    data[who].dulce += poin;
-
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-
-    await m.reply(`✅ Has transferido *${poin}* 🍬 Dulces a @${who.split('@')[0]}.  
-📌 *Impuesto (2%)*: *${imt}* 🍬 Dulces  
-💰 *Total gastado*: *${total}* 🍬 Dulces`, null, { mentions: [who] });
-
-    conn.fakeReply(m.chat, `🎁 *¡Recibiste ${poin} 🍬 Dulces!*`, who, m.text);
+    const message = `🍬 *${conn.getName(m.sender)}* ha regalado ${amount} dulces a *${conn.getName(user)}*! 🍬`;
+    
+    conn.sendMessage(m.chat, message, { quoted: m });
+  } catch (e) {
+    console.error(e);
+    conn.sendMessage(m.chat, 'Ocurrió un error al tratar de regalar los dulces.', { quoted: m });
+  }
 };
 
-handler.help = ['dardulces *@user <cantidad>*'];
-handler.tags = ['rpg'];
-handler.command = ['dardulces', 'donardulces'];
+// Función para actualizar la cartera de dulces (debes implementarla)
+const updateCandyWallet = async (user, amount) => {
+  // Aquí iría la lógica para sumar los dulces a la cartera del usuario.
+};
 
+handler.command = /^\.dardulces$/i;
 export default handler;
