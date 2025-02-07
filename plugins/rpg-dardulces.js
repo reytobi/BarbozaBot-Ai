@@ -33,5 +33,6 @@ const updateCandyWallet = async (user, amount) => {
   // Por ejemplo, podrías hacer una llamada a tu base de datos para actualizar la cantidad de dulces.
 };
 
-handler.command = /^\.dardulces$/i;
+handler.command =['dardulces @user
+<cantidad>']
 export default handler;
