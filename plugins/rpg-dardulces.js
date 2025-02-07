@@ -1,7 +1,6 @@
-
 import fs from 'fs';
 
-const filePath = './path/to/your/data.json'; // Asegúrate de definir el path correcto
+const filePath = './mineria.json';
 const impuesto = 0.02;
 
 let handler = async (m, { conn, text }) => {
@@ -10,7 +9,7 @@ let handler = async (m, { conn, text }) => {
     let who = m.mentionedJid && m.mentionedJid.length > 0 ? m.mentionedJid[0] : null;
     if (!who) throw '🚩 Menciona al usuario con *@user*.';
 
-    let txt = text.replace('@' + who.split('@')[0], '').trim(); // Corrige el uso de split
+    let txt = text.replace('@' + who.split`@`[0], '').trim();
     if (!txt) throw '🚩 Ingresa la cantidad de *🍬 Dulces* que quieres transferir.';
     if (isNaN(txt)) throw '🚩 Solo se permiten números.';
 
@@ -31,7 +30,9 @@ let handler = async (m, { conn, text }) => {
 
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
-    await conn.sendMessage(m.chat, `✅ Has transferido *${poin}* 🍬 Dulces a @${who.split('@')[0]}.\n📌 *Impuesto (2%)*: *${imt}* 🍬 Dulces\n💰 *Total gastado*: *${total}* 🍬 Dulces`, { mentions: [who] });
+    await m.reply(`✅ Has transferido *${poin}* 🍬 Dulces a @${who.split('@')[0]}.  
+📌 *Impuesto (2%)*: *${imt}* 🍬 Dulces  
+💰 *Total gastado*: *${total}* 🍬 Dulces`, null, { mentions: [who] });
 
     conn.fakeReply(m.chat, `🎁 *¡Recibiste ${poin} 🍬 Dulces!*`, who, m.text);
 };
