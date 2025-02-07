@@ -1,33 +1,44 @@
 /* 
-- Código Creado Por Izumi-kzx
+
+*❀ By JTxs*
+
+[ Canal Principal ] :
+https://whatsapp.com/channel/0029VaeQcFXEFeXtNMHk0D0n
+
+[ Canal Rikka Takanashi Bot ] :
+https://whatsapp.com/channel/0029VaksDf4I1rcsIO6Rip2X
+
+[ Canal StarlightsTeam] :
+https://whatsapp.com/channel/0029VaBfsIwGk1FyaqFcK91S
+
+[ HasumiBot FreeCodes ] :
+https://whatsapp.com/channel/0029Vanjyqb2f3ERifCpGT0W
 */
 
-// *[ 🍟 SPOTIFY SEARCH ]*
+// *[ ❀ SPOTIFY PLAY ]*
 import fetch from 'node-fetch'
 
-let handler = async (m, { conn, args, usedPrefix, command }) => {
-if (!args.length) return conn.reply(m.chat, `🔍 *Por favor escribe una canción a buscar.*\nEjemplo: ${usedPrefix}${command} Faded`, m)
-const query = args.join(' ')
+let handler = async (m, { conn, command, text, usedPrefix }) => {
+if (!text) return conn.reply(m.chat, `❀ Ingresa el texto de lo que quieras buscar`, m)
+
 try {
-const response = await fetch(`https://api.davidcyriltech.my.id/search/spotify?text=${encodeURIComponent(query)}`)
-const data = await response.json()
-if (!data.success || !data.result || data.result.length === 0) return conn.reply(m.chat, `🚫 No se encontraron resultados para "${query}".`, m)
-let txt = '*🎵 S E A R C H - S P O T I F Y*\n\n'
-data.result.forEach(track => {
-txt += `🎼 *Título*: ${track.trackName}\n`
-txt += `🎤 *Artista*: ${track.artistName}\n`
-txt += `💿 *Álbum*: ${track.albumName}\n`
-txt += `⏱️ *Duración*: ${track.duration}\n`
-txt += `🔗 *Enlace*: ${track.externalUrl}\n\n---------------------------------------------------\n\n`
-})
-await conn.reply(m.chat, txt.trim(), m)
+let apiSearch = await fetch(`https://api.vreden.web.id/api/spotifysearch?query=${text}`)
+let jsonSearch = await apiSearch.json()
+let { popularity, url } = jsonSearch.result[0]
+let apiDL = await fetch(`https://api.vreden.web.id/api/spotify?url=${url}`)
+let jsonDL = await apiDL.json()
+let { title, artists, cover, music } = jsonDL.result.result
+let HS = `- *Titulo :* ${title}
+- *autor :* ${artists}
+- *Popularidad :* ${popularity}
+- *Link :* ${url}
+`
+await conn.sendFile(m.chat, cover, 'HasumiBotFreeCodes.jpg', HS, m)
+await conn.sendFile(m.chat, music, 'HasumiBotFreeCodes.mp4', null, m)
 } catch (error) {
 console.error(error)
-conn.reply(m.chat, '❌ Hubo un error al procesar la solicitud.', m)
 }}
 
-handler.help = ['spotifysearch'];
-handler.tag = ['buscador'];
-handler.command = ['spotifysearch', 'spsearch']
+handler.command = /^(spotify)$/i
 
 export default handler
