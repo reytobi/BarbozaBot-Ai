@@ -1,39 +1,42 @@
-
-import db from '../lib/database.js'
+const impuesto = 0.02;
 
 let handler = async (m, { conn, text }) => {
-    let who;
-    if (m.isGroup) who = m.mentionedJid[0];
-    else who = m.chat;
+    let who = m.mentionedJid && m.mentionedJid.length > 0 ? m.mentionedJid[0] : null;
+    if (!who) throw '🚩 Menciona al usuario con *@user*.';
 
-    if (!who) throw '🚩 Menciona al usuario con *@user.*';
+    let txt = text.replace('@' + who.split`@`[0], '').trim();
+    if (!txt) throw '🚩 Ingresa la cantidad de *🆙 XP* que quieres transferir.';
+    if (isNaN(txt)) throw '🚩 Solo se permiten números.';
 
-    let txt = text.replace('@' + who.split('@')[0], '').trim();
-    if (!txt) throw '🚩 Ingrese la cantidad de *🌟 Experiencia* que quiere regalar.';
+    let poin = parseInt(txt);
+    let imt = Math.ceil(poin * impuesto);
+    let total = poin + imt;
 
-    if (isNaN(txt)) throw 'Sólo números.';
+    if (total < 1) throw '🚩 El mínimo para donar es *1 XP*.';
 
-    let experienciaRegalada = parseInt(txt);
+    let sender = m.sender;
 
-    let users = global.db.data.users;
+    // Verificamos que ambos usuarios existen en la base de datos
+    if (!(sender in global.db.data.users)) throw '🚩 No estás registrado en mi base de datos.';
+    if (!(who in global.db.data.users)) throw '🚩 El usuario mencionado no está registrado en mi base de datos.';
 
-    if (experienciaRegalada < 1) throw '🚩 Mínimo es *1 🌟 Experiencia*.';
+    let senderData = global.db.data.users[sender];
+    let receiverData = global.db.data.users[who];
 
-    // Verificar si el usuario tiene suficiente experiencia para regalar
-    if (users[m.sender].experience < experienciaRegalada) throw 'No tienes suficiente *🌟 Experiencia* para regalar.';
+    if (total > senderData.exp) throw '🚩 No tienes suficiente *🆙 XP* para donar.';
 
-    // Restar experiencia del donante y sumar al receptor
-    users[m.sender].experience -= experienciaRegalada;
-    users[who].experience += experienciaRegalada;
+    senderData.exp -= total;
+    receiverData.exp += poin;
 
-    // Respuesta al usuario
-    await m.reply(`🎉 Has regalado *${experienciaRegalada}* puntos de experiencia a ${who.split('@')[0]}!`);
+    await m.reply(`✅ Has transferido *${poin}* 🆙 XP a @${who.split('@')[0]}.  
+📌 *Impuesto (2%)*: *${imt}* 🆙 XP  
+💰 *Total gastado*: *${total}* 🆙 XP`, null, { mentions: [who] });
 
-    conn.fakeReply(m.chat, `*+${experienciaRegalada}* *🌟 Experiencia.*`, who, m.text);
-}
+    conn.fakeReply(m.chat, `🎁 *¡Recibiste ${poin} 🆙 XP!*`, who, m.text);
+};
 
-handler.help = ['regalarxp *@user <cantidad>*'];
+handler.help = ['darxp *@user <cantidad>*'];
 handler.tags = ['rpg'];
-handler.command = ['regalarxp', 'donarexp'];
+handler.command = ['darxp'];
 
 export default handler;
