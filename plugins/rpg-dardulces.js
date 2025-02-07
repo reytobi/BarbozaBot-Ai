@@ -1,11 +1,6 @@
-import fs from 'fs';
-
-const filePath = './mineria.json';
 const impuesto = 0.02;
 
 let handler = async (m, { conn, text }) => {
-    let data = fs.existsSync(filePath) ? JSON.parse(fs.readFileSync(filePath)) : {};
-
     let who = m.mentionedJid && m.mentionedJid.length > 0 ? m.mentionedJid[0] : null;
     if (!who) throw '🚩 Menciona al usuario con *@user*.';
 
@@ -20,15 +15,18 @@ let handler = async (m, { conn, text }) => {
     if (total < 1) throw '🚩 El mínimo para donar es *1 🍬 Dulce*.';
 
     let sender = m.sender;
-    if (!data[sender]) data[sender] = { dulce: 0 };
-    if (!data[who]) data[who] = { dulce: 0 };
 
-    if (total > data[sender].dulce) throw '🚩 No tienes suficientes *🍬 Dulces* para donar.';
+    // Verificamos que ambos usuarios existen en la base de datos
+    if (!(sender in global.db.data.users)) throw '🚩 No estás registrado en mi base de datos.';
+    if (!(who in global.db.data.users)) throw '🚩 El usuario mencionado no está registrado en mi base de datos.';
 
-    data[sender].dulce -= total;
-    data[who].dulce += poin;
+    let senderData = global.db.data.users[sender];
+    let receiverData = global.db.data.users[who];
 
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    if (total > senderData.limit) throw '🚩 No tienes suficientes *🍬 Dulces* para donar.';
+
+    senderData.limit -= total;
+    receiverData.limit += poin;
 
     await m.reply(`✅ Has transferido *${poin}* 🍬 Dulces a @${who.split('@')[0]}.  
 📌 *Impuesto (2%)*: *${imt}* 🍬 Dulces  
