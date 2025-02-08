@@ -69,7 +69,7 @@ const defaultMenu = {
 
 *─ׄ─ׄ─⭒─ׄ─ׅ─ׄ⭒─ׄ─ׄ─⭒─ׄ─ׄ─⭒─ׄ─ׅ─*
  %readmore
-\t\t\t⚙️_*MENU DE BOT BARBOZA - AI*_ 🚀
+\t\t\t*MENU DE BOT BARBOZA - AI*⭐
 `.trimStart(),
   header: '*╭╍╍╍╍❖【 *%category* 】',
   body: '┋💨›【 %cmd %islimit %isPremium\n',
