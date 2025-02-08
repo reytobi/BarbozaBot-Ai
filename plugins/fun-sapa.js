@@ -1,7 +1,8 @@
 
+
 var handler = async (m, { conn, text }) => {
     // Verificamos si se mencionó a alguien
-    if (!text) throw '🍭 *ESCRIBE EL NOMBRE DE UN USUARIO PARA CALCULAR SU PORCENTAJE DE SAPA.*';
+    if (!text) throw '🍭 *ESCRIBE EL NOMBRE DE UN USUARIO PARA CALCULAR SU PORCENTAJE DE SAPO.*';
 
     // Obtenemos el ID del usuario mencionado
     let userMentioned = m.mentionedJid[0]; // Esto obtiene el ID del usuario mencionado
@@ -13,9 +14,9 @@ var handler = async (m, { conn, text }) => {
     let sapoPercentage = Math.floor(Math.random() * 101);
 
     // Creamos el mensaje mencionando al usuario y mostrando el porcentaje
-    let sapaMessage = `
+    let sapoMessage = `
 ━━━━━━━━━━━━━━━
-🐸 *${conn.getName(userMentioned)}*, eres un ${sapaPercentage}% sapa! 
+🐸 *${conn.getName(userMentioned)}*, eres un ${sapoPercentage}% sapo! 
 ━━━━━━━━━━━━━━━
 `.trim();
 
@@ -23,8 +24,8 @@ var handler = async (m, { conn, text }) => {
     m.reply(sapoMessage, null, { mentions: [userMentioned] });
 }
 
-handler.help = ['sapa']
+handler.help = ['sapa'] // Comando que se utilizará
 handler.tags = ['fun']
-handler.command = /^(sapa)$/i
+handler.command = /^(sapa)$/i // Expresión regular para el comando
 
 export default handler;
