@@ -1,31 +1,70 @@
-import fetch from 'node-fetch';
+import _ from "lodash"
+import fetch from "node-fetch"
 
-const handler = async (m, { conn, text }) => {
-  if (!text) return conn.reply(m.chat, '『 ✎ 』 Por favor, ingresa un enlace de TikTok.', m);
+let handler = async (m, { conn, command, usedPrefix, args }) => {
+try {
 
-  const tiktokAPI = `https://apis-starlights-team.koyeb.app/starlight/tiktok2?url=${text}`;
+const text = _.get(args, "length") ? args.join(" ") : _.get(m, "quoted.text") || _.get(m, "quoted.caption") || _.get(m, "quoted.description") || ""
 
-  try {
-    await m.react(rwait);
-    const res = await fetch(tiktokAPI);
-    const json = await res.json();
+if (!text.trim()) {
+return m.reply(`✦ Por favor, ingresa el nombre de la música.`)
+}
 
-    if (!json || !json.video) return conn.reply(m.chat, '『 ⍰ 』 No se pudo descargar el video. Verifica que la URL sea correcta.', m);
+await m.reply("✦ Espere un momento...")
 
-    await conn.sendMessage(m.chat, { video: { url: json.video }, caption: '『 ⌬ 』 Aqui tienes ฅ^•ﻌ•^ฅ.' }, { quoted: m });
-   await m.react(done);
+const searchResponse = await fetch(`https://deliriussapi-oficial.vercel.app/search/spotify?q=${encodeURIComponent(text)}`)
+const searchResult = await searchResponse.json()
 
-  } catch (e) {
-    conn.reply(m.chat, '⚠️ Ocurrió un error al descargar el video.', m);
-    await m.react(error);
-    console.log(e);
-  }
-};
+if (!searchResult.status || !searchResult.data.length) {
+return m.reply("✦ No se encontraron resultados para tu consulta.")
+}
 
-handler.help = ['tiktok', 'tt'];
-handler.tags = ['descargas'];
-handler.command = ['tiktok', 'tt'];
-handler.coin = 1;
-handler.register = true;
+const firstResult = searchResult.data[0]
+const downloadResponse = await fetch(`https://deliriussapi-oficial.vercel.app/download/spotifydl?url=${firstResult.url}`)
+const downloadResult = await downloadResponse.json()
 
-export default handler;
+if (!downloadResult.status || !downloadResult.data) {
+return m.reply("✦ No se pudo descargar el audio. Inténtalo de nuevo más tarde.")
+}
+
+const { title, author, url: downloadUrl, image } = downloadResult.data
+const captvid = `*✦Título:* ${title || "No encontrado"}
+*✧Popularidad:* ${firstResult.popularity || "No disponible"}
+*✦Artista:* ${author || "No encontrado"}
+*✧Álbum:* ${firstResult.album || "No disponible"}
+*✦Duración:* ${firstResult.duration || "No disponible"}
+*✦Publicado:* ${firstResult.publish || "No disponible"}
+*✧Enlace Spotify:* ${firstResult.url || "No disponible"}`
+
+const thumbnail = (await conn.getFile(image))?.data
+
+const infoReply = {
+contextInfo: {
+externalAdReply: {
+body: "✧ En unos momentos se entrega su audio",
+mediaType: 1,
+mediaUrl: firstResult.url,
+previewType: 0,
+renderLargerThumbnail: true,
+sourceUrl: firstResult.url,
+thumbnail: thumbnail,
+title: "S P O T I F Y - A U D I O",
+},},
+}
+
+await conn.reply(m.chat, captvid, m, infoReply)
+infoReply.contextInfo.externalAdReply.body = "Audio descargado con éxito" // Para confirmar la descarga Jjjj
+
+await conn.sendMessage(m.chat, { audio: { url: downloadUrl }, caption: captvid, mimetype: "audio/mpeg", contextInfo: infoReply.contextInfo, }, { quoted: m }
+)} catch (error) {
+console.error("Error en el handler de Spotify:", error)
+return m.reply("✦ Ocurrió un error al procesar tu solicitud. Inténtalo de nuevo más tarde.")
+}}
+
+
+handler.help = ["spotify"]
+handler.tags = ["descarga"]
+handler.command = ['splay', 'spotify']
+handler.limit = true
+
+export default handler
