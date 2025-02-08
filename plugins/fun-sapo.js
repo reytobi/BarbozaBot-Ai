@@ -4,7 +4,7 @@ var handler = async (m, { conn, text }) => {
     if (!text) throw '🍭 *ESCRIBE EL NOMBRE DE UN USUARIO PARA CALCULAR SU PORCENTAJE DE SAPO.*';
 
     // Obtenemos el ID del usuario mencionado
-    let userMentioned = text.split('@')[1];
+    let userMentioned = m.mentionedJid[0]; // Esto obtiene el ID del usuario mencionado
 
     // Verificamos si se mencionó un usuario válido
     if (!userMentioned) throw '🍭 *NO SE PUDO ENCONTRAR EL USUARIO MENCIONADO.*';
@@ -15,7 +15,7 @@ var handler = async (m, { conn, text }) => {
     // Creamos el mensaje mencionando al usuario y mostrando el porcentaje
     let sapoMessage = `
 ━━━━━━━━━━━━━━━
-🐸 *${text}*, eres un ${sapoPercentage}% sapo! 
+🐸 *${conn.getName(userMentioned)}*, eres un ${sapoPercentage}% sapo! 
 ━━━━━━━━━━━━━━━
 `.trim();
 
