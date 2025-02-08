@@ -51,7 +51,7 @@ const defaultMenu = {
 🌟 Hola *%name* soy *Barboza* 🌟
 
 ╔══════ •『 𝑪𝑹𝑬𝑨𝑫𝑶𝑹 』
-║  🗣️ Barboza
+║  ⭐ Barboza
 ╚═════ ♢.✰.♢ ══════
 ╔══════ •『 𝑰𝑵𝑭𝑶-𝑩𝑶𝑻 』
 ║  💨 Cliente: %name
@@ -72,7 +72,7 @@ const defaultMenu = {
 \t\t\t*MENU DE BOT BARBOZA - AI*⭐
 `.trimStart(),
   header: '*╭╍╍╍╍❖【 *%category* 】',
-  body: '┋💨›【 %cmd %islimit %isPremium\n',
+  body: '┋🌪️›【 %cmd %islimit %isPremium\n',
   footer: '*╰╍╍╍╍❖•ೋ° °ೋ•❖╍╍╍╍╯*',
   after: `© ${textbot}`,
 }
