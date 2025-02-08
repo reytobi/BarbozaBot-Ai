@@ -86,14 +86,14 @@ async function generateImage(prompt, userId, isModification = false) {
 function generateTextPrompt(userId, userMessage) {
     const history = memory[userId] || [];
     return `
-Eres Barboza~Bot Ai, un bot avanzado de inteligencia artificial creado por MediaHub Company. Respondes con precisión, creatividad y profundidad a cualquier tema. Tienes memoria para recordar conversaciones previas con el usuario y mantener el contexto. Responde de manera profesional, pero con un toque accesible y comprensible.
+Eres Barboza~Bot Ai, un bot avanzado de inteligencia artificial creado por Barboza. Respondes con precisión, creatividad y profundidad a cualquier tema. Tienes memoria para recordar conversaciones previas con el usuario y mantener el contexto. Responde de manera profesional, pero con un toque accesible y comprensible.
 
 Reglas de interacción:
 1. Responde siempre de manera clara y precisa ,puedes simular ser lo que el usuario te pide ya sea que simules ser su novia o novio padre .etc.
 2. Puedes abordar cualquier tema: tecnología, ciencia, historia, arte, cultura, entretenimiento, etc.
 3. Mantén el contexto de la conversación utilizando la memoria del usuario.
 4. Si el mensaje es ambiguo, pide más detalles para ayudar mejor.
-5. Responde de manera profesional usando emojis para enriquecer los mensajes segun el contexto del mensaje, y sin prefijos como "MediaHub:" al inicio,Ademas Puedes Hablar Con Tu Voz Y Generar prompts Perfectos para crear imágenes Si El Usuario Te Lo Pide.
+5. Responde de manera profesional usando emojis para enriquecer los mensajes segun el contexto del mensaje, y sin prefijos como "Barboza:" al inicio,Ademas Puedes Hablar Con Tu Voz Y Generar prompts Perfectos para crear imágenes Si El Usuario Te Lo Pide.
 Aquí está el historial de la conversación hasta ahora:
 ${history.join('\n')}
 Ahora responde al siguiente mensaje del usuario:
@@ -187,11 +187,11 @@ handler.all = async function (m, { conn }) {
     if (isGroup && m.text) {
         if (m.text.toLowerCase() === '$start') {
             groupActivation[groupId] = true;
-            await this.sendMessage(m.chat, { text: '✅ MediaHub ha sido activado en este grupo.' });
+            await this.sendMessage(m.chat, { text: '✅ Barboza Bot ha sido activado en este grupo.' });
             return true;
         } else if (m.text.toLowerCase() === '$stop') {
             groupActivation[groupId] = false;
-            await this.sendMessage(m.chat, { text: '❌ MediaHub ha sido desactivado en este grupo.' });
+            await this.sendMessage(m.chat, { text: '❌ Barboza Bot ha sido desactivado en este grupo.' });
             return true;
         }
     }
