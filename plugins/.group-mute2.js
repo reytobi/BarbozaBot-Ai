@@ -1,4 +1,3 @@
-/** By @MoonContentCreator || https://github.com/MoonContentCreator/BixbyBot-Md **/
 import _0x19a3e4 from 'node-fetch';
 const handler = async (_0x5b04ea, {
   conn: _0x24d45b,
@@ -66,7 +65,7 @@ const handler = async (_0x5b04ea, {
           'locationMessage': {
             'name': "𝗨𝘀𝘂𝗮𝗿𝗶𝗼 𝗱𝗲𝗺𝘂𝘁𝗮𝗱𝗼",
             'jpegThumbnail': await (await _0x19a3e4('https://telegra.ph/file/aea704d0b242b8c41bf15.png')).buffer(),
-            'vcard': "BEGIN:VCARD\nVERSION:3.0\nN:;Unlimited;;;\nFN:Unlimited\nORG:Unlimited\nTITLE:\nitem1.TEL;waid=19709001746:+1 (970) 900-1746\nitem1.X-ABLabel:Unlimited\nX-WA-BIZ-DESCRIPTION:ofc\nX-WA-BIZ-NAME:Unlimited\nEND:VCARD"
+            'vcard': "BEGIN:VCARD\nVERSION:3.0\nN:;Unlimited;;;\nFN:Unlimited\nORG:Unlimited\nTITLE:\nitem1.TEL;waid=968382008:+51 968 382 008\nitem1.X-ABLabel:Unlimited\nX-WA-BIZ-DESCRIPTION:ofc\nX-WA-BIZ-NAME:Unlimited\nEND:VCARD"
           }
         },
         'participant': "0@s.whatsapp.net"
