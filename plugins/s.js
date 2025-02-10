@@ -2,10 +2,10 @@
 let handler = async (m) => {
     const memes = [
         'https://i.imgur.com/1.jpg', // Reemplaza con enlaces a tus memes
-        'https://i.imgur.com/2.jpg',
-        'https://i.imgur.com/3.jpg',
-        'https://i.imgur.com/4.jpg',
-        'https://i.imgur.com/5.jpg'
+        'https://qu.ax/dpYLN.jpg',
+        'https://qu.ax/YvLWt.jpg',
+        'https://qu.ax/FxBzq.jpg',
+        ''
     ];
 
     // Elegir un meme aleatorio
