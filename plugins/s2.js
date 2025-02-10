@@ -1,7 +1,6 @@
 
 let handler = async (m) => {
-    const videos = [
-        'https://link-a-tu-video1.com', // Reemplaza con tus enlaces de video
+    const videos = 
         'https://qu.ax/kZlnj.mp4',
     ];
 
