@@ -19,11 +19,27 @@ let handler = async (m) => {
         'https://qu.ax/yQoQW.jpg',
         'https://qu.ax/msDFZ.jpg',
         'https://qu.ax/MTDhM.jpg',
-        'https://qu.ax/hFQOL.jpg'
+        'https://qu.ax/hFQOL.jpg',
+        'https://qu.ax/iHSQp.jpg',
+        'https://qu.ax/dWkJV.jpg',
+        'https://qu.ax/jyaXq.jpg',
+        'https://qu.ax/iTDtj.jpg',
+        'https://qu.ax/GjjKW.jpg', 
+        'https://qu.ax/JOqKm.jpg',
+        'https://qu.ax/ztadH.jpg',
+        'https://qu.ax/FQCDQ.jpg',
+        'https://qu.ax/nQqCP.jpg',
+        'https://qu.ax/QxSun.jpg',
+        'https://qu.ax/tXWnk.jpg',
+        'https://qu.ax/EuuUz.jpg',
+        'https://qu.ax/enMBc.jpg',
+        'https://qu.ax/QpCpk.jpg',
+        'https://qu.ax/UbtkV.jpg',
+        'https://qu.ax/ijgjB.jpg',
     ];
 
     // Elegir un meme aleatorio
-    const randomMeme = memes[Math.floor(Math.random() * memes.length)];
+    const randomMeme = memes[Math.floor(Math.random() * memes.length)]; y 
 
     // Enviar el meme al chat
     await conn.sendMessage(m.chat, { image: { url: randomMeme }, caption: "¡Aquí tienes un meme para alegrar tu día!" }, { quoted: m });
