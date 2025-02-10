@@ -10,6 +10,11 @@ let handler = async (m) => {
         'https://qu.ax/UFWsB.jpg',
         'https://qu.ax/rubYe.jpg',
         'https://qu.ax/UFWsB.jpg',
+        'https://qu.ax/uyjpK.jpg',
+        'https://qu.ax/RcxFR.jpg',
+        'https://qu.ax/MctMj.jpg',
+        'https://qu.ax/znbWC.jpg',
+        'https://qu.ax/lLJMP.jpg'
     ];
 
     // Elegir un meme aleatorio
