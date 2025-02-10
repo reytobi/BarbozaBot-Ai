@@ -5,7 +5,10 @@ let handler = async (m) => {
         'https://qu.ax/dpYLN.jpg',
         'https://qu.ax/YvLWt.jpg',
         'https://qu.ax/FxBzq.jpg',
-        ''
+        'https://qu.ax/oRkAi.jpg',
+        'https://qu.ax/Gfnrz.jpg',
+        'https://qu.ax/UFWsB.jpg',
+        'https://qu.ax/rubYe.jpg',
     ];
 
     // Elegir un meme aleatorio
