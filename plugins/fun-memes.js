@@ -1,7 +1,6 @@
 
 let handler = async (m) => {
     const memes = [
-        'https://i.imgur.com/1.jpg', // Reemplaza con enlaces a tus memes
         'https://qu.ax/dpYLN.jpg',
         'https://qu.ax/YvLWt.jpg',
         'https://qu.ax/FxBzq.jpg',
