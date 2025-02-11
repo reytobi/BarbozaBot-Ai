@@ -1,26 +1,45 @@
 
-let handler = async (m) => {
-    const poesía = `
+let poesías = [
+    `
 🌟✨ *Poesía para ti* ✨🌟
 
 En el jardín de la vida, florece el amor,  
 cada pétalo es un susurro, un dulce clamor.  
 Las estrellas brillan en la noche serena,  
 y en cada latido, tú eres la vena.
+    `,
+    `
+🌈 *Verso de esperanza* 🌈
 
-Las olas del mar cantan su canción,  
-mientras el viento acaricia con devoción.  
-Eres un verso escrito en el cielo,  
-una melodía que despierta anhelo.
+Cuando la tormenta oscurece el cielo,  
+recuerda que siempre hay un destello.  
+Las nubes se van y vuelve el sol,  
+brillando en tu vida con todo su rol.
+    `,
+    `
+🍃 *Susurros del viento* 🍃
 
-Así que sigue soñando, nunca dejes de amar,  
-la poesía está en ti, siempre lista para brillar.  
-Con cada palabra que sale de tu ser,  
-creas un mundo donde todo puede renacer.  
-`;
+El viento sopla suave entre los árboles,  
+susurra secretos que nunca son inalcanzables.  
+Cada hoja que cae tiene su razón,  
+y en cada cambio, hay una canción.
+    `
+];
 
-    // Enviamos la poesía al chat
-    await conn.sendMessage(m.chat, { text: poesía }, { quoted: m });
+let handler = async (m) => {
+    let userId = m.sender; // ID del usuario
+    if (!global.usedPoesias) global.usedPoesias = {}; // Inicializar si no existe
+    if (!global.usedPoesias[userId]) global.usedPoesias[userId] = 0; // Contador de poesías por usuario
+
+    let index = global.usedPoesias[userId];
+    
+    // Enviar la poesía correspondiente
+    if (index < poesías.length) {
+        await conn.sendMessage(m.chat, { text: poesías[index] }, { quoted: m });
+        global.usedPoesias[userId] += 1; // Aumentar el contador
+    } else {
+        await conn.sendMessage(m.chat, { text: "Ya has recibido todas las poesías disponibles. ¡Intenta más tarde!" }, { quoted: m });
+    }
 }
 
 handler.help = ['poesía'];
