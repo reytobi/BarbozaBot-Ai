@@ -1,29 +1,15 @@
 import fetch from 'node-fetch';
-import fs from 'fs';
 
 // Mensajes predefinidos
 const mssg = {
     noText: '❗️ *Por favor, ingresa un término para buscar en TikTok.*',
     noResults: '❗️ No se encontraron resultados para tu búsqueda. Intenta con otro término. 💎🔥',
     error: '❗️ Ocurrió un error al intentar procesar la búsqueda. 🧐',
-    fileNotFound: '❗️ No se pudo encontrar el video de TikTok. Asegúrate de que el enlace sea correcto.',
 };
 
 // Función para enviar respuestas rápidas
 const reply = (texto, conn, m) => {
-    conn.sendMessage(m.chat, {
-        text: texto,
-        contextInfo: {
-            externalAdReply: {
-                showAdAttribution: true,
-                title: `MEDIAHUB 🇵🇪`,
-                body: `🦅𝙈𝙀𝘿𝙄𝘼𝙃𝙐𝘽 𝙁𝙐𝙇𝙇 𝘿𝘼𝙏𝘼`,
-                previewType: 'PHOTO',
-                thumbnail: fs.readFileSync('./media/tiktok.jpg'),
-                sourceUrl: 'https://whatsapp.com/channel/0029VatLJ9z9WtC3ReRTHw2T',
-            },
-        },
-    }, { quoted: m });
+    conn.sendMessage(m.chat, { text: texto }, { quoted: m });
 };
 
 // Función para buscar en TikTok con la API actualizada
@@ -46,29 +32,29 @@ const searchTikTok = async (query) => {
 };
 
 // Handler principal para los comandos
-let handler = async (m, { conn, args, text, usedPrefix, command }) => {
+let handler = async (m, { conn, args, text }) => {
     if (!text) {
         return reply(mssg.noText, conn, m);
     }
 
     // Mensaje de búsqueda
-    reply(`🔍 *Buscando en TikTok:* "${text}"...\n\n>_*MediaHub está buscando su archivo, por favor espere..._*`, conn, m);
+    reply(`🔍 *Buscando en TikTok:* "${text}"...\n\n>_*Por favor, espere..._*`, conn, m);
 
     // Buscar en TikTok
     const searchResults = await searchTikTok(text);
 
     if (searchResults) {
-        reply(`✅ *Se encontraron ${searchResults.length} resultados. Aquí están los videos relacionados:*`, conn, m);
+        reply(`✅ *Se encontraron ${searchResults.length} resultados. Aquí están los videos:*`, conn, m);
 
         // Enviar los primeros 10 videos encontrados
         for (const result of searchResults) {
             const videoUrl = result.play; // URL del video
 
             try {
-                // Enviar el video al usuario con solo el texto solicitado
+                // Enviar el video al usuario
                 await conn.sendMessage(m.chat, {
                     video: { url: videoUrl },
-                    caption: `Aquí tienes tu video de TikTok.\n\n_*Powered by MediaHub*_`,
+                    caption: `Aquí tienes tu video de TikTok.`,
                     fileName: `${result.video_id}.mp4`,
                 }, { quoted: m });
             } catch (error) {
