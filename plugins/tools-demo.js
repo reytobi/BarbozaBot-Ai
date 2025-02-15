@@ -1,9 +1,9 @@
-//código modificado por Angel-OFC 
+//código modificado por Niño Piña
 import { randomBytes } from "crypto"
 import axios from "axios"
 
 let handler = async (m, { conn, text }) => {
-    if (!text) throw '¿Como puedo ayudarte hoyp?';
+    if (!text) throw '¿Como puedo ayudarte hoy?';
     try {
         conn.reply(m.chat, m);
         let data = await chatGpt(text)
@@ -14,11 +14,11 @@ isForwarded: false,
 "externalAdReply": {
 "showAdAttribution": true,
 "containsAutoReply": true,
-title: `[ Kakaroto - Ai ]`,
+title: `[ CrowBot -By|Niño Piña ]`,
 body: ``,
 "previewType": "PHOTO",
 thumbnailUrl: 'https://tinyurl.com/2awg2bch', 
-sourceUrl: 'https://whatsapp.com/channel/0029VagYdbFEwEk5htUejk0t'}}},
+sourceUrl: 'https://whatsapp.com/channel/0029VapSIvR5EjxsD1B7hU3T'}}},
 { quoted: m})
     } catch (err) {
         m.reply('error cik:/ ' + err);
@@ -26,7 +26,8 @@ sourceUrl: 'https://whatsapp.com/channel/0029VagYdbFEwEk5htUejk0t'}}},
 }
 
 handler.command = handler.help = ['demo'];
-handler.tags = ['ai'];
+handler.estrellas = 3;
+handler.tags = ['tools'];
 
 export default handler;
 
