@@ -1,27 +1,31 @@
-//código modificado por Niño Piña
-import { randomBytes } from "crypto"
-import axios from "axios"
+
+// código modificado por Niño Piña
+import { randomBytes } from "crypto";
+import axios from "axios";
 
 let handler = async (m, { conn, text }) => {
-    if (!text) throw '¿Como puedo ayudarte hoy?';
+    if (!text) throw '¿Cómo puedo ayudarte hoy?';
     try {
-        conn.reply(m.chat, m);
-        let data = await chatGpt(text)
-await conn.sendMessage(m.chat, { text: data,
-contextInfo:{
-forwardingScore: 9999999,
-isForwarded: false, 
-"externalAdReply": {
-"showAdAttribution": true,
-"containsAutoReply": true,
-title: `[ BarbozaBot -By|Barboza & WillZek ]`,
-body: ``,
-"previewType": "PHOTO",
-thumbnailUrl: 'https://tinyurl.com/2awg2bch', 
-sourceUrl: 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d'}}},
-{ quoted: m})
+        await conn.reply(m.chat, m);
+        let data = await chatGpt(text);
+        await conn.sendMessage(m.chat, { 
+            text: data,
+            contextInfo: {
+                forwardingScore: 9999999,
+                isForwarded: false,
+                "externalAdReply": {
+                    "showAdAttribution": true,
+                    "containsAutoReply": true,
+                    title: `[ BarbozaBot -By|Barboza & WillZek ]`,
+                    body: ``,
+                    "previewType": "PHOTO",
+                    thumbnailUrl: 'https://tinyurl.com/2awg2bch',
+                    sourceUrl: 'https://whatsapp.com/channel/0029VakfOZfHFxP7rNrUQk2d'
+                }
+            }
+        }, { quoted: m });
     } catch (err) {
-        m.reply('error cik:/ ' + err);
+        await conn.reply(m.chat, 'Error cik:/ ' + err);
     }
 }
 
@@ -30,34 +34,36 @@ handler.tags = ['ai'];
 
 export default handler;
 
-async function chatGpt(query){
-try {
+async function chatGpt(query) {
+    try {
+        const { id_ } = (await axios.post("https://chat.chatgptdemo.net/new_chat", {
+            user_id: "crqryjoto2h3nlzsg"
+        }, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })).data;
 
-const { id_ }= (await axios.post("https://chat.chatgptdemo.net/new_chat",{user_id: "crqryjoto2h3nlzsg"},{headers:{
-"Content-Type": "application/json",
+        const json = { "question": query, "chat_id": id_, "timestamp": new Date().getTime() };
 
-}})).data
+        const { data } = await axios.post("https://chat.chatgptdemo.net/chat_api_stream", json, {
+            headers: {
+                "Content-Type": "application/json",
+            }
+        });
 
-const json = {"question":query,"chat_id": id_,"timestamp":new Date().getTime()}
+        const cek = data.split("data: ");
+        let res = [];
 
+        for (let i = 1; i < cek.length; i++) {
+            if (cek[i].trim().length > 0) {
+                res.push(JSON.parse(cek[i].trim()));
+            }
+        }
 
-const { data } = await axios.post("https://chat.chatgptdemo.net/chat_api_stream",json,{headers:{
-"Content-Type": "application/json",
-
-}})
-const cek = data.split("data: ")
-
-let res = []
-
-for (let i=1; i < cek.length; i++){
-if (cek[i].trim().length > 0){
-res.push(JSON.parse(cek[i].trim()))
-}}
-
-return res.map((a) => a.choices[0].delta.content).join("")
-
-} catch (error) {
-console.error("Error parsing JSON:",error)
-return 404
-}
+        return res.map((a) => a.choices[0].delta.content).join("");
+    } catch (error) {
+        console.error("Error parsing JSON:", error);
+        return "Hubo un error al procesar la solicitud.";
+    }
 }
