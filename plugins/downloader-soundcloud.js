@@ -1,4 +1,3 @@
-
 import fetch from "node-fetch";
 import yts from "yt-search";
 
@@ -28,7 +27,7 @@ const fetchWithRetries = async (url, maxRetries = 2) => {
 let handler = async (m, { conn, text }) => {
   if (!text || !text.trim()) {
     return conn.sendMessage(m.chat, {
-      text: "❗ *Ingresa un término de búsqueda para encontrar música.*\n\n*Ejemplo:* .play No llores más",
+      text: "❗ *Ingresa un término de búsqueda para encontrar música.*\n\n*Ejemplo:* `.play No llores más`",
     });
   }
 
@@ -48,7 +47,8 @@ let handler = async (m, { conn, text }) => {
     // Enviar información del video con miniatura
     await conn.sendMessage(m.chat, {
       image: { url: video.thumbnail },
-      caption: `🎵 *Título:* ${video.title}\n👁️ *Vistas:* ${video.views}\n⏳ *Duración:* ${video.timestamp}\n✍️ *Autor:* ${video.author.name}\n> @Barboza - Bot - 𝟢𝟨`,
+      caption: `🎵 *Título:* ${video.title}\n👁️ *Vistas:* ${video.views}\n⏳ *Duración:* ${video.timestamp}\n✍️ *Autor:* ${video.author.name}
+      `> @Barboza - Bot - 𝟢𝟨`,,
     });
 
     // Enviar solo el audio
@@ -69,7 +69,7 @@ let handler = async (m, { conn, text }) => {
     await conn.sendMessage(m.chat, { react: { text: "❌", key: m.key } });
 
     await conn.sendMessage(m.chat, {
-      text: `❌ *Error al procesar tu solicitud:* ${error.message || "Error desconocido"}`,
+      text: `❌ *Error al procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
     });
   }
 };
