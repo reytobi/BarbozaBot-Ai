@@ -1,46 +1,80 @@
-import { youtubeSearch } from '@bochilteam/scraper'
-import fetch from 'node-fetch'
-let handler = async (m, { conn, command, text, usedPrefix }) => {
-if (!text) throw `*[❗𝐈𝐍𝐅𝐎❗] 𝙽𝙾𝙼𝙱𝚁𝙴 𝙳𝙴 𝙻𝙰 𝙲𝙰𝙽𝙲𝙸𝙾𝙽 𝙵𝙰𝙻𝚃𝙰𝙽𝚃𝙴, 𝙿𝙾𝚁 𝙵𝙰𝚅𝙾𝚁 𝙸𝙽𝙶𝚁𝙴𝚂𝙴 𝙴𝙻 𝙲𝙾𝙼𝙰𝙽𝙳𝙾 𝙼𝙰𝚂 𝙴𝙻 𝙽𝙾𝙼𝙱𝚁𝙴/𝚃𝙸𝚃𝚄𝙻𝙾 𝙳𝙴 𝚄𝙽𝙰 𝙲𝙰𝙽𝙲𝙸𝙾𝙽*\n\n*—◉ 𝙴𝙹𝙴𝙼𝙿𝙻𝙾:*\n*${usedPrefix + command} Farruko beba *`
-try {
-{await m.reply('⌛ _Cargando..._\n▰▰▰▱▱▱▱▱▱')}
-let vid = (await youtubeSearch(text)).video[0]
-let { title, description, thumbnail, videoId, durationH, viewH, publishedTime } = vid
-const urll = 'https://www.youtube.com/watch?v=' + videoId
-var doc = ['pdf','zip','vnd.openxmlformats-officedocument.presentationml.presentation','vnd.openxmlformats-officedocument.spreadsheetml.sheet','vnd.openxmlformats-officedocument.wordprocessingml.document']
-var document = doc[Math.floor(Math.random() * doc.length)]
-const buttons = [
-{ buttonId: `#ytmp3 ${urll}`, buttonText: { displayText: '𝐀𝐔𝐃𝐈𝐎' }, type: 1 },
-{ buttonId: `#ytmp4 ${urll}`, buttonText: { displayText: '𝐕𝐈𝐃𝐄𝐎' }, type: 1 },
-{ buttonId: `#playlist ${text}`, buttonText: { displayText: '𝐌𝐀𝐒 𝐑𝐄𝐒𝐔𝐋𝐓𝐀𝐃𝐎𝐒' }, type: 1 }, ]    
-let texto1 = `╭─────°.♡.°‧─────
-│ 🥀𝐏𝐋𝐀𝐘-𝐘𝐎𝐔𝐓𝐔𝐁𝐄🍃
-│ 📌 *𝚃𝙸𝚃𝚄𝙻𝙾:* ${title}
-│ 📆 *𝙿𝚄𝙱𝙻𝙸𝙲𝙰𝙳𝙾:* ${publishedTime}
-│ ⌚ *𝙳𝚄𝚁𝙰𝙲𝙸𝙾𝙽:* ${durationH}
-│ 👀 *𝚅𝙸𝚂𝚃𝙰𝚂:* ${viewH}
-│ 📇 *𝙳𝙴𝚂𝙲𝚁𝙸𝙿𝙲𝙸𝙾𝙽:* ${description}
-│ 🔗 *𝙻𝙸𝙽𝙺:* ${urll}
-│ ⫷᭄ʜᴀᴅᴇs-ʙᴏᴛ-ᴍᴅ﹏✍
-╰─────°.♡.°‧─────`.trim()
-let buttonMessage = { "document": { url: "https://wa.me/5212411719888" }, "fileName": '❏ 🌿 ʀᴇᴘʀᴏᴅᴜᴄᴛᴏʀ ᴅᴇ ʏᴏᴜᴛᴜʙᴇ', "mimetype": 'application/vnd.ms-excel', "caption": texto1, "fileLength": '99999999999999', "mentions": [m.sender], "footer": wm, "buttons": buttons, "headerType": 4, contextInfo: { "mentionedJid": [m.sender], "externalAdReply": { "showAdAttribution": true, "title": `${title}`, "mediaType": 2, "previewType": "VIDEO", "thumbnail": await (await fetch(thumbnail)).buffer(), "mediaUrl": `${urll}`, "sourceUrl": `https://github.com/OFC-YOVANI/HADES-BOT-MD` }}} 
-conn.sendMessage(m.chat, buttonMessage, { quoted: m })
-} catch {
-try {
-let vid2 = await (await fetch(`https://api.lolhuman.xyz/api/ytsearch?apikey=${lolkeysapi}&query=${text}`)).json()
-let { videoId, title, views, published, thumbnail } = await vid2.result[0]
-const url = 'https://www.youtube.com/watch?v=' + videoId
-let ytLink = await fetch(`https://api.lolhuman.xyz/api/ytplay2?apikey=${lolkeysapi}&query=${text}`)
-let jsonn = await ytLink.json()
-let aud = await jsonn.result.audio
-let capt = `❏ 📌 *𝚃𝙸𝚃𝚄𝙻𝙾:* ${title}\n❏ 📆 *𝙿𝚄𝙱𝙻𝙸𝙲𝙰𝙳𝙾:* ${published}\n❏ 👀 *𝚅𝙸𝚂𝚃𝙰𝚂:* ${views}\n❏ 🔗 *𝙻𝙸𝙽𝙺:* ${url}`
-const buttons = [{buttonId: `#playlist ${title}`, buttonText: {displayText: '𝐌𝐀𝐒 𝐑𝐄𝐒𝐔𝐋𝐓𝐀𝐃𝐎𝐒'}, type: 1}]
-const buttonMessage = { image: {url: thumbnail}, caption: capt, footer: '*ᴇɴᴠɪᴀɴᴅᴏ ᴀᴜᴅɪᴏ, ᴀɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ...*', buttons: buttons, headerType: 4 }
-let msg = await conn.sendMessage(m.chat, buttonMessage, { quoted: m })
-conn.sendMessage(m.chat, { audio: { url: aud }, mimetype: 'audio/mp4', fileName: `${title}.mp3`}, {quoted: msg})
-} catch {  
-throw '*[❗𝐈𝐍𝐅𝐎❗] 𝙴𝚁𝚁𝙾𝚁, 𝙿𝙾𝚁 𝙵𝙰𝚅𝙾𝚁 𝚅𝚄𝙴𝙻𝚅𝙰 𝙰 𝙸𝙽𝚃𝙴𝙽𝚃𝙰𝚁𝙻𝙾*'}}}
-handler.help = ['play', 'play2'].map(v => v + ' <pencarian>')
-handler.tags = ['downloader']
-handler.command = /^play2?$/i
-export default handler
+import fetch from "node-fetch";
+import yts from "yt-search";
+
+// API en formato Base64
+const encodedApi = "aHR0cHM6Ly9hcGkudnJlZGVuLndlYi5pZC9hcGkveXRtcDM=";
+
+// Función para decodificar la URL de la API
+const getApiUrl = () => Buffer.from(encodedApi, "base64").toString("utf-8");
+
+// Función para obtener datos de la API con reintentos
+const fetchWithRetries = async (url, maxRetries = 2) => {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data?.status === 200 && data.result?.download?.url) {
+        return data.result;
+      }
+    } catch (error) {
+      console.error(`Intento ${attempt + 1} fallido:`, error.message);
+    }
+  }
+  throw new Error("No se pudo obtener la música después de varios intentos.");
+};
+
+// Handler principal
+let handler = async (m, { conn, text }) => {
+  if (!text || !text.trim()) {
+    return conn.sendMessage(m.chat, {
+      text: "❗ *Ingresa un término de búsqueda para encontrar música.*\n\n*Ejemplo:* `.play No llores más`",
+    });
+  }
+
+  try {
+    // Reaccionar al mensaje inicial con 🕒
+    await conn.sendMessage(m.chat, { react: { text: "🕒", key: m.key } });
+
+    // Buscar en YouTube
+    const searchResults = await yts(text.trim());
+    const video = searchResults.videos[0];
+    if (!video) throw new Error("No se encontraron resultados.");
+
+    // Obtener datos de descarga
+    const apiUrl = `${getApiUrl()}?url=${encodeURIComponent(video.url)}`;
+    const apiData = await fetchWithRetries(apiUrl);
+
+    // Enviar información del video con miniatura
+    await conn.sendMessage(m.chat, {
+      image: { url: video.thumbnail },
+      caption: `🎵 *Título:* ${video.title}\n👁️ *Vistas:* ${video.views}\n⏳ *Duración:* ${video.timestamp}\n✍️ *Autor:* ${video.author.name}
+      `> @Barboza - Bot - 𝟢𝟨`,,
+    });
+
+    // Enviar solo el audio
+    const audioMessage = {
+      audio: { url: apiData.download.url },
+      mimetype: "audio/mpeg",
+      fileName: `${video.title}.mp3`,
+    };
+
+    await conn.sendMessage(m.chat, audioMessage, { quoted: m });
+
+    // Reaccionar al mensaje original con ✅
+    await conn.sendMessage(m.chat, { react: { text: "✅", key: m.key } });
+  } catch (error) {
+    console.error("Error:", error);
+
+    // Reaccionar al mensaje original con ❌
+    await conn.sendMessage(m.chat, { react: { text: "❌", key: m.key } });
+
+    await conn.sendMessage(m.chat, {
+      text: `❌ *Error al procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
+    });
+  }
+};
+
+// Cambia el Regex para que reconozca ".play"
+handler.command = /^play$/i;
+
+export default handler;
