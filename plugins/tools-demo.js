@@ -1,9 +1,9 @@
-//código modificado por Niño Piña
+
 import { randomBytes } from "crypto"
 import axios from "axios"
 
 let handler = async (m, { conn, text }) => {
-    if (typeof text !== 'string' || !text) throw '¿Como puedo ayudarte hoy?';
+    if (!text) throw '¿Como puedo ayudarte hoy?';
     try {
         conn.reply(m.chat, m);
         let data = await chatGpt(text)
