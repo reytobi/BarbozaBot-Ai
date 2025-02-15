@@ -1,5 +1,4 @@
-
-//código modificado por Niño Piña
+//código modificado por Angel-OFC 
 import { randomBytes } from "crypto"
 import axios from "axios"
 
@@ -15,11 +14,11 @@ isForwarded: false,
 "externalAdReply": {
 "showAdAttribution": true,
 "containsAutoReply": true,
-title: `[ CrowBot -By|Niño Piña ]`,
+title: `[ Kakaroto - Ai ]`,
 body: ``,
 "previewType": "PHOTO",
 thumbnailUrl: 'https://tinyurl.com/2awg2bch', 
-sourceUrl: 'https://whatsapp.com/channel/0029VapSIvR5EjxsD1B7hU3T'}}},
+sourceUrl: 'https://whatsapp.com/channel/0029VagYdbFEwEk5htUejk0t'}}},
 { quoted: m})
     } catch (err) {
         m.reply('error cik:/ ' + err);
@@ -27,8 +26,7 @@ sourceUrl: 'https://whatsapp.com/channel/0029VapSIvR5EjxsD1B7hU3T'}}},
 }
 
 handler.command = handler.help = ['demo'];
-handler.estrellas = 3;
-handler.tags = ['tools'];
+handler.tags = ['ai'];
 
 export default handler;
 
