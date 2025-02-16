@@ -15,6 +15,6 @@ const handler = async (m, { conn }) => {
 };
 
 // Asigna el comando al handler
-handler.command = /^\.barbozabo$/i;
+handler.command = /^\.barbozabot$/i;
 
 export default handler;
