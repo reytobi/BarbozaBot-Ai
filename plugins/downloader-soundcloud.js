@@ -1,192 +1,180 @@
-import { youtubedl, youtubedlv2 } from '@bochilteam/scraper'
-import fetch from 'node-fetch'
-import yts from 'yt-search'
-import ytdl from 'ytdl-core'
-import axios from 'axios'
-let tempStorage = {}
-const youtubeRegexID = /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/
+import axios from 'axios';
+import cheerio from 'cheerio';
+import qs from 'qs';
 
-const handler = async (m, {conn, command, args, text, usedPrefix}) => {
-try {
-if (!text) return m.reply(lenguajeGB.smsMalused2() + `*${usedPrefix + command} Billie Eilish - Bellyache*\n*${usedPrefix + command} https://youtu.be/gBRi6aZJGj4*`)
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+  if (!text) {
+    return m.reply(`Ejemplo de uso: *${usedPrefix + command} Joji - Ew*`);
+  }
 
-let videoIdToFind = text.match(youtubeRegexID) || null
+  const appleMusic = {
+    search: async (query) => {
+      const url = `https://music.apple.com/us/search?term=${query}`;
+      try {
+        const { data } = await axios.get(url);
+        const $ = cheerio.load(data);
+        const results = [];
+        $('.desktop-search-page .section[data-testid="section-container"] .grid-item').each((index, element) => {
+          const title = $(element).find('.top-search-lockup__primary__title').text().trim();
+          const subtitle = $(element).find('.top-search-lockup__secondary').text().trim();
+          const link = $(element).find('.click-action').attr('href');
+          results.push({ title, subtitle, link });
+        });
+        return results;
+      } catch (error) {
+        console.error("Error en búsqueda de Apple Music:", error.message);
+        return { success: false, message: error.message };
+      }
+    }
+  };
 
-const yt_play = await search(args.join(' '))
-let ytplay2 = await yts(videoIdToFind === null ? text : 'https://youtu.be/' + videoIdToFind[1])
+  const appledown = {
+    getData: async (urls) => {
+      const url = `https://aaplmusicdownloader.com/api/applesearch.php?url=${urls}`;
+      try {
+        const response = await axios.get(url, {
+          headers: {
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'X-Requested-With': 'XMLHttpRequest',
+            'User-Agent': 'MyApp/1.0',
+            'Referer': 'https://aaplmusicdownloader.com/'
+          }
+        });
+        return response.data;
+      } catch (error) {
+        console.error("Error obteniendo datos de Apple Music Downloader:", error.message);
+        return { success: false, message: error.message };
+      }
+    },
 
-if (videoIdToFind) {
-const videoId = videoIdToFind[1]  
-ytplay2 = ytplay2.all.find(item => item.videoId === videoId) || ytplay2.videos.find(item => item.videoId === videoId)
-} 
-ytplay2 = ytplay2.all?.[0] || ytplay2.videos?.[0] || ytplay2  
+    download: async (url) => {
+      const musicData = await appledown.getData(url);
+      if (!musicData || !musicData.name) {
+        return { success: false, message: "No se encontraron datos de música." };
+      }
 
-let caption = `*◜⋯ ⋯ ⋯ Y O U T U B E ⋯ ⋯ ⋯◞*
-*◎ ${lenguajeGB.smsYT1()}*
-${ytplay2?.title}
+      // Codificar datos necesarios
+      const encodedData = encodeURIComponent(JSON.stringify([
+        musicData.name,
+        musicData.albumname,
+        musicData.artist,
+        musicData.thumb,
+        musicData.duration,
+        musicData.url
+      ]));
 
-*◎ ${lenguajeGB.smsYT2()}*
-${ytplay2?.description}
+      const downloadUrl = 'https://aaplmusicdownloader.com/song.php';
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'Origin': 'https://aaplmusicdownloader.com',
+        'Referer': 'https://aaplmusicdownloader.com/',
+        'User-Agent': 'MyApp/1.0'
+      };
 
-*◎ ${lenguajeGB.smsYT3()}*
-${ytplay2?.timestamp}
+      try {
+        const response = await axios.post(downloadUrl, `data=${encodedData}`, { headers });
+        const $ = cheerio.load(response.data);
+        const trackName = $('td:contains("Track Name:")').next().text();
+        const albumName = $('td:contains("Album:")').next().text();
+        const artist = $('td:contains("Artist:")').next().text();
+        const thumb = $('figure.image img').attr('src');
+        const token = $('a#download_btn').attr('token');
 
-*◎ ${lenguajeGB.smsYT4()}*
-${MilesNumber(ytplay2?.views)}
+        // Obtener enlace de descarga
+        const audioUrl = await appledown.getAudio(trackName, artist, musicData.url, token);
 
-*◎ ${lenguajeGB.smsYT5()}*
-${ytplay2?.url.replace(/^https:\/\//, "")}
-*◜⋯ ⋯ ⋯ ${gt} ⋯ ⋯ ⋯◞*
+        return {
+          success: true,
+          name: trackName,
+          albumname: albumName,
+          artist: artist,
+          thumb: thumb,
+          duration: $('td:contains("Duration:")').next().text(),
+          download: audioUrl
+        };
+      } catch (error) {
+        console.error("Error descargando música de Apple Music:", error.message);
+        return { success: false, message: error.message };
+      }
+    },
 
-*_Para seleccionar, reacciona o escribe respondiendo a este mensaje:_*
-> "❤️" o "audio" → *Audio*
-> "👍" o "video" → *Video*
-> "🙏" o "audiodoc" → *Audio (doc)*
-> "😮" o "videodoc" → *Video (doc)*`
-tempStorage[m.sender] = { url: ytplay2.url, title: ytplay2.title, resp: m, usedPrefix: usedPrefix, command: command }
-await conn.sendMessage(m.chat, {text: caption, contextInfo: { externalAdReply: { title: wm, body: wait2.replace(/\*/g, ''), thumbnailUrl: ytplay2.thumbnail, sourceUrl: md, mediaType: 1, showAdAttribution: false, renderLargerThumbnail: true }}});
-} catch (e) {
-m.reply('Error')
-console.log(e)
-}}
+    getAudio: async (trackName, artist, urlMusic, token) => {
+      const url = 'https://aaplmusicdownloader.com/api/composer/swd.php';
+      const data = {
+        song_name: trackName,
+        artist_name: artist,
+        url: urlMusic,
+        token: token
+      };
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'X-Requested-With': 'XMLHttpRequest',
+        'User-Agent': 'MyApp/1.0',
+        'Referer': 'https://aaplmusicdownloader.com/song.php#'
+      };
+      try {
+        const response = await axios.post(url, qs.stringify(data), { headers });
+        return response.data.dlink;
+      } catch (error) {
+        console.error("Error obteniendo audio de Apple Music:", error.message);
+        return { success: false, message: error.message };
+      }
+    }
+  };
 
-handler.before = async (m, { conn }) => {
-const text = m.text.trim().toLowerCase()
-if (!['❤️', 'audio', '👍', 'video', '🙏', 'audiodoc', '😮', 'videodoc'].includes(text)) return
-const userVideoData = tempStorage[m.sender]
-const gata = tempStorage[m.sender]
-if (!userVideoData || !userVideoData.url) return
+  conn.sendMessage(m.chat, { react: { text: "🕒", key: m.key } });
 
-const optionsAudio = {
-"❤️": "audio",
-"audio": "audio",
-"🙏": "document",
-"audiodoc": "document"
-}
-const typeAudio = optionsAudio[text]
+  // Buscar resultados
+  const searchResults = await appleMusic.search(text);
+  if (!searchResults.length) {
+    return m.reply("No se encontraron resultados para tu búsqueda.");
+  }
 
-const optionsVideo = {
-"👍": { type: "video", caption: true },
-"video": { type: "video", caption: true },
-"😮": { type: "document", caption: false },
-"videodoc": { type: "document", caption: false }
-}
-const typeVideo = optionsVideo[text]
+  // Descargar la música
+  const musicData = await appledown.download(searchResults[0].link);
+  if (!musicData.success) {
+    return m.reply(`Error: ${musicData.message}`);
+  }
 
-try {
-if ((typeAudio === "audio" || typeAudio === "document") && ['❤️', '🙏', 'audio', 'audiodoc'].includes(text)) {
-await conn.reply(m.chat, lenguajeGB.smsAvisoEG() + `*${typeAudio.type === "audio" ? lenguajeGB.smsYTA1() : lenguajeGB.smsYTA2()}*`, fkontak, m || null)
-try {
-const response = await fetch(APIs.delirius.url + `download/ytmp3?url=${userVideoData.url}`)
-const json = await response.json()
-await conn.sendMessage(m.chat, { [typeAudio]: { url: json.data.download.url }, mimetype: 'audio/mpeg', fileName: json.data.download.filename }, { quoted: gata.resp })
-} catch {   
-try {
-const response = await fetch(APIs.ryzendesu.url + `downloader/ytmp3?url=${userVideoData.url}`)
-const json = await response.json()
-await conn.sendMessage(m.chat, { [typeAudio]: { url: json.url }, mimetype: 'audio/mpeg', fileName: json.filename }, { quoted: gata.resp })
-} catch {
-try {
-const res = await fetch(APIs.vreden.url + `ytmp3?url=${userVideoData.url}`);
-const { result } = await res.json()
-await conn.sendMessage(m.chat, { [typeAudio]: { url: result.download.url }, mimetype: 'audio/mpeg', fileName: result.download.filename }, { quoted: gata.resp })
-} catch {   
-try {   
-const response = await fetch(APIs.exonity.url + `dl/ytmp3?url=${userVideoData.url}&apikey=${APIs.exonity.key}`)
-const json = await response.json()
-await conn.sendMessage(m.chat, { [typeAudio]: { url: json.result.dl }, mimetype: 'audio/mpeg', fileName: json.result.title + '.mp3' }, { quoted: gata.resp })
-} catch {
-try {
-const res = await fetch(APIs.siputzx.url + `d/ytmp3?url=${userVideoData.url}`)
-let { data } = await res.json();
-await conn.sendMessage(m.chat, { [typeAudio]: { url: data.dl }, mimetype: 'audio/mpeg' }, { quoted: gata.resp })
-} catch {
-try {   
-const response = await fetch(APIs.alyachan.url + `yta?url=${userVideoData.url}&apikey=${APIs.alyachan.key}`)
-const json = await response.json()
-await conn.sendMessage(m.chat, { [typeAudio]: { url: json.data.url }, mimetype: 'audio/mpeg', fileName: json.data.filename }, { quoted: gata.resp })
-} catch (e) { 
-reportError(e, conn, m, gata)
-}}}}}}
+  const { name, albumname, artist, thumb, duration, download } = musicData;
 
-} else if ((typeVideo.type === "video" || typeVideo.type === "document") && ['👍', '😮', 'video', 'videodoc'].includes(text)) {
-await conn.reply(m.chat, lenguajeGB.smsAvisoEG() + `*${typeVideo.type === "video" ? lenguajeGB.smsYTV1() : lenguajeGB.smsYTV2()}*`, fkontak, m || null)
-try {
-const response = await fetch(APIs.delirius.url + `download/ytmp4?url=${userVideoData.url}`)
-const json = await response.json()
-let caption = `🎬 *${json.data.title}*\n📺 *Canal:* ${json.data.author}\n📁 *Calidad:* ${json.data.download.quality}\n📦 *Tamaño:* ${json.data.download.size}`
-//let url = await fetch(json.data.download.url, { method: 'HEAD' }).then(response => response.url)
-await conn.sendMessage(m.chat, { [typeVideo.type]: { url: json.data.download.url }, mimetype: 'video/mp4', fileName: json.data.download.filename, ...(typeVideo.caption && { caption: caption }) }, { quoted: gata.resp })
-} catch {
-try {
-const response = await fetch(APIs.alyachan.url + `ytv?url=${userVideoData.url}&apikey=${APIs.alyachan.key}`)
-const json = await response.json()
-let caption = `🎬 *${json.title}*\n📺 *Canal:* ${json.channel}\n📁 *Calidad:* ${json.data.quality}\n📦 *Tamaño:* ${json.data.size}`
-await conn.sendMessage(m.chat, { [typeVideo.type]: { url: json.data.url }, mimetype: 'video/mp4', fileName: json.data.filename, ...(typeVideo.caption && { caption: caption }) }, { quoted: gata.resp })
-} catch {
-try {
-const response = await fetch(APIs.ryzendesu.url + `downloader/ytmp4?url=${userVideoData.url}&quality=720`)
-const json = await response.json()
-let caption = `🎬 *${json.title}*\n📺 *Canal:* ${json.authorUrl}\n📁 *Calidad:* 720p\n📦 *Tamaño:* ${await getFileSize(json.url)}`
-await conn.sendMessage(m.chat, { [typeVideo.type]: { url: json.url }, mimetype: 'video/mp4', fileName: json.filename, ...(typeVideo.caption && { caption: caption }) }, { quoted: gata.resp })
-} catch {
-try {   
-const response = await fetch(APIs.exonity.url + `dl/ytmp4?url=${userVideoData.url}&apikey=${APIs.exonity.key}`)
-const json = await response.json()
-let caption = `🎬 *${json.result.title}*`
-await conn.sendMessage(m.chat, { [typeVideo.type]: { url: json.result.dl }, mimetype: 'video/mp4', fileName: json.result.title + '.mp4', ...(typeVideo.caption && { caption: caption }) }, { quoted: gata.resp })
-} catch (e) {
-reportError(e, conn, m, gata)
-}}}}
-}
+  // Enviar información detallada con una miniatura
+  const infoMessage = {
+    image: { url: thumb },
+    caption: `🎵 *Información del Audio:*\n\n` +
+      `📌 *Nombre:* ${name}\n` +
+      `💿 *Álbum:* ${albumname}\n` +
+      `🎤 *Artista:* ${artist}\n` +
+      `⏱️ *Duración:* ${duration}\n`,
+    contextInfo: {
+      externalAdReply: {
+        title: name,
+        body: `${artist} • ${albumname}`,
+        mediaType: 2,
+        mediaUrl: searchResults[0].link,
+        thumbnailUrl: thumb,
+        showAdAttribution: true
+      }
+    }
+  };
 
-} catch (error) {
-console.log(error)
-} finally {
-delete tempStorage[m.sender]
-}}
-handler.command = /^(play|play2)$/i
-handler.register = true 
-export default handler
+  await conn.sendMessage(m.chat, infoMessage);
 
-async function reportError(e, conn, m, gata) {
-let errb = await m.reply(lenguajeGB['smsMalError3']() + '\n*' + lenguajeGB.smsMensError1() + '*\n*' + gata.usedPrefix + `${lenguajeGB.lenguaje() == 'es' ? 'reporte' : 'report'}` + '* ' + `${lenguajeGB.smsMensError2()} ` + gata.usedPrefix + gata.command)
-await console.log(`❗❗ ${lenguajeGB['smsMensError2']()} ${gata.usedPrefix + gata.command} ❗❗`)
-await console.log(e)
-let faultkey = await conn.sendMessage(m.chat, { react: { text: fault, key: errb.key }})
-await m.react(notsent)
-}
+  // Enviar solo el audio sin miniatura
+  const audioMessage = {
+    audio: { url: download },
+    mimetype: 'audio/mp4',
+    fileName: `${name}.mp3`
+  };
 
-async function search(query, options = {}) {
-const search = await yts.search({query, hl: 'es', gl: 'ES', ...options})
-return search.videos
-}
+  await conn.sendMessage(m.chat, audioMessage, { quoted: m });
+  await conn.sendMessage(m.chat, { react: { text: "✅", key: m.key } });
+};
 
-function MilesNumber(number) {
-const exp = /(\d)(?=(\d{3})+(?!\d))/g;
-const rep = '$1.';
-const arr = number.toString().split('.');
-arr[0] = arr[0].replace(exp, rep);
-return arr[1] ? arr.join('.') : arr[0];
-}
+handler.help = ['play'];
+handler.tags = ['downloader'];
+handler.command = /^(applemusicplay|play|song)$/i;
 
-async function getFileSize(url) {
-try {
-const response = await fetch(url, { method: 'HEAD' })
-const contentLength = response.headers.get('content-length')
-if (!contentLength) return "Tamaño no disponible"
-const sizeInBytes = parseInt(contentLength, 10);
-return await formatSize(sizeInBytes)
-} catch (error) {
-console.error("Error al obtener el tamaño del archivo:", error)
-return "Error al obtener el tamaño"
-}}
-
-async function formatSize(bytes) {
-if (bytes >= 1e9) {
-return (bytes / 1e9).toFixed(2) + " GB"
-} else if (bytes >= 1e6) {
-return (bytes / 1e6).toFixed(2) + " MB"
-} else {
-return bytes + " bytes"
-}}
+export default handler;
