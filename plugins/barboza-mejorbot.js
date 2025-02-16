@@ -5,9 +5,14 @@ const handler = async (m, { conn }) => {
   try {
     // Verifica si el mensaje contiene el comando '.BarbozaBot'
     if (m.text && m.text.toLowerCase() === '.barbozabot') {
-      // Responde con el mensaje deseado
       const responseText = "Hola 👋🏻 de .BarbozaBot";
       conn.sendMessage(m.chat, { text: responseText }, { quoted: m });
+    }
+
+    // Verifica si el mensaje contiene el comando 'Barboza power'
+    if (m.text && m.text.toLowerCase() === 'barboza power') {
+      const responseTextPower = "¡Barboza power activado! ⚡️💪";
+      conn.sendMessage(m.chat, { text: responseTextPower }, { quoted: m });
     }
   } catch (e) {
     console.error(e); // Manejo de errores
@@ -15,6 +20,6 @@ const handler = async (m, { conn }) => {
 };
 
 // Asigna el comando al handler
-handler.command = /^\.barbozabot$/i;
+handler.command = /^\.barbozabot$|^barboza power$/i;
 
 export default handler;
