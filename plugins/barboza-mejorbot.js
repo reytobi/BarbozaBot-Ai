@@ -14,6 +14,7 @@ const handler = async (m, { conn }) => {
   }
 };
 
+// Asigna el comando al handler
 handler.command = /^\.BarbozaBot$/i;
 
 export default handler;
