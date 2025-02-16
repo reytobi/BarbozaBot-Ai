@@ -1,10 +1,10 @@
 
-import MessageType from '@whiskeysockets/baileys';
+import { MessageType } from '@whiskeysockets/baileys';
 
 const handler = async (m, { conn }) => {
   try {
     // Verifica si el mensaje contiene el comando '.BarbozaBot'
-    if (m.text === '.BarbozaBot') {
+    if (m.text && m.text.toLowerCase() === '.barbozabot') {
       // Responde con el mensaje deseado
       const responseText = "Hola 👋🏻 de .BarbozaBot";
       conn.sendMessage(m.chat, { text: responseText }, { quoted: m });
@@ -15,6 +15,6 @@ const handler = async (m, { conn }) => {
 };
 
 // Asigna el comando al handler
-handler.command = /^\.BarbozaBot$/i;
+handler.command = /^\.barbozabot$/i;
 
 export default handler;
