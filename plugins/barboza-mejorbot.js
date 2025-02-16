@@ -1,11 +1,19 @@
 
-// Creando el objeto mejorbot
-const mejorbot = {
-    nombre: "Bot Barboza-Ai",
-    saludar: function() {
-        console.log(this.nombre);
+import MessageType from '@whiskeysockets/baileys';
+
+const handler = async (m, { conn }) => {
+  try {
+    // Verifica si el mensaje contiene el comando '.BarbozaBot'
+    if (m.text === '.BarbozaBot') {
+      // Responde con el mensaje deseado
+      const responseText = "Hola 👋🏻 de .BarbozaBot";
+      conn.sendMessage(m.chat, { text: responseText }, { quoted: m });
     }
+  } catch (e) {
+    console.error(e); // Manejo de errores
+  }
 };
 
-// Llamando a la función para que imprima el nombre
-mejorbot.saludar();
+handler.command = /^\.BarbozaBot$/i;
+
+export default handler;
