@@ -175,7 +175,6 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
 
 handler.help = ['play'];
 handler.tags = ['downloader'];
-handler.limit = 3;
 handler.command = /^(applemusicplay|play|song)$/i;
 
 export default handler;
