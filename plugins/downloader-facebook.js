@@ -1,49 +1,44 @@
- import { igdl } from 'ruhend-scraper';
+/* ౨ৎ ˖ ࣪⊹ 𝐁𝐲 𝐉𝐭𝐱𝐬 𐙚˚.ᡣ𐭩
 
-const handler = async (m, { text, conn, args, usedPrefix, command }) => {
-  if (!args[0]) {
-    return conn.reply(m.chat, '*\`Ingresa El link Del vídeo a descargar ❤️‍🔥\`*', m, fake);
-  }
+❀ Canal Principal ≽^•˕• ྀི≼
+https://whatsapp.com/channel/0029VaeQcFXEFeXtNMHk0D0n
 
-  await m.react('🕒');
-  let res;
-  try {
-    res = await igdl(args[0]);
-  } catch (error) {
-    return conn.reply(m.chat, '*`Error al obtener datos. Verifica el enlace.`*', m);
-  }
+❀ Canal Rikka Takanashi Bot
+https://whatsapp.com/channel/0029VaksDf4I1rcsIO6Rip2X
 
-  let result = res.data;
-  if (!result || result.length === 0) {
-    return conn.reply(m.chat, '*`No se encontraron resultados.`*', m);
-  }
+❀ Canal StarlightsTeam
+https://whatsapp.com/channel/0029VaBfsIwGk1FyaqFcK91S
 
-  let data;
-  try {
-    data = result.find(i => i.resolution === "720p (HD)") || result.find(i => i.resolution === "360p (SD)");
-  } catch (error) {
-    return conn.reply(m.chat, '*`Error al procesar los datos.`*', m);
-  }
+❀ HasumiBot FreeCodes 
+https://whatsapp.com/channel/0029Vanjyqb2f3ERifCpGT0W
+*/
 
-  if (!data) {
-    return conn.reply(m.chat, '*`No se encontró una resolución adecuada.`*', m);
-  }
+// *𓍯𓂃𓏧♡  FACEBOOK - DL*
 
-  await m.react('✅');
-  let video = data.url;
+import fetch from 'node-fetch'
+import axios from 'axios'
 
-  try {
-    await conn.sendMessage(m.chat, { video: { url: video }, caption: dev, fileName: 'fb.mp4', mimetype: 'video/mp4' }, { quoted: m });
-  } catch (error) {
-    return conn.reply(m.chat, '*`Error al enviar el video.`*', m);
-  await m.react('❌');
-  }
-};
+let HS = async (m, { conn, text }) => {
+if (!text)  return conn.reply(m.chat, `❀ Ingresa un link de facebook`, m)
 
-handler.help = ['fb *<link>*'];
-handler.estrellas = 2
-handler.tags = ['downloader']
-handler.command = /^(fb|facebook|fbdl)$/i;
-handler.register = true
+try {
+let api = await fetch(`https://vapis.my.id/api/fbdl?url=${text}`)
+let json = await api.json()
+let { title, durasi, hd_url } = json.data
+let VidBuffer = await getBuffer(hd_url)
+let HS = `- *Título :* ${title}
+- *Duracion :* ${durasi}`
 
-export default handler;                                                                                                                                                                                                                                          
+await conn.sendMessage(m.chat, { video: VidBuffer, mimetype: "video/mp4", caption: HS }, { quoted: m });
+} catch (error) {
+console.error(error)
+}}
+
+HS.command = ['fbdl', 'fb', 'facebook', 'facebookdl']
+
+export default HS
+
+const getBuffer = async (url, options = {}) => {
+const res = await axios({ method: 'get', url, headers: {'DNT': 1, 'Upgrade-Insecure-Request': 1}, ...options, responseType: 'arraybuffer'})
+return res.data
+}
