@@ -1,60 +1,41 @@
+const recetas = [
+  { id: 1, nombre: "Pizza Casera", ingredientes: "Harina, levadura, tomate, queso, orégano", tiempo: "30 min" },
+  { id: 2, nombre: "Pasta Alfredo", ingredientes: "Pasta, crema, mantequilla, ajo, queso parmesano", tiempo: "25 min" },
+  { id: 3, nombre: "Ensalada César", ingredientes: "Lechuga, pollo, crutones, queso parmesano, aderezo césar", tiempo: "15 min" },
+  { id: 4, nombre: "Tacos de Carne", ingredientes: "Tortillas, carne de res, cebolla, cilantro, salsa", tiempo: "20 min" },
+  { id: 5, nombre: "Sopa de Lentejas", ingredientes: "Lentejas, zanahoria, cebolla, tomate, especias", tiempo: "40 min" },
+  { id: 6, nombre: "Hamburguesa Clásica", ingredientes: "Pan, carne molida, lechuga, tomate, queso, mayonesa", tiempo: "20 min" },
+  { id: 7, nombre: "Arroz Frito", ingredientes: "Arroz, huevo, zanahoria, cebolla, salsa de soja", tiempo: "15 min" },
+  { id: 8, nombre: "Pollo al Curry", ingredientes: "Pollo, curry, leche de coco, cebolla, ajo, jengibre", tiempo: "35 min" },
+  { id: 9, nombre: "Brownies", ingredientes: "Harina, azúcar, cacao, huevo, mantequilla", tiempo: "30 min" },
+  { id: 10, nombre: "Batido de Fresas", ingredientes: "Fresas, leche, azúcar, hielo", tiempo: "10 min" }
+];
 
-const recetas = {
-  galletas: {
-    nombre: "Galletas de Chispas de Chocolate",
-    ingredientes: [
-      "1 taza de mantequilla",
-      "1 taza de azúcar",
-      "1 taza de azúcar moreno",
-      "2 huevos",
-      "2 cucharaditas de extracto de vainilla",
-      "3 tazas de harina",
-      "1 cucharadita de bicarbonato de sodio",
-      "1/2 cucharadita de sal",
-      "2 tazas de chispas de chocolate"
-    ],
-    instrucciones: `1. Precalentar el horno a 180°C (350°F).
-2. Batir la mantequilla, el azúcar y el azúcar moreno hasta que esté cremoso.
-3. Agregar los huevos y la vainilla, y mezclar bien.
-4. En otro tazón, mezclar la harina, el bicarbonato y la sal.
-5. Agregar los ingredientes secos a la mezcla húmeda y mezclar.
-6. Incorporar las chispas de chocolate.
-7. Hacer bolitas con la masa y colocarlas en una bandeja para hornear.
-8. Hornear durante 10-12 minutos o hasta que estén doradas.
-9. Dejar enfriar y ¡disfrutar!`
-  },
-  ensalada: {
-    nombre: "Ensalada César",
-    ingredientes: [
-      "Lechuga romana",
-      "Crutones",
-      "Queso parmesano rallado",
-      "Aderezo César al gusto"
-    ],
-    instrucciones: `1. Lavar y trocear la lechuga romana.
-2. En un tazón grande, mezclar la lechuga con los crutones y el queso parmesano.
-3. Añadir el aderezo César al gusto y mezclar bien.
-4. Servir inmediatamente.`
-  }
+const mostrarRecetas = () => {
+  let mensaje = "🍽 *RECETAS DISPONIBLES* 🍽\n\n";
+  recetas.forEach(item => {
+    mensaje += `📖 *${item.id}.* ${item.nombre}\n📝 Ingredientes: ${item.ingredientes}\n⏳ Tiempo: ${item.tiempo}\n\n`;
+  });
+  mensaje += "📌 *Responde con el número de la receta para más detalles.*";
+  return mensaje;
 };
 
-function handler(m, { args }) {
-  const recetaNombre = args[0]?.toLowerCase();
-  
-  if (!recetaNombre || !recetas[recetaNombre]) {
-    return m.reply("Por favor, usa .recetas [nombre] para obtener una receta.\nEjemplo: .recetas galletas");
-  }
+const mostrarDetallesReceta = (texto) => {
+  let id = parseInt(texto.trim());
+  let receta = recetas.find(item => item.id === id);
 
-  const receta = recetas[recetaNombre];
+  if (!receta) return "❌ No has seleccionado una receta válida.";
 
-  let mensaje = `📜 *${receta.nombre}* 📜\n\n*Ingredientes:*\n${receta.ingredientes.join('\n')}\n\n*Instrucciones:*\n${receta.instrucciones}`;
-  
-  m.reply(mensaje);
-}
+  return `🍽 *${receta.nombre}*\n\n📝 *Ingredientes:* ${receta.ingredientes}\n⏳ *Tiempo de preparación:* ${receta.tiempo}`;
+};
 
-handler.help = ['recetas [nombre]'];
-handler.tags = ['fun'];
-handler.command = ['recetas'];
-handler.group = true;
+const handler = async (m, { text }) => {
+  if (!text) return m.reply(mostrarRecetas());
+  m.reply(mostrarDetallesReceta(text));
+};
+
+handler.help = ['recetas'];
+handler.tags = ['cocina'];
+handler.command = ['receta', 'recetas', 'cocina'];
 
 export default handler;
