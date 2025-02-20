@@ -178,7 +178,6 @@ global.packmen = [
   'https://telegra.ph/file/ac0c711585f4300c54355.jpg',
 ];
 global.videosxxxc = [
-  'https://telegra.ph/file/4a270d9945ac46f42d95c.mp4',
   'https://telegra.ph/file/958c11e84d271e783ea3f.mp4',
   'https://telegra.ph/file/f753759342337c4012b3f.mp4',
   'https://telegra.ph/file/379cee56c908dd536dd33.mp4',
