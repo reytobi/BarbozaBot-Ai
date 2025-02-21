@@ -22,7 +22,7 @@ let Reg = /\|?(.*)([.|+] *?)([0-9]*)([.|+] *?)([MFNO])?$/i;
 let handler = async function (m, { conn, text, usedPrefix, command }) {
   let user = global.db.data.users[m.sender];
   let name2 = conn.getName(m.sender);
-  let pp = await conn.profilePictureUrl(m.sender, 'image').catch(_ => './src/avatar_contact.png');
+  let pp = await conn.profilePictureUrl(m.sender, 'image').catch(_ => './avatar_contact.png');
 
   if (user.registered === true) throw `✳️ ${mssg.regIsOn}\n\n${usedPrefix}unreg <sn>`;
 
