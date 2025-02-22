@@ -3,7 +3,7 @@ import { join } from 'path'
 import fetch from 'node-fetch'
 import { xpRange } from '../lib/levelling.js'
 
-// Definición de una variable para el nombre del bot (usado en el menú)
+// Variable para el nombre del bot (usado en el menú)
 let textbot = "Bot-Barboza-Ai"
 
 let Styles = (text, style = 1) => {
@@ -81,7 +81,7 @@ const defaultMenu = {
   after: `© ${textbot}`,
 };
 
-let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
+let handler = async (m, { conn, usedPrefix, __dirname }) => {
   try {
     let tag = `@${m.sender.split("@")[0]}`;
     let mode = global.opts["self"] ? "Privado" : "Publico";
@@ -151,7 +151,7 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
     
     let replace = {
       "%": "%",
-      p: _p,
+      p: usedPrefix,
       uptime,
       muptime,
       me: conn.getName(conn.user.jid),
@@ -164,7 +164,7 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
       xp4levelup: max - exp,
       github: _package.homepage ? _package.homepage.url || _package.homepage : "[unknown github url]",
       mode,
-      _p,
+      _p: usedPrefix,
       tag,
       name,
       level,
@@ -174,7 +174,7 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
     };
     textMsg = textMsg.replace(new RegExp(`%(${Object.keys(replace).sort((a, b) => b.length - a.length).join('|')})`, 'g'), (_, name) => '' + replace[name]);
 
-    // Definición de imágenes de respaldo
+    // Imágenes de respaldo y principal para el menú
     let pp = 'https://i.ibb.co/CPVcnqH/file.jpg';
     let pp2 = 'https://i.ibb.co/9WrytGt/file.jpg';
     let pp3 = 'https://i.ibb.co/CPVcnqH/file.jpg';
@@ -190,18 +190,17 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
     let pp13 = 'https://i.ibb.co/Cs6Tt9V/Sylph.jpg';
     let pp14 = 'https://i.ibb.co/JmcS3kv/Sylph.jpg';
     let pp15 = 'https://i.ibb.co/Cs6Tt9V/Sylph.jpg';
-    // Imagen principal para el menú
     let img = 'https://i.ibb.co/PzxX7VsJ/file.jpg';
 
     await m.react('🌪️');
-    
-    // Definición de los botones "Owner" y "Ping"
-    let buttons = [
-      { buttonId: `${_p}owner`, buttonText: { displayText: '👤 Owner' }, type: 1 },
-      { buttonId: `${_p}ping`, buttonText: { displayText: '🏓 Ping' }, type: 1 }
+
+    // Definición de los botones usando usedPrefix
+    const buttons = [
+      { buttonId: `${usedPrefix}owner`, buttonText: { displayText: '👤 Owner' }, type: 1 },
+      { buttonId: `${usedPrefix}ping`, buttonText: { displayText: '🏓 Ping' }, type: 1 }
     ];
 
-    // Envío del mensaje con imagen, caption y botones
+    // Envío del mensaje con imagen, caption, footer y botones
     await conn.sendMessage(m.chat, {
       image: { url: img },
       caption: textMsg.trim(),
