@@ -32,12 +32,11 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
     let regbot = `🗃️ *R E G I S T R A D O* 🗃️\n
 💌 *Nombre:* ${name}
 📆 *Edad:* ${age} años
-🍬 *Dulces añadidos:* 10`;
+🍬 *Dulces añadidos:* 10\n\n👇 *Presiona el botón para ver el menú* 👇`;
 
-    // Botón que ejecuta el comando ".menu"
     let buttons = [
         {
-            buttonId: `.menu`,  // Se usa el prefijo correcto
+            buttonId: `.menu`,  // Prefijo correcto
             buttonText: { displayText: "📜 Ver Menú" },
             type: 1
         }
@@ -45,10 +44,15 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
 
     await conn.sendMessage(m.chat, {
         image: { url: pp },
-        caption: regbot,
+        caption: regbot
+    }, { quoted: m });
+
+    // Enviar los botones en un mensaje aparte para asegurarse de que se muestren debajo
+    await conn.sendMessage(m.chat, {
+        text: "👇 Presiona el botón para ver el menú 👇",
         footer: "¡Bienvenido! Usa el botón para acceder al menú.",
         buttons: buttons,
-        headerType: 4
+        headerType: 1
     }, { quoted: m });
 };
 
