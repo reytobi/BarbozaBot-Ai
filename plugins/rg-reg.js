@@ -1,4 +1,3 @@
-
 import { createHash } from 'crypto'
 
 let Reg = /\|?(.*)([.|] *?)([0-9]*)$/i
@@ -8,8 +7,8 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
     let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? this.user.jid : m.sender
     let pp = await this.profilePictureUrl(who, 'image').catch(_ => 'https://i.ibb.co/1fx3bv01/file.jpg')
 
-    if (user.registered === true) throw *⚠️ Ya estás registrado*\n\n¿Quiere volver a registrarse?\n\n💬 Use este comando para *eliminar su registro*\n*${usedPrefix}unreg* <Número de serie>
-    if (!Reg.test(text)) throw *⚠️ Formato incorrecto*\n\n📝 Uso del comando: *${usedPrefix + command} nombre.edad*\n💡 Ejemplo : *${usedPrefix + command}* ${name2}.18
+    if (user.registered === true) throw `*⚠️ Ya estás registrado*\n\n¿Quiere volver a registrarse?\n\n💬 Use este comando para *eliminar su registro*\n*${usedPrefix}unreg* <Número de serie>`
+    if (!Reg.test(text)) throw `*⚠️ Formato incorrecto*\n\n📝 Uso del comando: *${usedPrefix + command} nombre.edad*\n💡 Ejemplo : *${usedPrefix + command}* ${name2}.18`
 
     let [_, name, splitter, age] = text.match(Reg)
     if (!name) throw '*📝 El nombre no puede estar vacío*'
@@ -30,25 +29,14 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
     let sn = createHash('md5').update(m.sender).digest('hex').slice(0, 6)        
     m.react('📩') 
 
-    let regbot =🗃️ *R E G I S T R A D O* 🗃️\n
+    let regbot =`🗃️ *R E G I S T R A D O* 🗃️\n
 💌 *Nombre:* ${name}
 📆 *Edad* : ${age} años
-🍬 *Dulces añadidos:* 10
-
-    // Agregar el botón de menú
-    const menuButton = {
-        buttonText: {
-            displayText: '.menu'
-        },
-        type: 1,
-        url: 'https://f.uguu.se/TQHDjOFW.jpg' // Cambia esto por la URL o mensaje que quieras enviar como menú.
-    };
+🍬 *Dulces añadidos:* 10`
 
     await conn.sendMessage(m.chat, { 
         image: { url: pp }, 
-        caption: regbot,
-        buttons: [menuButton],
-        footer: 'Presiona el botón para ver el menú.'
+        caption: regbot 
     }, { quoted: m })
 }
 
