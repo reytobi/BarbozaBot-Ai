@@ -9,24 +9,26 @@ const insults = [
   "Si fueras un vegetal, serías una cebolla... ¡porque siempre haces llorar!",
 ];
 
-function handler(m) {
+async function handler(m) {
   // Elegir un insulto al azar
   const insult = insults[Math.floor(Math.random() * insults.length)];
 
-    const buttons = [
-        {
-            buttonId: `${usedPrefix}insulto`,
-            buttonText: { displayText: "🔄 Ver más" },
-            type: 1
-        }
-    ];
+  // Definir los botones
+  const buttons = [
+    {
+      buttonId: `${usedPrefix}insulto`, // Asegúrate de que usedPrefix esté definido
+      buttonText: { displayText: "🔄 Ver más" },
+      type: 1,
+    },
+  ];
 
-    await conn.sendMessage(
-        m.chat,
-        {
-  
-  // Enviar el insulto
-  m.reply(insult);
+  // Enviar el insulto y los botones
+  await conn.sendMessage(m.chat, {
+    text: insult,
+    buttons: buttons,
+    footer: "¡Haz clic en el botón para recibir otro insulto!",
+    headerType: 1,
+  });
 }
 
 handler.help = ['insulto'];
