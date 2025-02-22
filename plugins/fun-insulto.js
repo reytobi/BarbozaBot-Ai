@@ -1,4 +1,6 @@
 
+const usedPrefix = '!'; // Define el prefijo que desees usar para los comandos
+
 const insults = [
   "Eres más inútil que un zapato en una pierna de palo.",
   "Tienes el cerebro de un caracol... ¡y sin la concha!",
@@ -16,7 +18,7 @@ async function handler(m) {
   // Definir los botones
   const buttons = [
     {
-      buttonId: `${usedPrefix}insulto`, // Asegúrate de que usedPrefix esté definido
+      buttonId: `${usedPrefix}insulto`, // Ahora está correctamente definido con el prefijo
       buttonText: { displayText: "🔄 Ver más" },
       type: 1,
     },
