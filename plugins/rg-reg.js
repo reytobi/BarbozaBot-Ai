@@ -29,14 +29,11 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
     let sn = createHash('md5').update(m.sender).digest('hex').slice(0, 6);
     m.react('📩');
 
-    let regbot = `🗃️ *R E G I S T R A D O* 🗃️\n
-💌 *Nombre:* ${name}
-📆 *Edad:* ${age} años
-🍬 *Dulces añadidos:* 10\n\n👇 *Presiona el botón para ver el menú* 👇`;
+    let regbot = `🗃️ *R E G I S T R A D O* 🗃️\n\n💌 *Nombre:* ${name}\n📆 *Edad:* ${age} años\n🍬 *Dulces añadidos:* 10`;
 
     let buttons = [
         {
-            buttonId: `.menu`,  // Prefijo correcto
+            buttonId: `.menu`,
             buttonText: { displayText: "📜 Ver Menú" },
             type: 1
         }
@@ -47,10 +44,7 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
         caption: regbot
     }, { quoted: m });
 
-    // Enviar los botones en un mensaje aparte para asegurarse de que se muestren debajo
     await conn.sendMessage(m.chat, {
-        text: "👇 Presiona el botón para ver el menú 👇",
-        footer: "¡Bienvenido! Usa el botón para acceder al menú.",
         buttons: buttons,
         headerType: 1
     }, { quoted: m });
