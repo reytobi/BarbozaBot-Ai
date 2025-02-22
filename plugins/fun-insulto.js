@@ -33,6 +33,5 @@ async function handler(m, { conn, usedPrefix }) {
 handler.help = ['insulto'];
 handler.tags = ['fun'];
 handler.command = ['insulto'];
-handler.group = true;
 
 export default handler;
