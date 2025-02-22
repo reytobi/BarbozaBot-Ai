@@ -29,7 +29,7 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
     let sn = createHash('md5').update(m.sender).digest('hex').slice(0, 6);
     m.react('📩');
 
-    let regbot = `🗃️ *R E G I S T R A D O* 🗃️\n\n💌 *Nombre:* ${name}\n📆 *Edad:* ${age} años\n🍬 *Dulces añadidos:* 10`;
+    let regbot = `🗃️ *R E G I S T R A D O* 🗃️\n\n💌 *Nombre:* ${name}\n📆 *Edad:* ${age} años\n🍬 *Dulces añadidos:* 10\n\n👇 *Presiona el botón para ver el menú* 👇`;
 
     let buttons = [
         {
@@ -41,12 +41,10 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
 
     await conn.sendMessage(m.chat, {
         image: { url: pp },
-        caption: regbot
-    }, { quoted: m });
-
-    await conn.sendMessage(m.chat, {
+        caption: regbot,
+        footer: ' ',
         buttons: buttons,
-        headerType: 1
+        headerType: 4
     }, { quoted: m });
 };
 
