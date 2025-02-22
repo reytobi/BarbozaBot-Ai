@@ -5,7 +5,7 @@ const Reg = /\|?(.*)([.|] *?)([0-9]*)$/i;
 const handler = async (m, { conn, text, usedPrefix, command }) => {
     const user = global.db.data.users[m.sender];
     const name2 = conn.getName(m.sender);
-    const who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? this.user.jid : m.sender;
+    const who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender; // 🔧 Corrección aquí
     
     let pp;
     try {
@@ -59,10 +59,8 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
     };
 
     if (pp) {
-        // Si hay imagen de perfil, la envía junto con el mensaje
         await conn.sendMessage(m.chat, { image: { url: pp }, ...buttonMessage }, { quoted: m });
     } else {
-        // Si no hay imagen de perfil, envía solo el texto y botones
         await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
     }
 };
