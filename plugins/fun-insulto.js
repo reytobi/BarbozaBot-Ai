@@ -12,6 +12,18 @@ const insults = [
 function handler(m) {
   // Elegir un insulto al azar
   const insult = insults[Math.floor(Math.random() * insults.length)];
+
+    const buttons = [
+        {
+            buttonId: `${usedPrefix}insulto`,
+            buttonText: { displayText: "🔄 Ver más" },
+            type: 1
+        }
+    ];
+
+    await conn.sendMessage(
+        m.chat,
+        {
   
   // Enviar el insulto
   m.reply(insult);
