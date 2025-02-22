@@ -1,5 +1,5 @@
 
-let handler = async (m) => {
+let handler = async (m, { conn, usedPrefix }) => {
     const memes = [
         'https://qu.ax/DksQt.mp4',
         'https://qu.ax/vDgQd.mp4',
@@ -8,15 +8,29 @@ let handler = async (m) => {
         'https://qu.ax/LWJCF.mp4',
         'https://qu.ax/euTXj.mp4',
         'https://qu.ax/GoOJh.mp4',
-        // Agrega más enlaces de memes aquí
     ];
 
-    // Elegir un meme aleatorio
     const randomMeme = memes[Math.floor(Math.random() * memes.length)];
 
-    // Enviar el meme al chat
-    await conn.sendMessage(m.chat, { video: { url: randomMeme }, caption: "¡Aquí tienes un meme para disfrutar!" }, { quoted: m });
-}
+    const buttons = [
+        {
+            buttonId: `${usedPrefix}mp4meme`,
+            buttonText: { displayText: "🔄 Ver más" },
+            type: 1
+        }
+    ];
+
+    await conn.sendMessage(
+        m.chat,
+        {
+            video: { url: randomMeme },
+            caption: "¡Aquí tienes un meme para disfrutar!",
+            buttons: buttons,
+            viewOnce: true
+        },
+        { quoted: m }
+    );
+};
 
 handler.help = ['mp4meme'];
 handler.tags = ['diversión'];
