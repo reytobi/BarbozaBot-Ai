@@ -18,13 +18,7 @@ const fetchWithRetries = async (url, maxRetries = 2) => {
   throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
 };
 
-const reconstructUrl = () => {
-  const parts = [
-    "aHR0cHM6Ly9hcGkudnJlZGVu",
-    "LndlYi5pZC9hcGkveXRtcDM=",
-  ];
-  return Buffer.from(parts.join(""), "base64").toString("utf-8");
-};
+const API_URL = "https://api.vreden.web.id/api/ytmp3";
 
 let handler = async (m, { conn, text, usedPrefix }) => {
   if (!text || !/^https:\/\/(www\.)?youtube\.com\/watch\?v=/.test(text)) {
@@ -38,7 +32,7 @@ let handler = async (m, { conn, text, usedPrefix }) => {
   });
 
   try {
-    const apiUrl = `${reconstructUrl()}?url=${encodeURIComponent(text)}`;
+    const apiUrl = `${API_URL}?url=${encodeURIComponent(text)}`;
     const apiData = await fetchWithRetries(apiUrl);
     const { metadata, download } = apiData;
     const { title, duration, views, author, url: videoUrl } = metadata;
