@@ -14,7 +14,7 @@ const fetchImage = async (url, timeout = 10000) => {
   }
 };
 
-const imageCarouselHandler = async (m, { conn, command, usedPrefix, text = "ft" }) => {
+const imageCarouselHandler = async (m, { conn, command, usedPrefix, text = "girls" }) => {
   const apiUrl = "https://delirius-apiofc.vercel.app/nsfw/girls";
 
   try {
@@ -60,6 +60,6 @@ const imageCarouselHandler = async (m, { conn, command, usedPrefix, text = "ft" 
   }
 };
 
-imageCarouselHandler.command = /^ft$/i;
+imageCarouselHandler.command = /^girls$/i;
 
 export default imageCarouselHandler;
