@@ -1,55 +1,65 @@
 import fetch from "node-fetch";
 
-// Mapa para llevar el control de las sesiones
-let imageSessions = new Map();
-
-const imageHandler = async (m, { conn, command, usedPrefix }) => {
-    // Obtener sesión de la conversación
-    let session = imageSessions.get(m.chat) || { lastApi: "" };
-
-    // Definir las APIs disponibles
-    const api1 = "https://delirius-apiofc.vercel.app/nsfw/girls";
-    const api2 = "https://delirius-apiofc.vercel.app/nsfw/boobs";
-
-    // Alternar entre las dos APIs
-    const apiUrl = session.lastApi === api1 ? api2 : api1;
-
-    try {
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error("No se pudo obtener la imagen");
-
-        const imageBuffer = await response.buffer();
-
-        // Cambiar la API para la siguiente vez
-        session.lastApi = apiUrl;
-        imageSessions.set(m.chat, session);
-
-        // Crear botón para obtener otra imagen
-        const buttons = [
-            {
-                buttonId: `${usedPrefix}girls`,
-                buttonText: { displayText: "🔄 Ver otra" },
-                type: 1
-            }
-        ];
-
-        await conn.sendMessage(
-            m.chat,
-            {
-                image: imageBuffer,
-                caption: "🔞 Aquí tienes tu imagen",
-                buttons: buttons,
-                viewOnce: true
-            },
-            { quoted: m }
-        );
-    } catch (error) {
-        console.error(error);
-        conn.reply(m.chat, "❌ Error al obtener la imagen", m);
-    }
+const fetchImage = async (url, timeout = 10000) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeout);
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
+    return await response.buffer();
+  } catch (error) {
+    clearTimeout(timeoutId);
+    throw new Error(`❌ Fallo al obtener la imagen: ${error.message}`);
+  }
 };
 
-// Asignar comando "girls"
-imageHandler.command = /^girls$/i;
+const imageCarouselHandler = async (m, { conn, command, usedPrefix, text = "girls" }) => {
+  const apiUrl = "https://delirius-apiofc.vercel.app/nsfw/girls";
 
-export default imageHandler;
+  try {
+    const imagePromises = Array.from({ length: 6 }, () => fetchImage(apiUrl));
+    const images = await Promise.all(imagePromises);
+
+    const cards = images.map((imgBuffer, index) => ({
+      header: { type: 1, text: `Imagen ${index + 1}` },
+      body: { text: `Pulsa el botón para ver más` },
+      footer: { text: `Resultado de ${text}` },
+      image: imgBuffer,
+      buttons: [
+        {
+          buttonId: `${usedPrefix}vermas_${index + 1}`,
+          buttonText: { displayText: "Ver más" },
+          type: 1
+        }
+      ]
+    }));
+
+    const carouselContent = {
+      viewOnceMessage: {
+        message: {
+          messageContextInfo: {
+            deviceListMetadata: {},
+            deviceListMetadataVersion: 2
+          },
+          interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+            body: proto.Message.InteractiveMessage.Body.create({ text: `*🤍 Resultados de:* *${text}*` }),
+            footer: proto.Message.InteractiveMessage.Footer.create({ text: 'Para ver más imágenes, desliza o presiona "Ver más".' }),
+            header: proto.Message.InteractiveMessage.Header.create({ hasMediaAttachment: false }),
+            carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({ cards })
+          })
+        }
+      }
+    };
+
+    const carouselMsg = generateWAMessageFromContent(m.chat, carouselContent, { quoted: m });
+    await conn.relayMessage(m.chat, carouselMsg.message, { messageId: carouselMsg.key.id });
+  } catch (error) {
+    console.error(error);
+    conn.reply(m.chat, "❌ Error al obtener las imágenes para el carrusel", m);
+  }
+};
+
+imageCarouselHandler.command = /^girls$/i;
+
+export default imageCarouselHandler;
