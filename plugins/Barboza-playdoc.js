@@ -1,34 +1,23 @@
-/* ౨ৎ ˖ ࣪⊹ 𝐁𝐲 𝐉𝐭𝐱𝐬 𐙚˚.ᡣ𐭩
-
-❀ Canal Principal ≽^•˕• ྀི≼
-https://whatsapp.com/channel/0029VaeQcFXEFeXtNMHk0D0n
-
-❀ Canal Rikka Takanashi Bot
-https://whatsapp.com/channel/0029VaksDf4I1rcsIO6Rip2X
-
-❀ Canal StarlightsTeam
-https://whatsapp.com/channel/0029VaBfsIwGk1FyaqFcK91S
-
-❀ HasumiBot FreeCodes 
-https://whatsapp.com/channel/0029Vanjyqb2f3ERifCpGT0W
+/* 
+- Downloader Ytmp3 By Izumi-kzx
+- Power By Team Code Titans
+- https://whatsapp.com/channel/0029VaJxgcB0bIdvuOwKTM2Y 
 */
+import fetch from 'node-fetch'
 
-// *𓍯𓂃𓏧♡ YTMP3*
-
-import axios from 'axios'
-
-let HS = async (m, { conn, text }) => {
-if (!text)  return conn.reply(m.chat, `❀ Ingresa un link de youtube`, m)
-
+let handler = async (m, { conn, text }) => {
+if (!text) throw '• Ingresa un enlace de YouTube.'
 try {
-let api = await axios.get(`https://api.agungny.my.id/api/youtube-audio?url=${text}`)
-let json = await api.data
-let { id, image, title, downloadUrl:dl_url } = json.result
-await conn.sendMessage(m.chat, { audio: { url: dl_url }, mimetype: 'audio/mpeg' }, { quoted: m })
-} catch (error) {
-console.error(error)
+let res = await fetch(`https://api.diioffc.web.id/api/download/ytmp3?url=${encodeURIComponent(text)}`)
+let json = await res.json()
+if (json.status && json.result?.download?.url) {
+let { title, thumbnail, views, duration, author, download } = json.result
+let caption = `• *Título:* ${title}\n• *Canal:* ${author.name}\n• *Duración:* ${duration.timestamp}\n• *Vistas:* ${views.toLocaleString()}`
+await conn.sendMessage(m.chat, { image: { url: thumbnail }, caption }, { quoted: m })
+await conn.sendMessage(m.chat, { audio: { url: download.url }, mimetype: 'audio/mpeg', fileName: download.filename || 'audio.mp3' }, { quoted: m })
+} else throw 'No se pudo obtener el audio.'
+} catch (e) {
+m.reply(`❌ *Error:* Ocurrió un error desconocido`)
 }}
-
-HS.command = ['ytmp3', 'yta']
-
-export default HS
+handler.command = ['ytmp3']
+export default handler
