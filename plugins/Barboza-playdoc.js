@@ -31,8 +31,9 @@ let handler = async (m, { conn, text, usedPrefix }) => {
     });
   }
 
+  // Reacción con disco (📀) en lugar de reloj (🕐)
   const key = await conn.sendMessage(m.chat, {
-    text: `> @ꜱɪꜱᴋᴇᴅ - ʟᴏᴄᴀʟ - 𝟢𝟨\n> 𝙱𝚞𝚜𝚌𝚊𝚗𝚍𝚘 🕐`,
+    text: `> @ꜱɪꜱᴋᴇᴅ - ʟᴏᴄᴀʟ - 𝟢𝟨\n> 𝙱𝚞𝚜𝚌𝚊𝚗𝚍𝚘 📀`,
   });
 
   try {
@@ -64,5 +65,4 @@ let handler = async (m, { conn, text, usedPrefix }) => {
 };
 
 handler.command = /^ytmp3$/i;
-handler.limit = 5;
 export default handler;
