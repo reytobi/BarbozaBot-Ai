@@ -34,23 +34,18 @@ let handler = async function (m, { conn, text, usedPrefix, command }) {
 📆 *Edad* : ${age} años
 🍬 *Dulces añadidos:* 10`;
 
-    // Crear botón de "Menú"
+    // Crear botones de "Menú" y "Perfil"
     const buttons = [
-        caption: txt,
-    footer: dev,
-    buttons: [
-      {
-        buttonId: `.perfil`,
-        buttonText: { displayText: '👤 PERFIL' },
-      },
-      {
-        buttonId: `.menu`,
-        buttonText: { displayText: '☁️ MENU' },
-      },
-    ],
-    viewOnce: true,
-    headerType: 4,
-  }, { quoted: m });
+        {
+            buttonId: `${usedPrefix}menu`,
+            buttonText: { displayText: "📜 Menú" },
+            type: 1
+        },
+        {
+            buttonId: `${usedPrefix}perfil`,
+            buttonText: { displayText: "👤 Perfil" },
+            type: 1
+        }
     ];
 
     await conn.sendMessage(m.chat, { 
