@@ -1,109 +1,134 @@
+import fetch from 'node-fetch';
 import yts from "yt-search";
+import axios from 'axios';
+const { generateWAMessageContent, generateWAMessageFromContent, proto } = (await import('@whiskeysockets/baileys')).default;
+import FormData from "form-data";
+import Jimp from "jimp";
 
-let youtubeSessions = new Map();
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+    if (!text) return m.reply(`• *Ejemplo:* ${usedPrefix + command} elaina edit`);
 
-const youtubeHandler = async (m, { conn, command, args, usedPrefix }) => {
-    let query = args.join(' ').trim();
+  await m.react('🕓')
 
-    let session = youtubeSessions.get(m.chat) || {
-        videos: [],
-        currentIndex: 0,
-        query: query || ''
-    };
+    async function createImage(img) {
+        const { imageMessage } = await generateWAMessageContent({
+            image: img
+        }, {
+            upload: conn.waUploadToServer
+        });
+        return imageMessage;
+    }
 
-    if (command === 'ytsearch') {
-        if (!query) {
-            return conn.reply(
-                m.chat,
-                `❌ Escribe lo que quieres buscar\nEjemplo: ${usedPrefix}ytsearch Never Gonna Give You Up`,
-                m
-            );
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
         }
+    }
 
-        session = { videos: [], currentIndex: 0, query: query };
-        youtubeSessions.set(m.chat, session);
+    let push = [];
+    let results = await yts(text);
+    let videos = results.videos.slice(0, 9); 
+    shuffleArray(videos);
 
-        try {
-            const searchResults = await yts(query);
-            const videos = searchResults.videos.slice(0, 10);
+    let i = 1;
+    for (let video of videos) {
+        let imageUrl = video.thumbnail;
+        let imageK = await fetch(imageUrl);
+        let imageB = await imageK.buffer();
+      let pr = await remini(imageB, "enhance")
+        push.push({
+            body: proto.Message.InteractiveMessage.Body.fromObject({
+                text: `◦ *Título:* ${video.title}\n◦ *Duración:* ${video.timestamp}\n◦ *Vistas:* ${video.views}`
+            }),
+            footer: proto.Message.InteractiveMessage.Footer.fromObject({
+                text: '' 
+            }),
+            header: proto.Message.InteractiveMessage.Header.fromObject({
+                title: ``,
+                hasMediaAttachment: true,
+                imageMessage: await createImage(pr) 
+            }),
+            nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+                buttons: [
+                    {
+                "name": "cta_copy",
+                "buttonParamsJson": JSON.stringify({
+                "display_text": "Descargar audio! 🎧",
+                "copy_code": `.ytmp3 ${video.url}`
+                })
+              },{
+                "name": "cta_copy",
+                "buttonParamsJson": JSON.stringify({
+                "display_text": "Descargar video! 📹",
+                "copy_code": `.ytmp4 ${video.url}`
+                })
+              }
+                ]
+            })
+        });
+    }
 
-            if (!videos.length) {
-                return conn.reply(m.chat, '❌ No se encontraron videos', m);
+    const bot = generateWAMessageFromContent(m.chat, {
+        viewOnceMessage: {
+            message: {
+                messageContextInfo: {
+                    deviceListMetadata: {},
+                    deviceListMetadataVersion: 2
+                },
+                interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+                    body: proto.Message.InteractiveMessage.Body.create({
+                        text: '*🤍 Resultados de:* ' + `*${text}*`
+                    }),
+                    footer: proto.Message.InteractiveMessage.Footer.create({
+                        text: 'Para descargar, solo desliza sobre los resultados y toca el botón para copiar, y copiaras el comando, solo envialo, y listo! 😁'
+                    }),
+                    header: proto.Message.InteractiveMessage.Header.create({
+                        hasMediaAttachment: false
+                    }),
+                    carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
+                        cards: [...push] // Mengisi carousel dengan hasil video
+                    })
+
+                })
             }
-
-            session.videos = videos;
-            youtubeSessions.set(m.chat, session);
-
-            return await sendVideoWithButtons(session, m, conn, usedPrefix);
-        } catch (error) {
-            console.error(error);
-            return conn.reply(m.chat, '❌ Error al buscar videos', m);
         }
-    }
+    }, {
+    'quoted': m
+  });
 
-    if (command === 'ytseguir') {
-        if (!session.videos.length) {
-            return conn.reply(m.chat, '❌ Primero usa .ytsearch para buscar videos', m);
-        }
-
-        session.currentIndex = (session.currentIndex + 1) % session.videos.length;
-        youtubeSessions.set(m.chat, session);
-        return await sendVideoWithButtons(session, m, conn, usedPrefix);
-    }
-};
-
-async function sendVideoWithButtons(session, m, conn, usedPrefix) {
-    const video = session.videos[session.currentIndex];
-
-    const caption = `
-🎥 *Video ${session.currentIndex + 1} de ${session.videos.length}*
-━━━━━━━━━━━━━━━━
-📌 *Título*: ${video.title}
-⏱️ *Duración*: ${video.timestamp}
-👀 *Vistas*: ${video.views}
-🔗 *Enlace*: [Ver en YouTube](${video.url})
-`.trim();
-
-    try {
-        const buttons = [
-            {
-                buttonId: `${usedPrefix}ytmp3 ${encodeURIComponent(video.url)}`,
-                buttonText: { displayText: "🎵 Descargar Audio" },
-                type: 1
-            },
-            {
-                buttonId: `${usedPrefix}ytmp4 ${encodeURIComponent(video.url)}`,
-                buttonText: { displayText: "🎥 Descargar Video" },
-                type: 1
-            }
-        ];
-
-        if (session.videos.length > 1) {
-            buttons.push({
-                buttonId: `${usedPrefix}ytseguir`,
-                buttonText: { displayText: "➡️ Siguiente" },
-                type: 1
-            });
-        }
-
-        await conn.sendMessage(
-            m.chat,
-            {
-                image: { url: video.image },
-                caption: caption,
-                buttons: buttons,
-                viewOnce: true
-            },
-            { quoted: m }
-        );
-    } catch (error) {
-        console.error(error);
-        conn.reply(m.chat, '❌ Error al enviar el video', m);
-    }
+    await conn.relayMessage(m.chat, bot.message, { messageId: bot.key.id });
+  await m.react('✅')
 }
 
-youtubeHandler.help = ['ytsearch <búsqueda>', 'ytseguir'];
-youtubeHandler.tags = ['search', 'tools'];
-youtubeHandler.command = /^(ytsearch|ytseguir)$/i;
+handler.help = ["ytsearch *<texto>*", "yts *<texto>*"];
+handler.tags = ["search"];
+handler.command = ["ytsearch", "yts"];
 
-export default youtubeHandler;
+export default handler;
+
+async function remini(imageData, operation) {
+  return new Promise(async (resolve, reject) => {
+    const availableOperations = ["enhance", "recolor", "dehaze"]
+    if (availableOperations.includes(operation)) {
+      operation = operation
+    } else {
+      operation = availableOperations[0]
+    }
+    const baseUrl = "https://inferenceengine.vyro.ai/" + operation + ".vyro"
+    const formData = new FormData()
+    formData.append("image", Buffer.from(imageData), {filename: "enhance_image_body.jpg", contentType: "image/jpeg"})
+    formData.append("model_version", 1, {"Content-Transfer-Encoding": "binary", contentType: "multipart/form-data; charset=utf-8"})
+    formData.submit({url: baseUrl, host: "inferenceengine.vyro.ai", path: "/" + operation, protocol: "https:", headers: {"User-Agent": "okhttp/4.9.3", Connection: "Keep-Alive", "Accept-Encoding": "gzip"}},
+      function (err, res) {
+        if (err) reject(err);
+        const chunks = [];
+        res.on("data", function (chunk) {chunks.push(chunk)});
+        res.on("end", function () {resolve(Buffer.concat(chunks))});
+        res.on("error", function (err) {
+        reject(err);
+        });
+      },
+    )
+  })
+}
