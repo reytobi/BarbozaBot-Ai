@@ -3,10 +3,13 @@ let handler = async (m, { conn }) => {
     // Verifica que el mensaje sea en un grupo
     if (!m.isGroup) return m.reply('Este comando solo se puede usar en grupos.');
 
-    // Verifica que el usuario sea administrador
-    if (!m.member.isAdmin) return m.reply('Solo los administradores pueden usar este comando.');
-
+    // Obtiene la información del grupo y del participante que envió el mensaje
     const groupMetadata = await conn.groupMetadata(m.chat);
+    const participant = groupMetadata.participants.find(p => p.id === m.sender);
+
+    // Verifica que el usuario sea administrador
+    if (!participant || !participant.isAdmin) return m.reply('Solo los administradores pueden usar este comando.');
+
     const participants = groupMetadata.participants;
 
     // Filtra a los fantasmas (usuarios inactivos)
