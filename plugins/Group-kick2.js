@@ -1,37 +1,60 @@
+import baileys from '@whiskeysockets/baileys'
 
-let handler = async (m, { conn }) => {
-    // Verifica que el mensaje sea en un grupo
-    if (!m.isGroup) return m.reply('Este comando solo se puede usar en grupos.');
+let areJidsSameUser = baileys.default
+let handler = async (m, { conn, participants, args, command }) => {
+    let member = participants.map(u => u.id)
+    let sum = args[0] ? args[0] : member.length
+    let total = 0
+    let sider = []
 
-    // Obtiene la información del grupo y del participante que envió el mensaje
-    const groupMetadata = await conn.groupMetadata(m.chat);
-    const participant = groupMetadata.participants.find(p => p.id === m.sender);
-
-    // Verifica que el usuario sea administrador
-    const isAdmin = participant && participant.admin !== undefined; // Verifica si 'admin' existe
-    if (!isAdmin) return m.reply('Solo los administradores pueden usar este comando.');
-
-    const participants = groupMetadata.participants;
-
-    // Filtra a los fantasmas (usuarios inactivos)
-    const ghosts = participants.filter(member => {
-        // Aquí puedes definir la lógica para determinar si alguien es un fantasma
-        return member.lastSeen === 'offline' || !member.lastSeen; // Por ejemplo, si están offline o no tienen lastSeen
-    });
-
-    if (ghosts.length === 0) {
-        return m.reply('No hay fantasmas para eliminar.');
+    for (let i = 0; i < sum; i++) {
+        let users = m.isGroup ? participants.find(u => u.id == member[i]) : {}
+        if ((typeof global.db.data.users[member[i]] === 'undefined' || global.db.data.users[member[i]].chat === 0) &&
+            !users.isAdmin && !users.isSuperAdmin) {
+            if (typeof global.db.data.users[member[i]] !== 'undefined' && global.db.data.users[member[i]].whitelist === false) {
+                total++
+                sider.push(member[i])
+            } else {
+                total++
+                sider.push(member[i])
+            }
+        }
     }
 
-    for (let ghost of ghosts) {
-        await conn.groupParticipantsUpdate(m.chat, [ghost.id], 'remove'); // Elimina al fantasma del grupo
-    }
+    const delay = (ms) => new Promise(res => setTimeout(res, ms))
 
-    m.reply(`Se han eliminado ${ghosts.length} fantasmas del grupo.`);
+    switch (command) {
+        case "fantasmas":
+            if (total === 0) return conn.reply(m.chat, "🟢 Este grupo es activo, no hay fantasmas.", m)
+            m.reply(`⚠️ Revisión de inactividad ⚠️\n\nGrupo: ${await conn.getName(m.chat)}\nMiembros: ${sum}\n\n👻 Lista de fantasmas:\n${sider.map(v => '👉 @' + v.replace(/@.+/, '')).join('\n')}\n\n🔹 El bot solo cuenta mensajes desde que fue activado en este grupo.`, null, { mentions: sider })
+            break
+
+        case "kickfantasmas":
+            if (total === 0) return conn.reply(m.chat, "🟢 Este grupo es activo, no hay fantasmas.", m)
+            await m.reply(`⚠️ Eliminación de inactivos ⚠️\n\nGrupo: ${await conn.getName(m.chat)}\nParticipantes: ${sum}\n\n👻 Fantasmas eliminados:\n${sider.map(v => '@' + v.replace(/@.+/, '')).join('\n')}\n\n🔹 El bot eliminará a los mencionados en 20 segundos y luego cada 10 segundos a uno.`, null, { mentions: sider })
+            await delay(20000)
+
+            let chat = global.db.data.chats[m.chat]
+            chat.welcome = false
+
+            try {
+                for (let user of sider) {
+                    if (user.endsWith('@s.whatsapp.net') && !participants.find(v => areJidsSameUser(v.id, user))?.admin) {
+                        await conn.groupParticipantsUpdate(m.chat, [user], 'remove')
+                        await delay(10000)
+                    }
+                }
+            } finally {
+                chat.welcome = true
+            }
+            break
+    }
 }
 
-handler.help = ['kickfantasmas'];
-handler.tags = ['grupo'];
-handler.command = ['kickfantasmas'];
+handler.command = /^(fantasmas|kickfantasmas)$/i
+handler.group = true
+handler.botAdmin = true
+handler.admin = true
+handler.fail = null
 
-export default handler;
+export default handler
