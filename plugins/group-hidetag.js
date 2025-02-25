@@ -26,7 +26,7 @@ const handler = async (m, { conn, text, participants, isOwner, isAdmin }) => {
     const quoted = m.quoted ? m.quoted : m;
     const mime = (quoted.msg || quoted).mimetype || '';
     const isMedia = /image|video|sticker|audio/.test(mime);
-    const watermark = '\n\n> 𝚂𝙸𝚂𝙺𝙴𝙳 - 𝙱𝙾𝚃';
+    const watermark = '\n\n> BOT - BARBOZA';
 
     if (isMedia) {
       const mediax = await quoted.download?.();
