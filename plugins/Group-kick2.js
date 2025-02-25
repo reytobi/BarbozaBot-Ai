@@ -8,7 +8,8 @@ let handler = async (m, { conn }) => {
     const participant = groupMetadata.participants.find(p => p.id === m.sender);
 
     // Verifica que el usuario sea administrador
-    if (!participant || !participant.isAdmin) return m.reply('Solo los administradores pueden usar este comando.');
+    const isAdmin = participant && participant.admin !== undefined; // Verifica si 'admin' existe
+    if (!isAdmin) return m.reply('Solo los administradores pueden usar este comando.');
 
     const participants = groupMetadata.participants;
 
