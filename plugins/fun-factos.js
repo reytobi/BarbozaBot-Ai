@@ -1,4 +1,3 @@
-
 const { generateWAMessageFromContent, proto } = (await import('@whiskeysockets/baileys')).default;
 
 // Definir las variables no definidas
@@ -23,7 +22,19 @@ var handler = async (m, { conn, text }) => {
     });
 
     const randomFact = pickRandom(global.factos);
-    conn.reply(m.chat, `*┏━_͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡_͜͡━┓*\n\n❥ *"${randomFact}"*\n\n*┗━_͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡_͜͡━┛*`, m);
+
+    let buttons = [
+        { buttonId: '/facto', buttonText: { displayText: '🔄 Otro Facto' }, type: 1 }
+    ];
+
+    let buttonMessage = {
+        text: `*┏━_͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡_͜͡━┓*\n\n❥ *"${randomFact}"*\n\n*┗━_͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡⚘-͜͡-͜͡-͜͡-͜͡-͜͡-͜͡_͜͡━┛*`,
+        footer: 'Presiona el botón para otro facto',
+        buttons: buttons,
+        headerType: 1
+    };
+
+    await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
 };
 
 handler.help = ['facto'];
