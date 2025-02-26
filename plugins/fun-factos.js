@@ -23,26 +23,17 @@ var handler = async (m, { conn, text }) => {
     });
 
     const randomFact = pickRandom(global.factos);
-    conn.reply(m.chat, `*┏━_‌‌-‌‌-‌‌-‌‌-‌‌-‌‌-‌‌⚘-‌‌-‌‌-‌‌-‌‌-‌‌-‌‌⚘-‌‌-‌‌-‌‌-‌‌-‌‌-‌‌-‌‌⚘-‌‌-‌‌-‌‌-‌‌-‌‌_‌‌━┓*\n\n❥ *"${randomFact}"*\n\n*┗━_‌­­­_ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ⚘ ‒ ‒ ‒ ‒ ‒ ‒ ‒ ⚘ _  _  _  _  _  _  _  _  _  _  _ ┛*`, m, {
-        contextInfo: {
-            buttonText: {
-                displayText: '👤 FACTO',
-            },
-            footer: dev,
-            buttons: [
-              {
-                  buttonId: '.facto',
-                  buttonText: { displayText: '👤 FACTO' },
-              },
-              {
-                  buttonId: '.facto',
-                  buttonText: { displayText: '☁️ VER SIGUIENTE FACTO' },
-              },
-            ],
-            viewOnce: true,
-            headerType: 4,
-        }
-    });
+    
+    const buttonMessage = {
+        text: `*┏━_‌‌-‌‌-‌‌-‌‌-‌‌-‌‌-‌‌⚘-‌‌-‌‌-‌‌-‌‌-‌‌-‌‌⚘-‌‌-‌‌-‌‌-‌‌-‌‌-‌‌-‌‌⚘-‌‌-‌‌-‌‌-‌‌-‌‌_‌‌━┓*\n\n❥ *"${randomFact}"*\n\n*┗━_‌‌-‌‌-‌‌-‌‌-‌‌-҉‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌‌_҉⏳_҉_ᅠᅠᅠᅠᅠ_ᅠᅠⁿⁿ₁₁₁₁₁₁₁₁₁₁₁₁₁₁₁₁ ₍ ₍ ₍ ₍ ₍ ₍ ₍ ₍ ₍ ₍ ₍ ₍ ₍ ₍ ₍ ₍ 𝓢𝓱𝓸𝔀 𝓶𝓮 𝓽𝓱𝓮 𝓷𝓮𝔀 𝓯𝓪𝓬𝓽𝓸 ⚘⚘⚘⚘⚘⚘⚘⚘⚘⚘⚘⚘⚘*`, 
+        footer: 'Pulsa el botón para ver otro facto:', 
+        buttons: [
+            { buttonId: 'next_fact', buttonText: { displayText: 'Ver siguiente facto' }, type: 1 }
+        ],
+        headerType: 1
+    };
+    
+    await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
 };
 
 handler.help = ['facto'];
@@ -62,6 +53,22 @@ function pickRandom(list) {
 global.factos = [
     "Eres la razón por la que hay instrucciones en los champús.",
     "Si fueras un libro, serías el que nadie quiere leer.",
-    // ... (el resto de los factos)
+    "Tu vida es como un programa de televisión que nadie ve.",
+    // ... (continúa con tus otros factos)
 ];
 
+// Manejar el botón de "Ver siguiente facto"
+handler.next_fact = async (m) => {
+    const randomFact = pickRandom(global.factos);
+    
+    const nextFactMessage = {
+        text: `*┏━_......_━┓*\n\n❥ *"${randomFact}"*\n\n*┗━_......_━┛*`,
+        footer: 'Pulsa el botón para ver otro facto:',
+        buttons: [
+            { buttonId: 'next_fact', buttonText: { displayText: 'Ver siguiente facto' }, type: 1 }
+        ],
+        headerType: 1
+    };
+    
+    await conn.sendMessage(m.chat, nextFactMessage, { quoted: m });
+};
