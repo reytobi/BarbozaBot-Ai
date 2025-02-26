@@ -6,7 +6,7 @@ let handler = async (m, { isPrems, conn }) => {
     }
 
     let img = 'https://telegra.ph/file/daf0bc0fc3c1e4c471c5c.jpg'; 
-    let texto = '📕 ¡LA #AGENDASEMANAL ESTÁ AQUÍ! 📕\n\n📢 Abran paso al REY 👑 Pelea por la corona con una nueva barba para tomar el trono del emote Máquina del Tesoro Imperial.\n\n🔨 También adueñarte del Whac-A-Mole y no olvides comer frutas y verduras con el regreso de una MP5 peligrosa. 🐰🥕\n\n¿Listo para reinar Bermuda? \n#CelebraciónDePascua';
+    let texto = '⭐ Agenda semanal ⭐';
 
     const fkontak = {
         "key": {
