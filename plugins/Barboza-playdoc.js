@@ -1,6 +1,5 @@
 import fetch from "node-fetch";
 
-// Función para manejar reintentos de solicitudes
 const fetchWithRetries = async (url, maxRetries = 2) => {
   let attempt = 0;
   while (attempt <= maxRetries) {
@@ -19,7 +18,6 @@ const fetchWithRetries = async (url, maxRetries = 2) => {
   throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
 };
 
-// Función para reconstruir la URL desde cadenas ofuscadas
 const reconstructUrl = () => {
   const parts = [
     "aHR0cHM6Ly9hcGkudnJlZGVu",
@@ -28,44 +26,34 @@ const reconstructUrl = () => {
   return Buffer.from(parts.join(""), "base64").toString("utf-8");
 };
 
-// Handler principal
 let handler = async (m, { conn, text, usedPrefix }) => {
   if (!text || !/^https:\/\/(www\.)?youtube\.com\/watch\?v=/.test(text)) {
     return conn.sendMessage(m.chat, {
-      text: `❗ *Por favor ingresa un enlace válido de YouTube para descargar la música.*\n\n📌 *Ejemplo:* ${usedPrefix}ytmp3 https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
+      text: `> Por favor ingresa un enlace de YouTube.*\n\n🍁 *Ejemplo:* ${usedPrefix}ytmp3 https://youtube.com/watch?v=f6KSlVffvQc`,
     });
   }
 
-  // Mensaje inicial indicando que Barboza Bot AI está procesando la música
   const key = await conn.sendMessage(m.chat, {
-    text: `⌘━─━─≪ *Barboza Bot AI* ≫─━─━⌘\n\n🔎 *Procesando tu solicitud, por favor espera...*`,
+    text: `> @Bot - Barboza - 𝟢𝟨\n> 𝙱𝚞𝚜𝚌𝚊𝚗𝚍𝚘 🕐`,
   });
 
   try {
-    // Reconstruir la URL de la API y construir la solicitud
     const apiUrl = `${reconstructUrl()}?url=${encodeURIComponent(text)}`;
-
-    // Intentar obtener datos con reintentos
     const apiData = await fetchWithRetries(apiUrl);
-
     const { metadata, download } = apiData;
     const { title, duration, views, author, url: videoUrl } = metadata;
     const { url: downloadUrl } = download;
+    const description = `🎵 *Título:* ${metadata.title}\n👤 *Autor:* ${metadata.author.name}\n🖇️ *URL:* ${metadata.url}\n\n> @Bot - Barboza - 𝟢𝟨`;
 
-    // Descripción personalizada para el archivo encontrado
-    const description = `⌘━─━─≪ *Barboza Bot AI* ≫─━─━⌘\n\n🎵 *Título:* ${title}\n⏳ *Duración:* ${duration.timestamp || "Desconocida"}\n👁️ *Vistas:* ${views.toLocaleString() || "Desconocidas"}\n✍️ *Autor:* ${author.name || "Desconocido"}\n🔗 *Enlace del video:* ${videoUrl}\n\n✨ *Tu archivo se está enviando, por favor espera...*\n\n⌘━━─≪ Power By Barboza Bot AI ≫─━━⌘`;
-
-    // Actualizar mensaje inicial con la información específica del video
+    
     await conn.sendMessage(m.chat, { text: description, edit: key });
-
-    // Enviar archivo como audio
     await conn.sendMessage(
       m.chat,
       {
         audio: { url: downloadUrl },
         mimetype: "audio/mpeg",
         fileName: `${title}.mp3`,
-        caption: `🎶 *Descarga completada por Barboza Bot AI*`,
+        caption: `@Bot - Barboza - 𝟢𝟨`,
       },
       { quoted: m }
     );
@@ -78,6 +66,6 @@ let handler = async (m, { conn, text, usedPrefix }) => {
   }
 };
 
-handler.command = /^ytmp3$/i; // Comando único: ytmp3
-
+handler.command = /^ytmp3$/i;
+handler.limit = 5;
 export default handler;
