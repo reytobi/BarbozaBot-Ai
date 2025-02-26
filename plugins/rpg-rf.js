@@ -33,9 +33,9 @@ const claimedCharacters = [];
 
 // Lista de personajes predefinidos
 const mainCharacters = [
-  { name: "Naruto Uzumaki", url: "https://qu.ax/llZLr.jpg", price: 100, claimedBy: null },
-  { name: "Sakura Haruno", url: "https://qu.ax/llZLr.jpg", price: 120, claimedBy: null },
-  { name: "Sasuke Uchiha", url: "https://qu.ax/llZLr.jpg", price: 150, claimedBy: null }
+  { name: "Naruto Uzumaki", url: "https://i.ibb.co/MygvfhNp/file.jpg", price: 100, claimedBy: null },
+  { name: "Sakura Haruno", url: "https://i.ibb.co/MygvfhNp/file.jpg", price: 120, claimedBy: null },
+  { name: "Sasuke Uchiha", url: "https://i.ibb.co/MygvfhNp/file.jpg", price: 150, claimedBy: null }
 ];
 
 // ====================
