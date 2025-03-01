@@ -1,9 +1,11 @@
 
 import fs from 'fs';
 
+const jadi = '1'; // Define el valor de jadi
+
 async function handler(m, { usedPrefix }) {
     const user = m.sender.split('@')[0];
-    const credsPath = `./${jadi}/${user}/creds.json`;
+    const credsPath = `./${jadi}/${user}/creds.json`; // Usa comillas invertidas para interpolación
 
     try {
         if (fs.existsSync(credsPath)) {
