@@ -1,184 +1,96 @@
-const {
-    useMultiFileAuthState,
-    DisconnectReason,
-    fetchLatestBaileysVersion, 
-    MessageRetryMap,
-    makeCacheableSignalKeyStore, 
-    jidNormalizedUser
-   } = await import('@whiskeysockets/baileys')
-import moment from 'moment-timezone'
-import NodeCache from 'node-cache'
-import readline from 'readline'
-import qrcode from "qrcode"
-import crypto from 'crypto'
-import fs from "fs"
-import pino from 'pino';
-import * as ws from 'ws';
-const { CONNECTING } = ws
-import { Boom } from '@hapi/boom'
-import { makeWASocket } from '../lib/simple.js';
+import { readdirSync, statSync, unlinkSync, existsSync, readFileSync, watch, rmSync, promises as fsPromises } from "fs";
+const fs = { ...fsPromises, existsSync };
+import path, { join } from 'path' 
+import ws from 'ws';
 
-if (global.conns instanceof Array) console.log()
-else global.conns = []
+let handler = async (m, { conn: _envio, command, usedPrefix, args, text, isOwner}) => {
+const isCommand1 = /^(deletesesion|deletebot|deletesession|deletesesaion)$/i.test(command)  
+const isCommand2 = /^(stop|pausarai|pausarbot)$/i.test(command)  
+const isCommand3 = /^(bots|sockets|socket)$/i.test(command)   
 
-let handler = async (m, { conn: _conn, args, usedPrefix, command, isOwner }) => {
-  let parent = args[0] && args[0] == 'plz' ? _conn : await global.conn
-  if (!((args[0] && args[0] == 'plz') || (await global.conn).user.jid == _conn.user.jid)) {
-        return m.reply(`Este comando solo puede ser usado en el bot principal! wa.me/${global.conn.user.jid.split`@`[0]}?text=${usedPrefix}code`)
+async function reportError(e) {
+await m.reply(`⚠️ Ocurrió un error.`)
+console.log(e)
 }
 
-  async function serbot() {
+switch (true) {       
+case isCommand1:
+let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
+let uniqid = `${who.split`@`[0]}`
+const path = `./${jadi}/${uniqid}`
 
-  let authFolderB = m.sender.split('@')[0]
-    if (!fs.existsSync("./Sesion Subbots/"+ authFolderB)){
-        fs.mkdirSync("./Sesion Subbots/"+ authFolderB, { recursive: true });
-    }
-    args[0] ? fs.writeFileSync("./Sesion Subbots/" + authFolderB + "/creds.json", JSON.stringify(JSON.parse(Buffer.from(args[0], "base64").toString("utf-8")), null, '\t')) : ""
-
-const {state, saveState, saveCreds} = await useMultiFileAuthState(`./Sesion Subbots/${authFolderB}`)
-const msgRetryCounterMap = (MessageRetryMap) => { };
-const msgRetryCounterCache = new NodeCache()
-const {version} = await fetchLatestBaileysVersion();
-let phoneNumber = m.sender.split('@')[0]
-
-const methodCodeQR = process.argv.includes("qr")
-const methodCode = !!phoneNumber || process.argv.includes("code")
-const MethodMobile = process.argv.includes("mobile")
-
-const rl = readline.createInterface({ input: process.stdin, output: process.stdout })
-const question = (texto) => new Promise((resolver) => rl.question(texto, resolver))
-
-const connectionOptions = {
-  logger: pino({ level: 'silent' }),
-  printQRInTerminal: false,
-  mobile: MethodMobile, 
-  browser: ["Ubuntu", "Chrome", "20.0.04"],
-  auth: {
-  creds: state.creds,
-  keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
-  },
-  markOnlineOnConnect: true, 
-  generateHighQualityLinkPreview: true, 
-  getMessage: async (clave) => {
-  let jid = jidNormalizedUser(clave.remoteJid)
-  let msg = await store.loadMessage(jid, clave.id)
-  return msg?.message || ""
-  },
-  msgRetryCounterCache,
-  msgRetryCounterMap,
-  defaultQueryTimeoutMs: undefined,   
-  version
-  }
-
-let conn = makeWASocket(connectionOptions)
-
-if (methodCode && !conn.authState.creds.registered) {
-    if (!phoneNumber) {
-        process.exit(0);
-    }
-    let cleanedNumber = phoneNumber.replace(/[^0-9]/g, '');
-  /*  if (!Object.keys(PHONENUMBER_MCC).some(v => cleanedNumber.startsWith(v))) {
-        process.exit(0);
-    }*/
-
-    setTimeout(async () => {
-        let codeBot = await conn.requestPairingCode(cleanedNumber);
-        codeBot = codeBot?.match(/.{1,4}/g)?.join("-") || codeBot;
-        let txt = `*\`「🔱」 Serbot - Code 「🔱」\`*\n\n*\`[ Pasos : ]\`*\n\`1 ❥\` _Click en los 3 puntos_\n\`2 ❥\` _Toca en dispositivos vinculados_\n\`3 ❥\` _Seleciona Vincular con codigo_\n\`4 ❥\` _Escribe El Codigo_\n\n> *:⁖֟⊱┈֟፝❥ Nota:* Este Codigo Solo Funciona Con Quien Lo Solicito`
-         await parent.reply(m.chat, txt, m, rcanal)
-         await parent.reply(m.chat, codeBot, m, rcanal)
-        rl.close()
-    }, 3000)
+if (!await fs.existsSync(path)) {
+await conn.sendMessage(m.chat, { text: `🍬 Usted no tiene una sesión, puede crear una usando:\n${usedPrefix + command}\n\nSi tiene una *(ID)* puede usar para saltarse el paso anterior usando:\n*${usedPrefix + command}* \`\`\`(ID)\`\`\`` }, { quoted: m })
+return
 }
-
-conn.isInit = false
-let isInit = true
-
-async function connectionUpdate(update) {
-    const { connection, lastDisconnect, isNewLogin, qr } = update
-    if (isNewLogin) conn.isInit = true
-    const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode;
-        if (code && code !== DisconnectReason.loggedOut && conn?.ws.socket == null) {
-      let i = global.conns.indexOf(conn)
-      if (i < 0) return console.log(await creloadHandler(true).catch(console.error))
-      delete global.conns[i]
-      global.conns.splice(i, 1)
-
-          if (code !== DisconnectReason.connectionClosed) {
-          parent.sendMessage(m.chat, { text: "Conexión perdida.." }, { quoted: m })
-        } else {
-        }
-      }
-
-    if (global.db.data == null) loadDatabase()
-
-    if (connection == 'open') {
-    conn.isInit = true
-    global.conns.push(conn)
-    await parent.reply(m.chat, args[0] ? 'Conectado con exito' : '*\`[ Conectado Exitosamente 🤍 ]\`*\n\n> _Se intentara reconectar en caso de desconexion de sesion_\n> _Si quieres eliminr el subbot borra la sesion en dispositivos vinculados_\n> _El número del bot puede cambiar, guarda este enlace :_\n\nhttps://whatsapp.com/channel/0029VaJxgcB0bIdvuOwKTM2Y', m)
-    await sleep(5000)
-    if (args[0]) return
-
-                await parent.reply(conn.user.jid, `La siguiente vez que se conecte envía el siguiente mensaje para iniciar sesión sin utilizar otro código `, m, rcanal)
-
-                await parent.sendMessage(conn.user.jid, {text : usedPrefix + command + " " + Buffer.from(fs.readFileSync("./serbot/" + authFolderB + "/creds.json"), "utf-8").toString("base64")}, { quoted: m })
-          }
-
-  }
-
-  setInterval(async () => {
-    if (!conn.user) {
-      try { conn.ws.close() } catch { }
-      conn.ev.removeAllListeners()
-      let i = global.conns.indexOf(conn)
-      if (i < 0) return
-      delete global.conns[i]
-      global.conns.splice(i, 1)
-    }}, 60000)
-
-let handler = await import('../handler.js')
-let creloadHandler = async function (restatConn) {
+if (global.conn.user.jid !== conn.user.jid) return conn.sendMessage(m.chat, {text: `✎ Use este comando al *Bot* principal.\n\n*https://api.whatsapp.com/send/?phone=${global.conn.user.jid.split`@`[0]}&text=${usedPrefix + command}&type=phone_number&app_absent=0*`}, { quoted: m }) 
+else {
+await conn.sendMessage(m.chat, { text: `✧ Tu sesión como *Sub-Bot* se ha eliminado` }, { quoted: m })}
 try {
-const Handler = await import(`../handler.js?update=${Date.now()}`).catch(console.error)
-if (Object.keys(Handler || {}).length) handler = Handler
+fs.rmdir(`./${jadi}/` + uniqid, { recursive: true, force: true })
+await conn.sendMessage(m.chat, { text : `✎ Ha cerrado sesión y borrado todo rastro.` } , { quoted: m })
 } catch (e) {
-console.error(e)
-}
-if (restatConn) {
-try { conn.ws.close() } catch { }
-conn.ev.removeAllListeners()
-conn = makeWASocket(connectionOptions)
-isInit = true
-}
+reportError(e)
+}  
+break
 
-if (!isInit) {
-conn.ev.off('messages.upsert', conn.handler)
-conn.ev.off('connection.update', conn.connectionUpdate)
-conn.ev.off('creds.update', conn.credsUpdate)
-}
+case isCommand2:
+if (global.conn.user.jid == conn.user.jid) conn.reply(m.chat, `✎ Si no es *Sub-Bot* comuníquese al numero principal del *Bot* para ser *Sub-Bot*.`, m)
+else {
+await conn.reply(m.chat, `✎ ${botname} desactivada.`, m)
+conn.ws.close()}  
+break
 
-conn.handler = handler.handler.bind(conn)
-conn.connectionUpdate = connectionUpdate.bind(conn)
-conn.credsUpdate = saveCreds.bind(conn, true)
+case isCommand3:
+//if (global.db.data.settings[conn.user.jid].jadibotmd) return m.reply(`✎ Este comando está desactivado por mi creador.`)
+const users = [...new Set([...global.conns.filter((conn) => conn.user && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED).map((conn) => conn)])];
+function convertirMsADiasHorasMinutosSegundos(ms) {
+var segundos = Math.floor(ms / 1000);
+var minutos = Math.floor(segundos / 60);
+var horas = Math.floor(minutos / 60);
+var días = Math.floor(horas / 24);
+segundos %= 60;
+minutos %= 60;
+horas %= 24;
+var resultado = "";
+if (días !== 0) {
+resultado += días + " días, ";
+}
+if (horas !== 0) {
+resultado += horas + " horas, ";
+}
+if (minutos !== 0) {
+resultado += minutos + " minutos, ";
+}
+if (segundos !== 0) {
+resultado += segundos + " segundos";
+}
+return resultado;
+}
+const message = users.map((v, index) => `${index + 1}√
+[🌸]+${v.user.jid.replace(/[^0-9]/g, '')}\n[💐] *Usuario*: ${v.user.name || 'Sub-Bot'}\n[🌻] *Online*: ${ v.uptime ? convertirMsADiasHorasMinutosSegundos(Date.now() - v.uptime) : 'Desconocido'}`).join('\n\n\n\n');
+const replyMessage = message.length === 0 ? `No hay Sub-Bots disponible por el momento, verifique mas tarde.` : message;
+const totalUsers = users.length;
+const responseMessage = `*╔══❰ SUB-BOTS ACTIVOS ❱══╗* 
 
-conn.ev.on('messages.upsert', conn.handler)
-conn.ev.on('connection.update', conn.connectionUpdate)
-conn.ev.on('creds.update', conn.credsUpdate)
-isInit = false
-return true
-}
-creloadHandler(false)
-}
-serbot()
+ ㅤത   ׅ     *𝚆ᧉ𝗅𝖼ᨣⴅᧉ*      🍁     ɱιʂ    ベ
+ㅤ ೕ       ʂυႦ       ׄ   ꕑ        *Ⴆσƚ*
+ㅤ ◞◟   ʂυႦႦσƚ    ✿•˖    🌴    ֵ   ᰨᰍ
 
-}
-handler.help = ['code']
+
+* ꆬꆬ       ݂ʂυɱι Ⴆσƚ ::🌸
+
+*
+ ⏝⃨֟፝︶ .     ׅ    ꪆඏ᳞ᩙ୧    ׅ      .︶⃨֟፝⏝
+
+> 🌸 Mis Sub-Bots Online: 
+: ${totalUsers || '0'}
+\n\n${replyMessage.trim()}`.trim();
+await _envio.sendMessage(m.chat, {text: responseMessage, mentions: _envio.parseMention(responseMessage)}, {quoted: m})
+break   
+}}
+
 handler.tags = ['serbot']
-handler.command = ['code', 'serbotcode']
-handler.rowner = false
-
+handler.help = ['sockets', 'deletesesion', 'pausarai']
+handler.command = ['deletesesion', 'deletebot', 'deletesession', 'deletesession', 'stop', 'pausarai', 'pausarbot', 'bots', 'sockets', 'socket']
 export default handler
-
-function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
