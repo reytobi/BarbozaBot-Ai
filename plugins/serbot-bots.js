@@ -1,47 +1,21 @@
+import fs from 'fs'
 
-import ws from 'ws';
+async function handler(m, {usedPrefix}) {
 
-async function handler(m, { conn: stars, usedPrefix }) {
-  let uniqueUsers = new Map();
+const user = m.sender.split('@')[0]
+if (fs.existsSync(`./${jadi}/` + user + '/creds.json')) {
+let token = Buffer.from(fs.readFileSync(`./${jadi}/` + user + '/creds.json'), 'utf-8').toString('base64')    
 
-  global.conns.forEach((conn) => {
-    if (conn && conn.user && conn.ws && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED) {
-      uniqueUsers.set(conn.user.jid, conn);
-    }
-  });
-
-  let users = [...uniqueUsers.values()];
-
-  let message = users
-    .map((v, index) => {
-      let jid = v.user?.jid || '-';
-      let name = v.user?.name || '-';
-      return `*${index + 1}.-* @${jid.replace(/[^0-9]/g, '')}\n*Link:* https://wa.me/${jid.replace(/[^0-9]/g, '')}\n*Nombre:* ${name}`;
-    })
-    .join('\n\n');
-
-  let replyMessage = message.length === 0 ? '' : message;
-  let totalUsers = users.length;
-  let responseMessage = `*Total de Bots* : ${totalUsers || '0'}\n\n${replyMessage.trim()}`.trim();
-
-  // Aquí es donde añadimos la imagen
-  let imageUrl = 'https://qu.ax/LJEVX.jpg'; // Reemplaza esto con la URL de tu imagen
-
-  await stars.sendMessage(
-    m.chat,
-    { text: responseMessage, mentions: stars.parseMention(responseMessage) },
-    { quoted: m }
-  );
-
-  // Enviamos la imagen
-  await stars.sendMessage(
-    m.chat,
-    { image: { url: imageUrl }, caption: 'Aquí tienes una imagen!' },
-    { quoted: m }
-  );
+await conn.reply(m.chat, `🍬 *El token te permite iniciar sesion en otros bots, recomendamos no compartirlo con nadie*\n\nTu token es:`, m, rcanal)
+await conn.reply(m.chat, token, m, fake)
+} else {
+await conn.reply(m.chat, `🍭 *No tienes ningun token activo, usa #jadibot para crear uno*`, m, fake)
 }
 
-handler.command = ['listjadibot', 'bots'];
-handler.help = ['bots'];
-handler.tags = ['serbot'];
-export default handler;
+}
+handler.help = ['token']
+handler.command = ['token']
+handler.tags = ['serbot']
+handler.private = true
+
+export default handler 
