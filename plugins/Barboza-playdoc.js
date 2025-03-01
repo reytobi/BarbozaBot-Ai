@@ -1,5 +1,3 @@
-//mejorado por ENder
-
 
 import yts from 'yt-search';
 
