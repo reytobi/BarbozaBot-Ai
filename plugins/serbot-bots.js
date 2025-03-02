@@ -1,28 +1,46 @@
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import ws from 'ws'
 
-import fs from 'fs';
+async function handler(m, { conn, usedPrefix, command }) {
+// carpetas creadas
+const __filename = fileURLToPath(import.meta?.url)
+const __dirname = path?.dirname(__filename)
+const carpetaBase = path?.resolve(__dirname, '..', 'GataJadiBot')
+const cantidadCarpetas = (fs?.readdirSync(carpetaBase, { withFileTypes: true }).filter(item => item?.isDirectory())?.length) || 0
 
-const jadi = '1'; // Define el valor de jadi
+// servidor
+let _uptime = process.uptime() * 1000
+let uptime = convertirMs(_uptime)
 
-async function handler(m, { usedPrefix }) {
-    const user = m.sender.split('@')[0];
-    const credsPath = `./${jadi}/${user}/creds.json`; // Usa comillas invertidas para interpolación
+const users = [...new Set([...global.conns.filter((conn) => conn.user && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED).map((conn) => conn)])]
 
-    try {
-        if (fs.existsSync(credsPath)) {
-            let token = Buffer.from(fs.readFileSync(credsPath), 'utf-8').toString('base64');
-            await conn.reply(m.chat, `🍬 *El token te permite iniciar sesión en otros bots, recomendamos no compartirlo con nadie*\n\nTu token es: ${token}`, m);
-        } else {
-            await conn.reply(m.chat, '🍭 *No tienes ningún token activo, usa #jadibot para crear uno*', m);
-        }
-    } catch (error) {
-        console.error(error);
-        await conn.reply(m.chat, '⚠️ *Ocurrió un error al procesar tu solicitud.*', m);
-    }
+const message = users.map((v, index) => `👤 \`[${index + 1}]\` *${v.user.name || global.db.data.users[v.user.jid]?.name || 'Anónimo' }*
+⏱️ \`\`\`${v.uptime ? convertirMs(Date.now() - v.uptime) : "Desconocido"}\`\`\`
+🐈 wa.me/${v.user.jid.replace(/[^0-9]/g, '')}?text=${usedPrefix}serbot+code`).join('\n\n∵ ∵ ∵ ∵ ∵ ∵ ∵ ∵ ∵ ∵\n\n')
+const replyMessage = message.length === 0 ? `*NO HAY SUB BOTS DISPONIBLE. VERIFIQUE MÁS TARDE.*\n🐈 wa.me/${conn.user.jid.replace(/[^0-9]/g, '')}?text=${usedPrefix}serbot%20code` : message
+const totalUsers = users.length
+const responseMessage = `☄️ *LISTA DE SUB-BOTS V${vsJB}*\n
+\`¡Conviértete en sub bot desde otros sub bots!\`\n
+🔄 *Auto conexión automática*
+✨ *Novedades:* 
+_${canal1}_
+
+${totalUsers ? `💠 *Sub Bots conectados:* ${totalUsers || 0}\n` : ''}${cantidadCarpetas ? `📁 *Sesiones creadas:* ${cantidadCarpetas}\n` : ''}${totalUsers ? `📁 *Sesiones activas:* ${totalUsers || 0}\n` : ''}💻 *Servidor:* \`\`\`${uptime}\`\`\`\n\n${replyMessage.trim()}`.trim()
+try{ 
+await conn.sendMessage(m.chat, { image: { url: ['https://qu.ax/spUwF.jpeg', 'https://qu.ax/ZfKAD.jpeg', 'https://qu.ax/UKUqX.jpeg'].getRandom() }, caption: responseMessage }, { quoted: m })
+} catch {
+await conn.sendMessage(m.chat, { text: responseMessage }, { quoted: m })
 }
+}
+handler.command = /^(listjadibots|bots|subsbots)$/i
+export default handler
 
-handler.help = ['token'];
-handler.command = ['token'];
-handler.tags = ['serbot'];
-handler.private = true;
-
-export default handler;
+function convertirMs(ms) {
+const s = Math.floor(ms / 1000) % 60;
+const m = Math.floor(ms / 60000) % 60;
+const h = Math.floor(ms / 3600000) % 24;
+const d = Math.floor(ms / 86400000);
+return [ d > 0 ? `${d}d` : "", `${h}h`, `${m}m`, `${s}s` ].filter(Boolean).join(" ")
+}
