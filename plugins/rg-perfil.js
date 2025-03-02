@@ -21,7 +21,7 @@ var handler = async (m, { conn }) => {
         who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
     }
 
-    let pp = await conn.profilePictureUrl(who, 'image').catch(_ => https://i.ibb.co/RTBqr4r3/file.jpg);
+    let pp = await conn.profilePictureUrl(who, 'image').catch(_ => imagen1);
     let { premium, level, genre, birth, description, estrellas, exp, lastclaim, registered, regTime, age, role } = global.db.data.users[who] || {};
     let username = conn.getName(who);
 
@@ -70,7 +70,7 @@ var handler = async (m, { conn }) => {
 │⧼⚜️⧽ *ʀᴀɴɢᴏ:* ${role}
 ╰───⪨ *𝓤𝓼𝓾𝓪𝓻𝓲𝓸 𝓓𝓮𝓼𝓽𝓪𝓬𝓪𝓭𝓸* ⪩`.trim();
 
-    conn.sendFile(m.chat, pp, 'perfil.jpg', `${premium ? prem.trim() : noprem.trim()}`, m, { mentions: [who] });
+    conn.sendFile(m.chat, pp, 'https://i.ibb.co/RTBqr4r3/file.jpg', `${premium ? prem.trim() : noprem.trim()}`, m, { mentions: [who] });
 }
 
 handler.help = ['profile'];
