@@ -19,13 +19,13 @@ var handler = async (m, { conn }) => {
     }
 
     // Define una imagen por defecto
-    const imagen1 = 'https://i.ibb.co/RTBqr4r3/file.jpg'
+    const imagen1 = 'https://i.ibb.co/RTBqr4r3/file.jpg'; // Cambia esto a la ruta correcta
 
     let pp;
     try {
         pp = await conn.profilePictureUrl(who, 'image');
     } catch (_) {
-        pp = https://i.ibb.co/RTBqr4r3/file.jpg
+        pp = imagen1; // Usa la imagen predeterminada si hay un error
     }
 
     let { premium, level, genre, birth, description, estrellas, exp, lastclaim, registered, regTime, age, role } = global.db.data.users[who] || {};
@@ -74,3 +74,6 @@ handler.command = ['profile', 'perfil'];
 handler.estrellas = 2;
 
 export default handler;
+```
+
+Asegúrate de reemplazar `'./ruta/a/tu/imagen/default.jpg'` con la ruta correcta a tu imagen predeterminada. ¡Espero que esto solucione tu problema! Si necesitas más ayuda, no dudes en decirlo.
