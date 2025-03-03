@@ -1,7 +1,8 @@
-
 import PhoneNumber from 'awesome-phonenumber';
 import fetch from 'node-fetch';
 import fs from 'fs';
+
+const imagen1 = 'https://i.ibb.co/RTBqr4r3/file.jpg';
 
 const loadMarriages = () => {
     if (fs.existsSync('./media/database/marry.json')) {
@@ -22,7 +23,7 @@ var handler = async (m, { conn }) => {
         who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
     }
 
-    let pp = await conn.profilePictureUrl(who, 'image').catch(_ => 'ruta/a/imagen/https://i.ibb.co/RTBqr4r3/file.jpg'); // Asegúrate de tener una imagen predeterminada
+    let pp = await conn.profilePictureUrl(who, 'image').catch(_ => imagen1);
     let { premium, level, genre, birth, description, estrellas, exp, lastclaim, registered, regTime, age, role } = global.db.data.users[who] || {};
     let username = conn.getName(who);
 
@@ -35,43 +36,43 @@ var handler = async (m, { conn }) => {
     let partner = isMarried ? global.db.data.marriages[who] : null;
     let partnerName = partner ? conn.getName(partner) : 'Nadie';
 
-    let noprem =
-`𖤘 *Perfil De Usuario*
-❀ *Nombre:* ${username}
-❖ *Edad:* ${age}
-⚥ *Género:* ${genre}
-❀ *Cumpleaños:* ${birth} 
-♡ *Casado:* ${isMarried ? partnerName : 'Nadie'}
-✎ *Descripción:* ${description}
-❍ *Registrado:* ${registered ? '✅': '❌'}
+    let noprem = `
+「 𖤘 *Perfil De Usuario* 」
+❀ *N᥆mᑲrᥱ:* ${username}
+❖ *Eძᥲძ:* ${age}
+⚥ *Gᥱᥒᥱr᥆:* ${genre}
+❀ *Cᥙm⍴ᥣᥱᥲᥒ̃᥆s:* ${birth} 
+♡ *Cᥲsᥲძ@:* ${isMarried ? partnerName : 'Nadie'}
+✎ *Dᥱsᥴrі⍴ᥴі᥆́ᥒ:* ${description}
+❍ *Rᥱgіs𝗍rᥲძ᥆:* ${registered ? '✅': '❌'}
 
 「 ✦ *Recursos - User* 」
-✩ *Estrellas:* ${estrellas || 0}
-${level || 0}
-◭ *Experiencia:* ${exp || 0}
-⚡︎ *Rango:* ${role}
+✩ *Es𝗍rᥱᥣᥣᥲs:* ${estrellas || 0}
+ ${level || 0}
+◭ *E᥊⍴ᥱrіᥱᥒᥴіᥲ:* ${exp || 0}
+⚡︎ *Rᥲᥒg᥆:* ${role}
 
-> ✧ Para editar tu perfil usa *#perfildates*`.trim();
+> ✧ ⍴ᥲrᥲ ᥱძі𝗍ᥲr 𝗍ᥙ ⍴ᥱr𝖿іᥣ ᥙsᥲ *#perfildates*`.trim();
 
-    let prem =
-`╭──⪩ 𝐔𝐒𝐔𝐀𝐑𝐈𝐎 𝐏𝐑𝐄𝐌𝐈𝐔𝐌 ⪨
-│⧼👤⧽ *Usuario:* *${username}*
-│⧼💠⧽ *Edad:* *${age}*
-│⧼⚧️⧽ *Género:* *${genre}*
-│⧼🎂⧽ *Cumpleaños:* ${birth}
-│⧼👩‍❤️‍👩⧽ *Casado:* ${isMarried ? partnerName : 'Nadie'}
-📜 *Descripción:* ${description}
-│⧼🌀⧽ *Registrado:* ${registered ? '✅': '❌'}
+    let prem = `╭──⪩ 𝐔𝐒𝐔𝐀𝐑𝐈𝐎 𝐏𝐑𝐄𝐌𝐈𝐔𝐌 ⪨
+│⧼👤⧽ *ᴜsᴜᴀʀɪᴏ:* *${username}*
+│⧼💠⧽ *ᴇᴅᴀᴅ:* *${age}*
+│⧼⚧️⧽ *ɢᴇɴᴇʀᴏ:* *${genre}*
+│⧼🎂⧽ *ᴄᴜᴍᴘʟᴇᴀɴ̃ᴏs:* ${birth}
+│⧼👩‍❤️‍👩⧽ *ᴄᴀsᴀᴅᴏ:* ${isMarried ? partnerName : 'Nadie'}
+📜 *ᴅᴇsᴄʀɪᴘᴄɪᴏɴ:* ${description}
+│⧼🌀⧽ *ʀᴇɢɪsᴛʀᴀᴅᴏ:* ${registered ? '✅': '❌'}
+
 ╰─────────────────⪨
 
 ╭────⪩ 𝐑𝐄𝐂𝐔𝐑𝐒𝐎𝐒 ⪨
-│⧼💴⧽ *Estrellas:* ${estrellas || 0}
-│⧼🌟⧽ *Nivel:* ${level || 0}
-│⧼✨⧽ *Experiencia:* ${exp || 0}
-│⧼⚜️⧽ *Rango:* ${role}
-╰───⪨`.trim();
+│⧼💴⧽ *estrellas:* ${estrellas || 0}
+│⧼🌟⧽ *ɴɪᴠᴇʟ:* ${level || 0}
+│⧼✨⧽ *ᴇxᴘᴇʀɪᴇɴᴄɪᴀ:* ${exp || 0}
+│⧼⚜️⧽ *ʀᴀɴɢᴏ:* ${role}
+╰───⪨ *𝓤𝓼𝓾𝓪𝓻𝓲𝓸 𝓓𝓮𝓼𝓽𝓪𝓬𝓪𝓭𝓸* ⪩`.trim();
 
-    conn.sendFile(m.chat, pp, 'perfil.jpg', premium ? prem.trim() : noprem.trim(), m, { mentions: [who] });
+    conn.sendFile(m.chat, pp, 'perfil.jpg', `${premium ? prem.trim() : noprem.trim()}`, m, { mentions: [who] });
 }
 
 handler.help = ['profile'];
