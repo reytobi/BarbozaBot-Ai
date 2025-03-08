@@ -1,14 +1,17 @@
+
 import PhoneNumber from 'awesome-phonenumber';
 
 async function handler(m, { conn }) { 
     let numcreador = '584146277368';
     let ownerJid = numcreador + '@s.whatsapp.net';
 
+    // Obtener el nombre y la descripción del creador
     let name = await conn.getName(ownerJid) || 'Barboza'; 
     let about = (await conn.fetchStatus(ownerJid).catch(() => {}))?.status || 'Sin descripción';
 
     let empresa = 'Barboza - Servicios Tecnológicos';
 
+    // Crear el vCard con la información del creador
     let vcard = `
 BEGIN:VCARD
 VERSION:3.0
@@ -17,7 +20,7 @@ FN:${name}
 ORG:${empresa};
 TITLE:CEO & Fundador
 TEL;waid=${numcreador}:${new PhoneNumber('+' + numcreador).getNumber('international')}
-EMAIL: sebastianbarbaro82@gmail.com
+EMAIL:sebastianbarbaro82@gmail.com
 URL:https://www.instagram.com/sebastian_barboza13
 NOTE:${about}
 ADR:;;Dirección de tu empresa;;;;
@@ -29,11 +32,13 @@ X-WA-BIZ-NAME:${name}
 X-WA-BIZ-DESCRIPTION:${about}
 END:VCARD`.trim();
 
+    // Definir los botones para el mensaje
     let buttons = [
         { buttonId: '.perfil', buttonText: { displayText: '📌 Perfil' }, type: 1 },
         { buttonId: '.menu', buttonText: { displayText: '📜 Menú' }, type: 1 }
     ];
 
+    // Crear el mensaje con los contactos y los botones
     let buttonMessage = {
         contacts: { 
             displayName: name, 
@@ -45,6 +50,7 @@ END:VCARD`.trim();
         headerType: 6 
     };
 
+    // Enviar el mensaje al chat
     await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
 }
 
