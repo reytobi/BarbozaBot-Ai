@@ -32,12 +32,6 @@ X-WA-BIZ-NAME:${name}
 X-WA-BIZ-DESCRIPTION:${about}
 END:VCARD`.trim();
 
-    // Definir los botones para el mensaje
-    let buttons = [
-        { buttonId: '.perfil', buttonText: { displayText: '📌 Perfil' }, type: 1 },
-        { buttonId: '.menu', buttonText: { displayText: '📜 Menú' }, type: 1 }
-    ];
-
     // Crear el mensaje con los contactos y los botones
     let buttonMessage = {
         contacts: { 
