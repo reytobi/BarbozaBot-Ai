@@ -8,7 +8,7 @@ async function handler(m, { conn }) {
     let name = await conn.getName(ownerJid) || 'Deylin'; 
     let about = (await conn.fetchStatus(ownerJid).catch(() => {}))?.status || 'Sin descripción';
 
-    let empresa = 'Deylin - Servicios Tecnológicos';
+    let empresa = 'Barboza- Servicios Tecnológicos';
 
     let vcard = `
 BEGIN:VCARD
@@ -18,8 +18,8 @@ FN:${name}
 ORG:${empresa};
 TITLE:CEO & Fundador
 TEL;waid=${numcreador}:${new PhoneNumber('+' + numcreador).getNumber('international')}
-EMAIL:correo@empresa.com
-URL:https://www.tuempresa.com
+EMAIL:sebastianbarbaro82@gmail.com
+URL:https://www.instagram.com/sebastian_barboza13
 NOTE:${about}
 ADR:;;Dirección de tu empresa;;;;
 X-ABADR:ES
