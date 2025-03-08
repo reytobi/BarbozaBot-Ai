@@ -1,17 +1,15 @@
-
+//código creado por Barbosa
 import PhoneNumber from 'awesome-phonenumber';
 
 async function handler(m, { conn }) { 
-    let numcreador = '584146277368';
+    let numcreador = '50488198573';
     let ownerJid = numcreador + '@s.whatsapp.net';
 
-    // Obtener el nombre y la descripción del creador
-    let name = await conn.getName(ownerJid) || 'Barboza'; 
+    let name = await conn.getName(ownerJid) || 'Deylin'; 
     let about = (await conn.fetchStatus(ownerJid).catch(() => {}))?.status || 'Sin descripción';
 
-    let empresa = 'Barboza - Servicios Tecnológicos';
+    let empresa = 'Deylin - Servicios Tecnológicos';
 
-    // Crear el vCard con la información del creador
     let vcard = `
 BEGIN:VCARD
 VERSION:3.0
@@ -20,8 +18,8 @@ FN:${name}
 ORG:${empresa};
 TITLE:CEO & Fundador
 TEL;waid=${numcreador}:${new PhoneNumber('+' + numcreador).getNumber('international')}
-EMAIL:sebastianbarbaro82@gmail.com
-URL:https://www.instagram.com/sebastian_barboza13
+EMAIL:correo@empresa.com
+URL:https://www.tuempresa.com
 NOTE:${about}
 ADR:;;Dirección de tu empresa;;;;
 X-ABADR:ES
@@ -32,20 +30,12 @@ X-WA-BIZ-NAME:${name}
 X-WA-BIZ-DESCRIPTION:${about}
 END:VCARD`.trim();
 
-    // Crear el mensaje con los contactos y los botones
-    let buttonMessage = {
+    await conn.sendMessage(m.chat, { 
         contacts: { 
             displayName: name, 
             contacts: [{ vcard }]
-        },
-        caption: `👤 *${name}* - CEO & Fundador\n📝 *Descripción:* ${about}`,
-        footer: 'Barboza - Servicios Tecnológicos',
-        buttons: buttons,
-        headerType: 6 
-    };
-
-    // Enviar el mensaje al chat
-    await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
+        } 
+    }, { quoted: m });
 }
 
 handler.help = ['owner']; 
