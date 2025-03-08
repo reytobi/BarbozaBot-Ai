@@ -1,10 +1,55 @@
+import PhoneNumber from 'awesome-phonenumber';
 
-let handler = async (m, { conn, usedPrefix, isOwner }) => {
-let txt_owner = "> _*`𝙷𝙾𝙻𝙰, 𝙴𝚂𝚃𝙴 𝙴𝚂 𝙴𝙻 𝙽𝚄𝙼𝙴𝚁𝙾 𝙳𝙴 𝙼𝙸 𝙲𝚁𝙴𝙰𝙳𝙾𝚁, 𝙲𝚄𝙰𝙻𝚀𝚄𝙸𝙴𝚁 𝙵𝙰𝙻𝙻𝙰 𝙾 𝚂𝙸 𝚀𝚄𝙸𝙴𝚁𝙴𝚂 𝙰𝙶𝚁𝙴𝙶𝙰𝚁 𝙴𝙻 𝙱𝙾𝚃 𝙰 𝚃𝚄 𝙶𝚁𝚄𝙿𝙾, 𝙿𝚄𝙴𝙳𝙴𝚂 𝙷𝙰𝙱𝙻𝙰𝚁𝙻𝙴`*_\n\n *Barboza* : Wa.me/584146277368"
-await conn.sendFile(m.chat, 'https://qu.ax/LJEVX.jpg', 'thumbnail.jpg', txt_owner, m, null, rcanal)
+async function handler(m, { conn }) { 
+    let numcreador = '584146277368';
+    let ownerJid = numcreador + '@s.whatsapp.net';
+
+    let name = await conn.getName(ownerJid) || 'Barboza'; 
+    let about = (await conn.fetchStatus(ownerJid).catch(() => {}))?.status || 'Sin descripción';
+
+    let empresa = 'Barboza - Servicios Tecnológicos';
+
+    let vcard = `
+BEGIN:VCARD
+VERSION:3.0
+N:;${name};;;
+FN:${name}
+ORG:${empresa};
+TITLE:CEO & Fundador
+TEL;waid=${numcreador}:${new PhoneNumber('+' + numcreador).getNumber('international')}
+EMAIL:correo@empresa.com
+URL:https://www.tuempresa.com
+NOTE:${about}
+ADR:;;Dirección de tu empresa;;;;
+X-ABADR:ES
+X-ABLabel:Dirección Web
+X-ABLabel:Correo Electrónico
+X-ABLabel:Teléfono de contacto
+X-WA-BIZ-NAME:${name}
+X-WA-BIZ-DESCRIPTION:${about}
+END:VCARD`.trim();
+
+    let buttons = [
+        { buttonId: '.perfil', buttonText: { displayText: '📌 Perfil' }, type: 1 },
+        { buttonId: '.menu', buttonText: { displayText: '📜 Menú' }, type: 1 }
+    ];
+
+    let buttonMessage = {
+        contacts: { 
+            displayName: name, 
+            contacts: [{ vcard }]
+        },
+        caption: `👤 *${name}* - CEO & Fundador\n📝 *Descripción:* ${about}`,
+        footer: 'Barboza - Servicios Tecnológicos',
+        buttons: buttons,
+        headerType: 6 
+    };
+
+    await conn.sendMessage(m.chat, buttonMessage, { quoted: m });
 }
-handler.help = ['owner']
-handler.tags = ['main']
-handler.command = ['owner', 'creator', 'creador', 'dueño'] 
 
-export default handler
+handler.help = ['owner']; 
+handler.tags = ['main']; 
+handler.command = ['owner', 'creator', 'creador', 'dueño'];
+
+export default handler;
