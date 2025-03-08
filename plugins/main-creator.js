@@ -2,7 +2,7 @@
 import PhoneNumber from 'awesome-phonenumber';
 
 async function handler(m, { conn }) { 
-    let numcreador = '5804146277368';
+    let numcreador = '584146277368';
     let ownerJid = numcreador + '@s.whatsapp.net';
 
     let name = await conn.getName(ownerJid) || 'Deylin'; 
