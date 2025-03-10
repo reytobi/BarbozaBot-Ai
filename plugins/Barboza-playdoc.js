@@ -1,54 +1,34 @@
-import fetch from 'node-fetch';
+/* ౨ৎ ˖ ࣪⊹ 𝐁𝐲 𝐉𝐭𝐱𝐬 𐙚˚.ᡣ𐭩
 
-let handler = async (m, { conn, text }) => {
-    if (!text) {
-        await m.react('✖️');
-        return conn.reply(m.chat, `☁️ Ingresa un enlace de YouTube.`, m, fake);
-    }
+❀ Canal Principal ≽^•˕• ྀི≼
+https://whatsapp.com/channel/0029VaeQcFXEFeXtNMHk0D0n
 
-    try {
-        await m.react('🕒');
+❀ Canal Rikka Takanashi Bot
+https://whatsapp.com/channel/0029VaksDf4I1rcsIO6Rip2X
 
-        let api = await fetch(`https://dark-core-api.vercel.app/api/download/YTMP3?key=Izumi22&url=${encodeURIComponent(text)}`);
-        let json = await api.json();
+❀ Canal StarlightsTeam
+https://whatsapp.com/channel/0029VaBfsIwGk1FyaqFcK91S
 
-        if (!json.status || !json.download) {
-            await m.react('❌');
-            return conn.reply(
-                m.chat,
-                `《❌》No se pudo obtener el enlace de descarga. Verifica el enlace y vuelve a intentarlo.`,
-                m
-            );
-        }
+❀ HasumiBot FreeCodes 
+https://whatsapp.com/channel/0029Vanjyqb2f3ERifCpGT0W
+*/
 
-        let title = json.title || "Sin título";
-        let dl_url = json.download;
+// *𓍯𓂃𓏧♡ YTMP4*
 
-        await conn.sendMessage(
-            m.chat,
-            { 
-                audio: { url: dl_url }, 
-                fileName: `${title}.mp3`, 
-                mimetype: 'audio/mp4' 
-            },
-            { quoted: m }
-        );
+import axios from 'axios'
 
-        await m.react('✅');
+let HS = async (m, { conn, text }) => {
+if (!text)  return conn.reply(m.chat, `❀ Ingresa un link de youtube`, m)
 
-    } catch (error) {
-        console.error(error);
-        await m.react('❌');
-        conn.reply(
-            m.chat,
-            `《❌》Ocurrió un error al intentar descargar el audio. Por favor, verifica el enlace e inténtalo nuevamente.`,
-            m
-        );
-    }
-};
+try {
+let api = await axios.get(`https://api.agungny.my.id/api/youtube-video?url=${text}`)
+let json = await api.data
+let { id, image, title, downloadUrl:dl_url } = json.result
+await conn.sendMessage(m.chat, { video: { url: dl_url }, fileName: `${title}.mp4`, mimetype: 'video/mp4', caption: `` }, { quoted: m })
+} catch (error) {
+console.error(error)
+}}
 
-handler.help = ['ytmp3 *<url>*']
-handler.tags = ['dl']
-handler.command = ['ytmp3', 'fgmp3', 'yta'];
+HS.command = ['ytmp4', 'yta']
 
-export default handler;
+export default HS
