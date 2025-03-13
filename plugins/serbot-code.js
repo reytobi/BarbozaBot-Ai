@@ -91,6 +91,6 @@ break
 }}
 
 handler.tags = ['serbot']
-handler.help = ['sockets', 'deletesesion', 'pausarai']
+handler.help = ['deletesesion', 'pausarai']
 handler.command = ['deletesesion', 'deletebot', 'deletesession', 'deletesession', 'pausarai', 'pausarbot','sockets', 'socket']
 export default handler
