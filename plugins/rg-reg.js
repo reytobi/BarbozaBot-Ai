@@ -92,7 +92,7 @@ let chtxt = `👤 *𝚄𝚜𝚎𝚛* » ${m.pushName || 'Anónimo'}
 🍭 *𝙽𝚞𝚖𝚎𝚛𝚘 𝚍𝚎 𝚛𝚎𝚐𝚒𝚜𝚝𝚛𝚘* »
 ⤷ ${sn}`;
 
-    let channelID = 'https://whatsapp.com/channel/0029Vb8kvXUBfxnzYWsbS81I';
+    let channelID = '120363414007802886@newsletter';
         await conn.sendMessage(channelID, {
         text: chtxt,
         contextInfo: {
