@@ -43,7 +43,7 @@ let handler = async function (m, { conn, text, args, usedPrefix, command }) {
 
     let sn = createHash('md5').update(m.sender).digest('hex')
     let regbot = `┏━━━━━━━━━━━━━━━━━━⬣
-┃⋄ *🎩 𝐑𝐄𝐆𝐈𝐒𝐓𝐑𝐎 - 𝐂𝐑𝐎𝐖𝐁𝐎𝐓*
+┃⋄ *🎩 𝐑𝐄𝐆𝐈𝐒𝐓𝐑𝐎 - BARBOZA𝐁𝐎𝐓*
 ┗━━━━━━━━━━━━━━━━━━⬣\n`
     regbot += `•✩.･*:｡≻──── ⋆♡⋆ ────.•*:｡✩•\n`
     regbot += `*「💛」𝐍𝐨𝐦𝐛𝐫𝐞:* ${name}\n`
@@ -51,7 +51,7 @@ let handler = async function (m, { conn, text, args, usedPrefix, command }) {
     regbot += `•✩.･*:｡≻──── ⋆♡⋆ ────.•*:｡✩•\n`
     regbot += `*「🎀」𝐑𝐞𝐜𝐨𝐦𝐩𝐞𝐧𝐬𝐚𝐬:*\n> `
     regbot += `• 15 Estrellas 🌟\n> `
-    regbot += `• 5 CrowCoins 🪙\n> `
+    regbot += `• 5 Coins 🪙\n> `
     regbot += `• 245 Experiencia 💸\n> `
     regbot += `• 12 Tokens 💰\n`
     regbot += `꒷꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒦꒷꒷꒦꒷\n> `
@@ -62,7 +62,7 @@ let handler = async function (m, { conn, text, args, usedPrefix, command }) {
         contextInfo: {
             externalAdReply: {
                 title: '⊱『✅𝆺𝅥 𝗥𝗘𝗚𝗜𝗦𝗧𝗥𝗔𝗗𝗢(𝗔) 𝆹𝅥✅』⊰',
-                thumbnailUrl: 'https://i.ibb.co/GMTyKcN/file.jpg',
+                thumbnailUrl: 'https://i.ibb.co/tMKxRPVP/file.jpg',
                 mediaType: 1,
                 renderLargerThumbnail: true
             }
@@ -82,7 +82,7 @@ let handler = async function (m, { conn, text, args, usedPrefix, command }) {
                 containsAutoReply: true,
                 showAdAttribution: true,
                 mediaType: 1, 
-                thumbnailUrl: 'https://i.ibb.co/GMTyKcN/file.jpg' }}}, {quoted: m})
+                thumbnailUrl: 'https://i.ibb.co/tMKxRPVP/file.jpg' }}}, {quoted: m})
 */
 
 let chtxt = `👤 *𝚄𝚜𝚎𝚛* » ${m.pushName || 'Anónimo'}
