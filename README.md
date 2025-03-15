@@ -6,5 +6,4 @@
 584146277378
 
 ### "Disfruta de Bot Barboza Ai 
-
-![Menu Principa](https://qu.ax/LJEVX.jpg)
+(https://qu.ax/LJEVX.jpg)
