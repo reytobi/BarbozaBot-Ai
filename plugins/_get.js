@@ -10,7 +10,7 @@ let handler = async (m, { usedPrefix, command, text }) => {
     m.reply(fs.readFileSync('./plugins/' + text + '.js', 'utf-8'))
 }
 handler.help = ['getplugin'].map(v => v + ' <teks>')
-handler.command = /^(getplungi)$/i
+handler.command = /^(get|getplungis)$/i
 
 handler.rowner = true
 
