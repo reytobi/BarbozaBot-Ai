@@ -9,8 +9,8 @@ let handler = async (m, { usedPrefix, command, text }) => {
     if (!ar1.includes(text)) return m.reply(`'${text}' tidak ditemukan!\n\n${ar1.map(v => ' ' + v).join`\n`}`)
     m.reply(fs.readFileSync('./plugins/' + text + '.js', 'utf-8'))
 }
-handler.help = ['get'].map(v => v + ' <teks>')
-handler.command = /^(get)$/i
+handler.help = ['getplugin'].map(v => v + ' <teks>')
+handler.command = /^(getplungi)$/i
 
 handler.rowner = true
 
