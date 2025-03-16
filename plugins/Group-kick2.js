@@ -1,8 +1,6 @@
-
 import baileys from '@whiskeysockets/baileys'
 
 let areJidsSameUser = baileys.default
-
 let handler = async (m, { conn, participants, args, command }) => {
     let member = participants.map(u => u.id)
     let sum = args[0] ? args[0] : member.length
@@ -13,8 +11,13 @@ let handler = async (m, { conn, participants, args, command }) => {
         let users = m.isGroup ? participants.find(u => u.id == member[i]) : {}
         if ((typeof global.db.data.users[member[i]] === 'undefined' || global.db.data.users[member[i]].chat === 0) &&
             !users.isAdmin && !users.isSuperAdmin) {
-            total++
-            sider.push(member[i])
+            if (typeof global.db.data.users[member[i]] !== 'undefined' && global.db.data.users[member[i]].whitelist === false) {
+                total++
+                sider.push(member[i])
+            } else {
+                total++
+                sider.push(member[i])
+            }
         }
     }
 
@@ -23,12 +26,12 @@ let handler = async (m, { conn, participants, args, command }) => {
     switch (command) {
         case "fantasmas":
             if (total === 0) return conn.reply(m.chat, "🟢 Este grupo es activo, no hay fantasmas.", m)
-            await conn.reply(m.chat, `⚠️ Revisión de inactividad ⚠️\n\nGrupo: ${await conn.getName(m.chat)}\nMiembros: ${sum}\n\n👻 Lista de fantasmas:\n${sider.map(v => '👉 @' + v.replace(/@.+/, '')).join('\n')}`, null, { mentions: sider })
+            m.reply(⚠️ Revisión de inactividad ⚠️\n\nGrupo: ${await conn.getName(m.chat)}\nMiembros: ${sum}\n\n👻 Lista de fantasmas:\n${sider.map(v => '👉 @' + v.replace(/@.+/, '')).join('\n')}\n\n🔹 El bot solo cuenta mensajes desde que fue activado en este grupo., null, { mentions: sider })
             break
 
         case "kickfantasmas":
             if (total === 0) return conn.reply(m.chat, "🟢 Este grupo es activo, no hay fantasmas.", m)
-            await conn.reply(m.chat, `⚠️ Eliminación de inactivos ⚠️\n\nGrupo: ${await conn.getName(m.chat)}\nParticipantes: ${sum}\n\n👻 Fantasmas eliminados:\n${sider.map(v => '@' + v.replace(/@.+/, '')).join('\n')}`, null, { mentions: sider })
+            await m.reply(⚠️ Eliminación de inactivos ⚠️\n\nGrupo: ${await conn.getName(m.chat)}\nParticipantes: ${sum}\n\n👻 Fantasmas eliminados:\n${sider.map(v => '@' + v.replace(/@.+/, '')).join('\n')}\n\n🔹 El bot eliminará a los mencionados en 20 segundos y luego cada 10 segundos a uno., null, { mentions: sider })
             await delay(20000)
 
             let chat = global.db.data.chats[m.chat]
