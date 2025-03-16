@@ -178,6 +178,6 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
   }
 };
 
-handler.command = /^(play2|ytmp4|ytv|ytmp3)$/i;
+handler.command = /^(play2|ytmp4|ytv)$/i;
 
 export default handler;
