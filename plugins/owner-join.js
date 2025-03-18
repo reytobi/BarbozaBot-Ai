@@ -45,7 +45,7 @@ fui invitado por *${m.name}*`, m, {
 
 para ver el Menu del bot escribe
 
-*${usedPrefix}help*
+*${usedPrefix}. menu*
 
 @${conn.user.jid.split('@')[0]} saldrá automáticamente después de \n\n${msToDate(global.db.data.chats[res].expired - now)}`
   await conn.reply(res, mes, m, {
