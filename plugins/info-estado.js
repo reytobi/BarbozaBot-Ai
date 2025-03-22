@@ -32,7 +32,7 @@ let handler = async (m, { conn, isRowner }) => {
 
 handler.help = ['status'];
 handler.tags = ['info'];
-handler.command = /^(estado|status|estate|state|stado|stats)$/i;
+handler.command = /^(estado|info|estate|state|stado|stats)$/i;
 handler.register = true;
 export default handler;
 
