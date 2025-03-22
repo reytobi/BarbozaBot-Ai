@@ -32,6 +32,15 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       global.opts['autoread'] = isEnable
       break
 
+      case 'antispam':
+      isAll = true
+      if (!isOwner) {
+      global.dfail('owner', m, conn)
+      throw false
+      }
+      bot.antiSpam = isEnable
+      break
+
   case 'audios':
     case 'audiosbot':
     case 'botaudios':
