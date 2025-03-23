@@ -77,7 +77,7 @@ var canal = 'https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18'
 let canal2 = 'https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18'
 var git = '' 
 var youtube = '' 
-var github = '' 
+var github = 'https://github.com/Elrebelde1/BarbozaBot-Ai' 
 let correo = 'sebastianbarboza742@gmail.com'
 
 global.redes = [canal, canal2, git, youtube, github, correo].getRandom()
