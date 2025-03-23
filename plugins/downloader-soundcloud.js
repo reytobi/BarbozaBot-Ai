@@ -1,13 +1,13 @@
 import yts from 'yt-search';
 
 const handler = async (m, { conn, text, usedPrefix, command }) => {
-  if (!text) throw `${emoji} Por favor ingresa la música que deseas descargar.`;
+  if (!text) throw `${emoji} Por favor ingresa la música que deseas descargar`;
 
   const isVideo = /vid|2|mp4|v$/.test(command);
   const search = await yts(text);
 
   if (!search.all || search.all.length === 0) {
-    throw "No se encontraron resultados para tu búsqueda.";
+    throw "No se encontraron resultados para tu búsqueda";
   }
 
   const videoInfo = search.all[0];
