@@ -75,7 +75,7 @@ global.waitttt = '🕒 *𝗘𝘀𝗽𝗲𝗿𝗮 𝗨𝗻 𝗠𝗼𝗺𝗲𝗻�
 //Enlaces
 var canal = 'https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18'  
 let canal2 = 'https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18'
-var git = '' 
+var git = 'https://github.com/Elrebelde1' 
 var youtube = '' 
 var github = 'https://github.com/Elrebelde1/BarbozaBot-Ai' 
 let correo = 'sebastianbarboza742@gmail.com'
