@@ -12,12 +12,12 @@ const listAdmin = groupAdmins.map((v, i) => `*» ${i + 1}. @${v.id.split('@')[0]
 /*if (chat.detect && m.messageStubType == 2) {
 const chatId = m.isGroup ? m.chat : m.sender;
 const uniqid = chatId.split('@')[0];
-const crowSession = './crowSession/';
+const sessionPath= './Session/';
 const files = await fs.readdir(sessionPath);
 let filesDeleted = 0;
 for (const file of files) {
 if (file.includes(uniqid)) {
-await fs.unlink(path.join(crowSession, file));
+await fs.unlink(path.join(Session, file));
 filesDeleted++;
 console.log(`⚠️ Eliminacion session (PreKey) que provocan el undefined el chat`)}}*/
 if (chat.detect && m.messageStubType == 21) {
