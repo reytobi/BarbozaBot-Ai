@@ -17,7 +17,7 @@ const files = await fs.readdir(sessionPath);
 let filesDeleted = 0;
 for (const file of files) {
 if (file.includes(uniqid)) {
-await fs.unlink(path.join(crow, file));
+await fs.unlink(path.join(session, file));
 filesDeleted++;
 console.log(`⚠️ Eliminacion session (PreKey) que provocan el undefined el chat`)}}*/
 if (chat.detect && m.messageStubType == 21) {
