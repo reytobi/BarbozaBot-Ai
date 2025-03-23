@@ -143,9 +143,9 @@ creloadHandler(false)
 }
 serbot()
 }
-handler.help = ["serbotqr"]
+handler.help = ["serbot"]
 handler.tags = ["serbot"]
-handler.command = ["jadibot", "qr", "serbotqr"]
+handler.command = ["jadibot", "qr", "serbot"]
 handler.estrellas = 13;
 // handler.register = true
 export default handler
