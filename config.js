@@ -35,7 +35,7 @@ global.namechannel = 'BOT BARBOZA AI🌪️'
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.catalogo = fs.readFileSync('./storage/img/catalogo.png')
-global.imagen2 = fs.readFileSync('./storage/img/Menu2.jpg')
+global.imagen2 = fs.readFileSync('https://qu.ax/LJEVX.jpg')
 global.miniurl = fs.readFileSync('./storage/img/miniurl.jpg')
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
