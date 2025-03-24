@@ -52,7 +52,7 @@ global.icono = [
         description: 'support group',
         title: packname,
         body: 'grupo de soporte',
-        thumbnailUrl: imagen2,
+        thumbnailUrl: 'imagen2',
         sourceUrl: group,
       }
     }
