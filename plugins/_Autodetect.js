@@ -27,39 +27,39 @@ END:VCARD`
   let pp = await conn.profilePictureUrl(m.chat, 'image').catch(_ => null) || 'https://files.catbox.moe/xr2m6u.jpg'
 
   // Diseños con estilo Astro-Bot
-  let nombre = `╔═══【 🚀 ASTRO-BOT ALERTA 】═══╗
+  let nombre = `╔═══【 🚀 BARBOZA-BOT ALERTA 】═══╗
 ║ *${usuario}* ha reconfigurado el cosmos del grupo.
 ║ ✨ Nuevo nombre detectado:
 ║   » *<${m.messageStubParameters[0]}>*
 ╚════════════════════════════╝`
   
-  let foto = `╔═══【 🪐 ASTRO-BOT OBSERVA 】═══╗
+  let foto = `╔═══【 🪐 BARBOZA-BOT OBSERVA 】═══╗
 ║ *${usuario}* ha reprogramado la imagen del universo.
 ║ 📸 Nueva imagen aplicada al grupo.
 ╚════════════════════════════╝`
   
-  let edit = `╔═══【 💫 ASTRO-BOT CONFIG 】═══╗
+  let edit = `╔═══【 💫 BARBOZA-BOT CONFIG 】═══╗
 ║ *${usuario}* ha modificado los protocolos.
 ║ Configuración actual: ${m.messageStubParameters[0] == 'on' ? 'Solo administradores' : 'Todos'}
 ╚════════════════════════════╝`
   
-  let newlink = `╔═══【 🔗 ASTRO-BOT LINK RESET 】═══╗
+  let newlink = `╔═══【 🔗 BARBOZA-BOT LINK RESET 】═══╗
 ║ El portal ha sido reiniciado por:
 ║   » *${usuario}*
 ╚════════════════════════════╝`
   
-  let status = `╔═══【 🔒/🔓 ASTRO-BOT STATUS 】═══╗
+  let status = `╔═══【 🔒/🔓 BARBOZA-BOT STATUS 】═══╗
 ║ El grupo se encuentra ahora ${m.messageStubParameters[0] == 'on' ? '*cerrado 🔒*' : '*abierto 🔓*'}.
 ║ Acción realizada por: *${usuario}*
 ║ Configuración: ${m.messageStubParameters[0] == 'on' ? 'Solo administradores' : 'Todos'}
 ╚════════════════════════════╝`
   
-  let admingp = `╔═══【 👑 ASTRO-BOT ADMIN 】═══╗
+  let admingp = `╔═══【 👑 BARBOZA-BOT ADMIN 】═══╗
 ║ *${m.messageStubParameters[0].split`@`[0]}* ha sido ascendido al Olimpo de los administradores.
 ║ Operación ejecutada por: *${usuario}*
 ╚════════════════════════════╝`
   
-  let noadmingp = `╔═══【 ⚠️ ASTRO-BOT REMOCIÓN 】═══╗
+  let noadmingp = `╔═══【 ⚠️ BARBOZA-BOT REMOCIÓN 】═══╗
 ║ *${m.messageStubParameters[0].split`@`[0]}* ha descendido de su trono de administrador.
 ║ Acción realizada por: *${usuario}*
 ╚════════════════════════════╝`
