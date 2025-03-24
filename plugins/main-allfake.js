@@ -7,7 +7,7 @@ import moment from 'moment-timezone'
 const { generateWAMessageFromContent, prepareWAMessageMedia, proto } = pkg
 
 var handler = m => m
-handler.all = async function (m) {
+handler.all = async function (m) 
 
 global.getBuffer = async function getBuffer(url, options) {
 try {
