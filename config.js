@@ -14,7 +14,7 @@ global.owner = [
   ['5216671548329', 'legna',true], 
   ['50557865603', 'Willzek',true],
   ['50488198573', '𝑫𝒆𝒚𝒍𝒊𝒏',true],
-  ['5212441357601', 'emma',true], // Abran paso al Desarrollador más Chingón que encontramos 
+  ['5212441357601', 'Emma (Violets Version)',true], // Abran paso al Desarrollador más Chingón que encontramos 
   ['5216633900512', 'ʙʀᴀʏᴀɴ ᴏғᴄ',true],
 ]
 
