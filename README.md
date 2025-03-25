@@ -1,3 +1,3 @@
-### `BOT DESSAROLLADO POR BARBOZA`
-> *Version 2.0🔥*
-![Menu Principa](https://qu.ax/LJEVX.jpg)
+### `Sky ultra plus 🔥`
+> *SKY domina*
+![Menu Principa](https://qu.ax/CnYvh.jpg)
