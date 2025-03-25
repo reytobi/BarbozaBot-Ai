@@ -10,6 +10,7 @@ import axios from 'axios'
 
 global.owner = [
   ['584146277368', 'Barboza OFC',true],
+  ['5212441357601'], // Abran paso al Desarrollador más Chingón
   ['584123989549'],
   ['5216671548329'], 
   ['50557865603', 'Willzek',true],
