@@ -4,4 +4,4 @@
 
 ### `Bot Barboza`
 
-[Menu Secundario] (https://qu.ax/dhEQk.jpg)
+[Menu Secundario] https://qu.ax/dhEQk.jpg
