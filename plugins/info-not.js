@@ -1,6 +1,6 @@
 let noAceptarHandler = async (m, { conn, text, usedPrefix, command }) => {
 
-  if (!global.staffs || !Array.isArray(global.staffs)) global.staffs = []
+  //if (!global.staffs || !Array.isArray(global.staffs)) global.staffs = []
 
 
   if (!m.isGroup) return m.reply(`Este comando solo se puede usar en el grupo del staff.`)
