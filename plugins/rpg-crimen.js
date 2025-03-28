@@ -1,5 +1,3 @@
-let cooldowns = {}
-
 let handler = async (m, { conn, text, command, usedPrefix }) => {
   let users = global.db.data.users
   let senderId = m.sender
