@@ -20,7 +20,7 @@ let sugerirHandler = async (m, { conn, text, usedPrefix }) => {
   await conn.sendMessage(ownerJid, { text: teks, mentions: [m.sender] })
 
 
-  let staffGroup = '120363416199047560@g.us' 
+  let staffGroup = '120363401544736737@g.us' 
   await conn.sendMessage(staffGroup, { text: teks, mentions: [m.sender] })
 
 
