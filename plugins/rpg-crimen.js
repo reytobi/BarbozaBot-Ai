@@ -5,13 +5,12 @@ let handler = async (m, { conn, text, command, usedPrefix }) => {
   let senderName = conn.getName(senderId);
 
   let tiempoEspera = 5 * 60;
-  if (cooldowns[m.sender] && Date.now() - cooldowns[m.sender] < tiempoEspera * 1000) {
-    let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[m.sender] + tiempoEspera * 1000 - Date.now()) / 1000));
-    m.reply(`🍭 Ya has cometido un Crimen recientemente, espera *⏱ ${tiempoRestante}* para cometer tu próximo Crimen y evitar ser atrapado.`);
-    return;
+  if (cooldowns[senderId] && Date.now() - cooldowns[senderId] < tiempoEspera * 1000) {
+    let tiempoRestante = segundosAHMS(Math.ceil((cooldowns[senderId] + tiempoEspera * 1000 - Date.now()) / 1000));
+    return m.reply(`🍭 Ya has cometido un Crimen recientemente, espera *⏱ ${tiempoRestante}* para cometer tu próximo Crimen y evitar ser atrapado.`);
   }
 
-  cooldowns[m.sender] = Date.now();
+  cooldowns[senderId] = Date.now();
 
   let senderLimit = users[senderId].limit || 0;
 
@@ -36,33 +35,30 @@ let handler = async (m, { conn, text, command, usedPrefix }) => {
       users[randomUserId].limit = Math.max(randomUserLimit - amountTaken, 0);
       conn.sendMessage(m.chat, {
         text: `🍭 ¡Lograste cometer tu crimen con éxito!, acabas de robar *${amountTaken} 🍭 Dulces* a @${randomUserId.split("@")[0]}\n\nSe suman *+${amountTaken} 🍭 Dulces* a ${senderName}.`,
-        contextInfo: {
-          mentionedJid: [randomUserId],
-        }
+        contextInfo: { mentionedJid: [randomUserId] }
       }, { quoted: m });
       break;
 
     case 1:
-      let amountSubtracted = Math.min(Math.floor(Math.random() * (senderLimit - minAmount + 1)) + minAmount, maxAmount);
+      let amountSubtracted = Math.min(Math.floor(Math.random() * (senderLimit - minAmount + 1)) + minAmount, senderLimit);
       users[senderId].limit = Math.max(senderLimit - amountSubtracted, 0);
       m.reply(`🍭 No fuiste cuidadoso y te atraparon mientras cometías tu crimen, se restaron *-${amountSubtracted} 🍬 Dulces* a ${senderName}.`);
       break;
 
     case 2:
-      let smallAmountTaken = Math.min(Math.floor(Math.random() * (randomUserLimit / 2 - minAmount + 1)) + minAmount, maxAmount);
+      let smallAmountTaken = Math.min(Math.floor(Math.random() * (randomUserLimit / 2 - minAmount + 1)) + minAmount, randomUserLimit);
       users[senderId].limit = Math.min(senderLimit + smallAmountTaken, maxAmount);
       users[randomUserId].limit = Math.max(randomUserLimit - smallAmountTaken, 0);
       conn.sendMessage(m.chat, {
         text: `🍭 Lograste cometer tu crimen con éxito, pero te descubrieron y solo lograste tomar *${smallAmountTaken} 🍬 Dulces* de @${randomUserId.split("@")[0]}\n\nSe suman *+${smallAmountTaken} 🍬 Dulces* a ${senderName}.`,
-        contextInfo: {
-          mentionedJid: [randomUserId],
-        }
+        contextInfo: { mentionedJid: [randomUserId] }
       }, { quoted: m });
       break;
   }
 
   global.db.write();
 }
+
 handler.tags = ['rpg'];
 handler.help = ['crimen'];
 handler.command = ['crimen', 'crime'];
@@ -75,6 +71,6 @@ function segundosAHMS(segundos) {
   let horas = Math.floor(segundos / 3600);
   let minutos = Math.floor((segundos % 3600) / 60);
   let segundosRestantes = segundos % 60;
-  
+
   return `${minutos} minutos y ${segundosRestantes} segundos`;
 }
