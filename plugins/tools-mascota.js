@@ -1,56 +1,143 @@
-const mascotas = {
-    "Perro": { emoji: "🐶", categoria: "Común", precio: 50, vida: 100, xp: 10, habilidad: "Lealtad (+5% XP en batallas)" },
-    "Gato": { emoji: "🐱", categoria: "Común", precio: 60, vida: 90, xp: 12, habilidad: "Agilidad (+5% evasión en batalla)" },
-    "Conejo": { emoji: "🐰", categoria: "Común", precio: 55, vida: 95, xp: 11, habilidad: "Velocidad (+10% ataque en primera ronda)" },
-    
-    "Zorro": { emoji: "🦊", categoria: "Rara", precio: 120, vida: 130, xp: 20, habilidad: "Sigilo (+10% probabilidad de esquivar ataques)" },
-    "Lobo": { emoji: "🐺", categoria: "Rara", precio: 150, vida: 140, xp: 22, habilidad: "Liderazgo (+5% ataque por cada victoria)" },
-    "Tortuga": { emoji: "🐢", categoria: "Rara", precio: 100, vida: 200, xp: 18, habilidad: "Defensa (+15% reducción de daño)" },
+📜 *Código del comando daragua:*
 
-    "Águila": { emoji: "🦅", categoria: "Épica", precio: 250, vida: 160, xp: 30, habilidad: "Vista Aguda (+20% probabilidad de crítico)" },
-    "Serpiente": { emoji: "🐍", categoria: "Épica", precio: 270, vida: 150, xp: 32, habilidad: "Veneno (Resta -5 de vida al enemigo por turno)" },
-    "León": { emoji: "🦁", categoria: "Épica", precio: 300, vida: 180, xp: 35, habilidad: "Furia (+10% ataque cuando su vida está por debajo del 50%)" },
+```case 'daragua': {
+    try {
+        const fs = require("fs");
+        const rpgFile = "./rpg.json";
+        const userId = msg.key.participant || msg.key.remoteJid;
+        const cooldownTime = 5 * 60 * 1000; // 5 minutos de espera
 
-    "Dragón": { emoji: "🐉", categoria: "Legendaria", precio: 500, vida: 300, xp: 50, habilidad: "Llamarada (Inflige daño de fuego extra en batalla)" },
-    "Unicornio": { emoji: "🦄", categoria: "Legendaria", precio: 450, vida: 280, xp: 48, habilidad: "Curación (Recupera 10% de vida cada turno)" },
-    "Demonio": { emoji: "👹", categoria: "Legendaria", precio: 600, vida: 320, xp: 55, habilidad: "Caos (Ignora defensas enemigas)" }
-};
+        // 💧 Reacción antes de procesar
+        await sock.sendMessage(msg.key.remoteJid, { react: { text: "💧", key: msg.key } });
 
-let handler = async (m, { command, args, usedPrefix }) => {
-    let user = global.db.data.users[m.sender];
-    if (!user) return m.reply("❌ No estás registrado en el sistema.");
-
-    switch (command) {
-        case 'tiendamascotas': {
-            let lista = Object.keys(mascotas)
-                .map(m => `${mascotas[m].emoji} *${m}* - ${mascotas[m].categoria}\n💛 Vida: ${mascotas[m].vida} | 🎖️ XP: ${mascotas[m].xp}\n🍬 Precio: ${mascotas[m].precio}\n🛠️ Habilidad: ${mascotas[m].habilidad}\n`)
-                .join('\n──────────────────\n');
-            
-            return m.reply(`🐾 *Tienda de Mascotas*\n\n${lista}\n\nUsa *${usedPrefix}comprarmascota [nombre]* para comprar.`);
+        // 📂 Verificar si el archivo existe
+        if (!fs.existsSync(rpgFile)) {
+            return sock.sendMessage(msg.key.remoteJid, { text: "❌ *Los datos del RPG no están disponibles.*" }, { quoted: msg });
         }
 
-        case 'comprarmascota': {
-            let nombre = args.join(' ').trim();
-            if (!mascotas[nombre]) return m.reply("❌ Mascota no encontrada. Usa *tiendamascotas* para ver la lista.");
+        // 📥 Cargar datos del usuario
+        let rpgData = JSON.parse(fs.readFileSync(rpgFile, "utf-8"));
 
-            let mascotaSeleccionada = mascotas[nombre];
-
-            if (user.dulces < mascotaSeleccionada.precio) return m.reply("❌ No tienes suficientes 🍬 dulces.");
-            if (user.mascota) return m.reply("❌ Ya tienes una mascota. Usa *vendermascota* para cambiar.");
-
-            user.dulces -= mascotaSeleccionada.precio;
-            user.mascota = { 
-                nombre, 
-                emoji: mascotaSeleccionada.emoji, 
-                vida: mascotaSeleccionada.vida, 
-                xp: mascotaSeleccionada.xp, 
-                habilidad: mascotaSeleccionada.habilidad 
-            };
-
-            return m.reply(`🎉 ¡Has comprado a ${mascotaSeleccionada.emoji} *${nombre}*! 🐾\n💛 Vida: ${mascotaSeleccionada.vida}\n🎖️ XP: ${mascotaSeleccionada.xp}\n🛠️ Habilidad: ${mascotaSeleccionada.habilidad}`);
+        // ❌ Verificar si el usuario está registrado
+        if (!rpgData.usuarios[userId]) {
+            return sock.sendMessage(msg.key.remoteJid, { 
+                text: `❌ *No tienes una cuenta registrada en el gremio Azura Ultra.*\n📜 Usa \`${global.prefix}rpg <nombre> <edad>\` para registrarte.` 
+            }, { quoted: msg });
         }
+
+        let usuario = rpgData.usuarios[userId];
+
+        // ❌ Verificar si el usuario tiene mascota
+        if (!usuario.mascotas || usuario.mascotas.length === 0) {
+            return sock.sendMessage(msg.key.remoteJid, { 
+                text: `❌ *No tienes ninguna mascota.*\n📜 Usa \`${global.prefix}tiendamascotas\` para comprar una.` 
+            }, { quoted: msg });
+        }
+
+        let mascota = usuario.mascotas[0]; // Se asume que la primera mascota es la principal
+
+        // 🚑 Verificar si la mascota tiene 0 de vida
+        if (mascota.vida <= 0) {
+            return sock.sendMessage(msg.key.remoteJid, { 
+                text: `🚑 *¡No puedes dar agua a tu mascota!*\n\n🔴 *${mascota.nombre} tiene 0 de vida.*\n📜 Usa \`${global.prefix}curar\` para recuperarla.` 
+            }, { quoted: msg });
+        }
+
+        // 🕒 Verificar cooldown
+        let tiempoActual = Date.now();
+        if (mascota.cooldowns?.daragua && tiempoActual - mascota.cooldowns.daragua < cooldownTime) {
+            let tiempoRestante = ((mascota.cooldowns.daragua + cooldownTime - tiempoActual) / (60 * 1000)).toFixed(1);
+            return sock.sendMessage(msg.key.remoteJid, { text: `⏳ *Debes esperar ${tiempoRestante} minutos antes de volver a usar este comando.*` }, { quoted: msg });
+        }
+
+        // 🎖️ **Generar recompensas aleatorias**
+        let diamantesGanados = Math.floor(Math.random() * (100 - 1 + 1)) + 1; // Entre 1 y 100
+        let xpGanada = Math.floor(Math.random() * (1000 - 200 + 1)) + 200; // Entre 200 y 1000
+
+        // 💰 **Incrementar experiencia y diamantes**
+        usuario.diamantes += diamantesGanados;
+        mascota.experiencia += xpGanada;
+
+        // ❤️ Reducir vida aleatoriamente entre 5 y 20 puntos
+        let vidaPerdida = Math.floor(Math.random() * (20 - 5 + 1)) + 5;
+        mascota.vida = Math.max(0, mascota.vida - vidaPerdida);
+
+        // 🕒 **Guardar cooldown**
+        if (!mascota.cooldowns) mascota.cooldowns = {};
+        mascota.cooldowns.daragua = tiempoActual;
+
+        // 💦 **Textos aleatorios personalizados con recompensas**
+        const textos = [
+            `💧 *${mascota.nombre} bebió agua fresca y se siente revitalizado.*  
+💎 *${diamantesGanados} Diamantes ganados*  
+✨ *${xpGanada} XP obtenidos*`,
+            `🌊 *Un trago de agua y ${mascota.nombre} está lleno de energía.*  
+💎 *${diamantesGanados} Diamantes ganados*  
+✨ *${xpGanada} XP obtenidos*`,
+            `🏞️ *${mascota.nombre} se refrescó con agua y está más feliz que nunca.*  
+💎 *${diamantesGanados} Diamantes ganados*  
+✨ *${xpGanada} XP obtenidos*`,
+            `🐾 *${mascota.nombre} disfrutó de una buena hidratación y ahora está más activo.*  
+💎 *${diamantesGanados} Diamantes ganados*  
+✨ *${xpGanada} XP obtenidos*`
+        ];
+
+        // 📢 **Enviar mensaje con XP y Diamantes**
+        await sock.sendMessage(msg.key.remoteJid, { 
+            text: textos[Math.floor(Math.random() * textos.length)] 
+        }, { quoted: msg });
+
+        // 🌟 **Incrementar niveles aleatorios en habilidades**
+        let habilidades = Object.keys(mascota.habilidades);
+        if (habilidades.length > 0) {
+            let habilidadSubida = habilidades[Math.floor(Math.random() * habilidades.length)];
+            if (Math.random() < 0.5) { // 50% de probabilidad de mejorar una habilidad
+                mascota.habilidades[habilidadSubida].nivel += 1;
+
+                await sock.sendMessage(msg.key.remoteJid, { 
+                    text: `🌟 *¡${mascota.nombre} ha mejorado su habilidad!* 🎯\n🔹 *${habilidadSubida}: Nivel ${mascota.habilidades[habilidadSubida].nivel}*`
+                }, { quoted: msg });
+            }
+        }
+
+        // 📊 **Actualizar y manejar Rangos**
+        const rangosMascota = [
+            { nivel: 1, rango: "🐣 Principiante" },
+            { nivel: 10, rango: "🐾 Aprendiz" },
+            { nivel: 20, rango: "🦴 Experto" },
+            { nivel: 30, rango: "🛡️ Guardián" },
+            { nivel: 40, rango: "🐺 Alfa" },
+            { nivel: 50, rango: "🏆 Leyenda" },
+            { nivel: 60, rango: "🔥 Divino" },
+            { nivel: 70, rango: "🐉 Mítico" },
+            { nivel: 80, rango: "🚀 Titán Supremo" }
+        ];
+        let rangoAnterior = mascota.rango;
+        mascota.rango = rangosMascota.reduce((acc, curr) => (mascota.nivel >= curr.nivel ? curr.rango : acc), mascota.rango);
+
+        if (mascota.rango !== rangoAnterior) {
+            await sock.sendMessage(msg.key.remoteJid, { 
+                text: `🎖️ *¡Tu mascota ${mascota.nombre} ha subido de rango a ${mascota.rango}!* 🚀`
+            }, { quoted: msg });
+        }
+
+        // 📊 **Verificar si la mascota sube de nivel**
+        let xpMaxActual = mascota.nivel === 1 ? 500 : mascota.nivel * 1200;
+        while (mascota.experiencia >= xpMaxActual && mascota.nivel < 80) {
+            mascota.experiencia -= xpMaxActual;
+            mascota.nivel += 1;
+            xpMaxActual = mascota.nivel * 1200;
+            mascota.xpMax = xpMaxActual;
+
+            await sock.sendMessage(msg.key.remoteJid, { 
+                text: `🎉 *¡Felicidades! Tu mascota ${mascota.nombre} ha subido de nivel.* 🏆\n🐾 *Nuevo Nivel:* ${mascota.nivel}\n✨ *Experiencia:* ${mascota.experiencia} / ${xpMaxActual} XP`
+            }, { quoted: msg });
+        }
+
+        // 📂 Guardar cambios
+        fs.writeFileSync(rpgFile, JSON.stringify(rpgData, null, 2));
+
+    } catch (error) {
+        console.error("❌ Error en el comando .daragua:", error);
     }
-};
-
-handler.command = /^(tiendamascotas|comprarmascota)$/i;
-export default handler;
+    break;```
