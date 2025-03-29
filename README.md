@@ -4,4 +4,4 @@
 </p>
 <h1>Barboza Bot</h1>
 
-<h1>Mejor Bot</h1>
+<h1>https://qu.ax/CnYvh.jpg</h1>
