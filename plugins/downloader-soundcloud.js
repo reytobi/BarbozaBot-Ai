@@ -1,7 +1,5 @@
 import yts from 'yt-search';
 
-let emojis = '🍁'
-
 const handler = async (m, { conn, text, usedPrefix, command }) => {
   if (!text) throw `${emoji} Por favor ingresa la música que deseas descargar.`;
 
@@ -11,6 +9,8 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
   if (!search.all || search.all.length === 0) {
     throw "No se encontraron resultados para tu búsqueda.";
   }
+
+let emojis = '🍁' 
 
   const videoInfo = search.all[0];
   const body = `「✦」ძᥱsᥴᥲrgᥲᥒძ᥆ *<${videoInfo.title}>*\n\n> ✦ ᥴᥲᥒᥲᥣ » *${videoInfo.author.name || 'Desconocido'}*\n*◆━━━━━━◆✰◆━━━━━━◆*\n> ✰ ᥎іs𝗍ᥲs » *${videoInfo.views}*\n*◆━━━━━━◆✰◆━━━━━━◆*\n> ⴵ ძᥙrᥲᥴі᥆ᥒ » *${videoInfo.timestamp}*\n*◆━━━━━━◆✰◆━━━━━━◆*\n> ✐ ⍴ᥙᑲᥣіᥴᥲძ᥆ » *${videoInfo.ago}*\n*◆━━━━━━◆✰◆━━━━━━◆*\n> 🜸 ᥣіᥒk » ${videoInfo.url}\n`;
