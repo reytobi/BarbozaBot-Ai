@@ -180,8 +180,8 @@ let handler = async (m, { conn, usedPrefix: _p, __dirname }) => {
       },
     ];
 
-    let img = 'https://i.ibb.co/PzxX7VsJ/file.jpg';
-    await m.react('🌪️');
+    let img = 'https://qu.ax/Mvhfa.jpg';
+    await m.react('🍁');
 
     await conn.sendMessage(
       m.chat,
