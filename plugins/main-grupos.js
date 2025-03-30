@@ -1,26 +1,27 @@
-import fetch from 'node-fetch'
-let handler  = async (m, { conn, usedPrefix, command }) => {
+import fetch from 'node-fetch';
 
-let grupos = `*Hola!, te invito a unirte a los grupos oficiales del Bot para convivir con la comunidad* ⭐
+let handler = async (m, { conn, usedPrefix, command }) => {
+    let grupos = "*Hola!, te invito a unirte a los grupos oficiales del Bot para convivir con la comunidad* ⭐\n\n" +
+                 "1-Barboza\n" +
+                 "*✰* https://chat.whatsapp.com/HAt711AdgXFG1BI9FIACKr" +
+                 "*─ׄ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׄ*\n\n" +
+                 "➠ Enlace anulado? entre aquí! \n\n" +
+                 "⭐ Canal :\n" +
+                 "*✰*https://chat.whatsapp.com/HAt711AdgXFG1BI9FIACKr" +
+                 "> By Barboza";
 
-1-Bot Barboza
-*✰* https://chat.whatsapp.com/GB1m5mhAUsNF0hSKQ508ID
+    // Asegúrate de definir 'imagen2' correctamente antes de usarlo
+    let imagen2 = 'https://qu.ax/Mvhfa.jpg';
 
-*─ׄ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׄ*
+    // Define los emojis que quieres usar
+    let emojis = '🍁';
 
-➠ Enlace anulado? entre aquí! 
-
-⭐ Canal :
-*✰* https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18
-
-> By Barboza Bot`
-
-await conn.sendFile(m.chat, imagen2, "ian.jpg", grupos, m, null, rcanal)
-
-await m.react(emojis)
-
+    await conn.sendFile(m.chat, imagen2, "ian.jpg", grupos, m, null, rcanal);
+    await m.react(emojis);
 }
-handler.help = ['grupos']
-handler.tags = ['main']
-handler.command = ['grupos', 'iangrupos', 'gruposian']
-export default handler
+
+handler.help = ['grupos'];
+handler.tags = ['main'];
+handler.command = ['grupos', 'iangrupos', 'gruposian'];
+
+export default handler;
