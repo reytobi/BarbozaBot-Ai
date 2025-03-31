@@ -1,6 +1,3 @@
-> *Bot Barboza Ai*
-![Menu Principal](https://qu.ax/Vqqdk.mp4)
-
 
 ### `Sky ultra plus 🔥`
 > *SKY domina*
