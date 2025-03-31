@@ -1,4 +1,4 @@
-> *Bienvenido al repositorio oficial de bot Barboza-Ai 
+> *Bot Barboza Ai*
 ![Menu Principal](https://qu.ax/Vqqdk.mp4)
 
 
