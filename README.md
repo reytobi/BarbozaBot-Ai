@@ -17,7 +17,7 @@
 [Mediahub 👑](https://Wa.me/51935848195)
 
 
-[Legna](https://Wa.me/526671548329)
+[José](https://Wa.me/584245610338)
 
 
 [Willzek 🎩](https://Wa.me/50557865603)
