@@ -12,7 +12,7 @@
 🐉 Comando Sugerido:
 > ${text}`
 
-    await conn.reply('5804246582666@s.whatsapp.net', m.quoted ? teks + m.quoted.text : teks, m, { mentions: conn.parseMention(teks) })
+    await conn.reply('584146277368@s.whatsapp.net', m.quoted ? teks + m.quoted.text : teks, m, { mentions: conn.parseMention(teks) })
 
     m.reply('☁️ La sugerencia se envió a mi propietario🖥️.')
 }
