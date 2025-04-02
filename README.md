@@ -27,3 +27,5 @@
 
 
 [Emma](https://Wa.me/522441357601)
+
+## **Hello user, thank you for supporting this project. This won't last forever. **
