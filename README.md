@@ -25,7 +25,4 @@
 
 [Ivan](https://Wa.me/59169739411)
 
-
-[Emma](https://Wa.me/522441357601)
-
 ## **Hello user, thank you for supporting this project. This won't last forever.**
