@@ -1,5 +1,3 @@
-codigo mejorado por barboza
-
 import axios from "axios";
 
 let handler = async (m, { conn, args }) => {
@@ -19,7 +17,7 @@ let handler = async (m, { conn, args }) => {
         .map((k, i) => `*${i + 1}.* @${k.split("@")[0]}`)
         .join("\n") || "No hay usuarios en línea en este momento.";
 
-    const imgUrl = "https://files.catbox.moe/y4l6ec.jpg";
+    const imgUrl = "https://qu.ax/Mvhfa.jpg";
     const responseImg = await axios.get(imgUrl, {
       responseType: "arraybuffer",
     });
