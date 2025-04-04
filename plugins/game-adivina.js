@@ -47,7 +47,7 @@ const banderas = [
   { pais: "Kenia", emoji: "🇰🇪" },
   { pais: "Egipto", emoji: "🇪🇬" },
   { pais: "Marruecos", emoji: "🇲🇦" },
-  { pais: "Argelia", emoji: "🇩🇿" }, 
+  { pais: "Argelia", emoji: "🇩🇿" },
   { pais: "Australia", emoji: "🇦🇺" },
   { pais: "Nueva Zelanda", emoji: "🇳🇿" },
   { pais: "Fiyi", emoji: "🇫🇯" },
@@ -66,7 +66,7 @@ function elegirBanderaAleatoria() {
 
 let handler = async (m, { conn, usedPrefix }) => {
   if (juegoBanderas.has(m.sender)) {
-    return conn.sendMessage(m.chat, { text: "Ya tienes un juego en curso. ¡Responde primero!" }, { quoted: m });
+    juegoBanderas.delete(m.sender);
   }
   const seleccionada = elegirBanderaAleatoria();
   juegoBanderas.set(m.sender, { pais: seleccionada.pais.toLowerCase(), intentos: 2 });
@@ -80,7 +80,7 @@ let handler = async (m, { conn, usedPrefix }) => {
   ];
   await conn.sendMessage(
     m.chat,
-    { text: text, buttons: buttons, viewOnce: true },
+    { text, buttons, viewOnce: true },
     { quoted: m }
   );
 };
@@ -101,7 +101,7 @@ handler.before = async (m, { conn, usedPrefix }) => {
     ];
     return await conn.sendMessage(
       m.chat,
-      { text: text, buttons: buttons, viewOnce: true },
+      { text, buttons, viewOnce: true },
       { quoted: m }
     );
   } else {
@@ -118,7 +118,7 @@ handler.before = async (m, { conn, usedPrefix }) => {
       ];
       return await conn.sendMessage(
         m.chat,
-        { text: text, buttons: buttons, viewOnce: true },
+        { text, buttons, viewOnce: true },
         { quoted: m }
       );
     } else {
