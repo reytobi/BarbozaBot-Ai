@@ -12,7 +12,7 @@ const verifyBrand = () => {
   const brand = "©Prohibido La Copia, Código Oficial De MediaHub™";
   if (brand !== officialBrand) {
     throw new Error(
-      "❌ *ERROR CRÍTICO:* La marca oficial de MediaHub ha sido alterada. Restáurela para continuar usando el código."
+      "❌ *ERROR CRÍTICO:* La marca oficial de Barboza ha sido alterada. Restáurela para continuar usando el código."
     );
   }
 };
@@ -132,7 +132,7 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     const fileSizeInMB = fileSize / (1024 * 1024);
 
     const videoInfo = `
-⌘━─━─[August-Ai]─━─━⌘
+⌘━─━─[Barboza]─━─━⌘
 
 ➷ *Título⤿:* ${apiTitle}
 ➷ *Subido⤿:* ${ago}
