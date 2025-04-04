@@ -64,12 +64,34 @@ function elegirBanderaAleatoria() {
   return banderas[Math.floor(Math.random() * banderas.length)];
 }
 
-let handler = async (m, { conn, args, usedPrefix }) => {
-  if (args.length === 0) {
+let handler = async (m, { conn, usedPrefix }) => {
+  if (juegoBanderas.has(m.sender)) {
     juegoBanderas.delete(m.sender);
-    const seleccionada = elegirBanderaAleatoria();
-    juegoBanderas.set(m.sender, { pais: seleccionada.pais.toLowerCase(), intentos: 2 });
-    const text = `🎌 Adivina la bandera:\n\n» ${seleccionada.emoji}\n\n*Responde con el nombre del país.*\nTienes 2 corazones ❤️❤️`;
+  }
+  const seleccionada = elegirBanderaAleatoria();
+  juegoBanderas.set(m.sender, { pais: seleccionada.pais.toLowerCase(), intentos: 2 });
+  const text = `🎌 Adivina la bandera:\n\n» ${seleccionada.emoji}\n\n*Responde con el nombre del país.*\nTienes 2 corazones ❤️❤️`;
+  const buttons = [
+    {
+      buttonId: `${usedPrefix}adivinabandera`,
+      buttonText: { displayText: "🔄 Siguiente bandera" },
+      type: 1
+    }
+  ];
+  await conn.sendMessage(
+    m.chat,
+    { text, buttons, viewOnce: true },
+    { quoted: m }
+  );
+};
+
+handler.before = async (m, { conn, usedPrefix }) => {
+  const juego = juegoBanderas.get(m.sender);
+  if (!juego) return;
+  const respuesta = m.text.trim().toLowerCase();
+  if (respuesta === juego.pais) {
+    juegoBanderas.delete(m.sender);
+    const text = `¡Correcto! Adivinaste la bandera de *${juego.pais.charAt(0).toUpperCase() + juego.pais.slice(1)}* 🥳`;
     const buttons = [
       {
         buttonId: `${usedPrefix}adivinabandera`,
@@ -77,14 +99,16 @@ let handler = async (m, { conn, args, usedPrefix }) => {
         type: 1
       }
     ];
-    return await conn.sendMessage(m.chat, { text, buttons, viewOnce: true }, { quoted: m });
+    return await conn.sendMessage(
+      m.chat,
+      { text, buttons, viewOnce: true },
+      { quoted: m }
+    );
   } else {
-    const juego = juegoBanderas.get(m.sender);
-    if (!juego) return conn.reply(m.chat, `⚠️ No tienes un juego activo. Inicia con *${usedPrefix}adivinabandera*`, m);
-    const respuesta = m.text.trim().toLowerCase();
-    if (respuesta === juego.pais) {
+    juego.intentos--;
+    if (juego.intentos <= 0) {
       juegoBanderas.delete(m.sender);
-      const text = `¡Correcto! Adivinaste la bandera de *${juego.pais.charAt(0).toUpperCase() + juego.pais.slice(1)}* 🥳`;
+      const text = `❌ Perdiste. La respuesta correcta era *${juego.pais.charAt(0).toUpperCase() + juego.pais.slice(1)}*`;
       const buttons = [
         {
           buttonId: `${usedPrefix}adivinabandera`,
@@ -92,23 +116,17 @@ let handler = async (m, { conn, args, usedPrefix }) => {
           type: 1
         }
       ];
-      return await conn.sendMessage(m.chat, { text, buttons, viewOnce: true }, { quoted: m });
+      return await conn.sendMessage(
+        m.chat,
+        { text, buttons, viewOnce: true },
+        { quoted: m }
+      );
     } else {
-      juego.intentos--;
-      if (juego.intentos <= 0) {
-        juegoBanderas.delete(m.sender);
-        const text = `❌ Perdiste. La respuesta correcta era *${juego.pais.charAt(0).toUpperCase() + juego.pais.slice(1)}*`;
-        const buttons = [
-          {
-            buttonId: `${usedPrefix}adivinabandera`,
-            buttonText: { displayText: "🔄 Siguiente bandera" },
-            type: 1
-          }
-        ];
-        return await conn.sendMessage(m.chat, { text, buttons, viewOnce: true }, { quoted: m });
-      } else {
-        return await conn.sendMessage(m.chat, { text: `❌ Incorrecto. Te quedan ${juego.intentos} corazón(es) ❤️` }, { quoted: m });
-      }
+      return await conn.sendMessage(
+        m.chat,
+        { text: `❌ Incorrecto. Te quedan ${juego.intentos} corazón(es) ❤️` },
+        { quoted: m }
+      );
     }
   }
 };
