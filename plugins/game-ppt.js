@@ -96,6 +96,6 @@ function getResult(user, bot) {
 
 gameHandler.help = ['game'];
 gameHandler.tags = ['game'];
-gameHandler.command = /^(ppt)$/i;
+gameHandler.command = /^(game)$/i;
 
 export default gameHandler;
