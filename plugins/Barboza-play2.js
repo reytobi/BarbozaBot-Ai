@@ -191,7 +191,7 @@ let play2Handler = async (m, { conn, text, usedPrefix, command }) => {
   const userNumber = m.sender.split('@')[0];
   const reactionMessage = await conn.reply(
     m.chat,
-    `${greeting} @${userNumber},\nEstoy buscando el video solicitado.\n¡Gracias por usar MediaHub!`,
+    `${greeting} @${userNumber},\nEstoy buscando el video solicitado.\n¡Gracias por usar Bot Barboza!`,
     m,
     { mentions: [m.sender] }
   );
