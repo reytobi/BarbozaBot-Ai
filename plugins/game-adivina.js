@@ -1,3 +1,4 @@
+
 const banderas = [
   { pais: "Honduras", emoji: "🇭🇳" },
   { pais: "México", emoji: "🇲🇽" },
@@ -29,76 +30,57 @@ const banderas = [
   { pais: "Noruega", emoji: "🇳🇴" },
   { pais: "Suecia", emoji: "🇸🇪" },
   { pais: "Finlandia", emoji: "🇫🇮" },
-  { pais: "Países Bajos", emoji: "🇳🇱" },
-  { pais: "Grecia", emoji: "🇬🇷" },
-  { pais: "Irlanda", emoji: "🇮🇪" }  
-  { pais: "Japón", emoji: "🇯🇵" },
-  { pais: "China", emoji: "🇨🇳" },
-  { pais: "India", emoji: "🇮🇳" },
-  { pais: "Corea del Sur", emoji: "🇰🇷" },
-  { pais: "Vietnam", emoji: "🇻🇳" },
-  { pais: "Filipinas", emoji: "🇵🇭" },
-  { pais: "Indonesia", emoji: "🇮🇩" },
-  { pais: "Tailandia", emoji: "🇹🇭" },
-  { pais: "Arabia Saudita", emoji: "🇸🇦" },
-  { pais: "Israel", emoji: "🇮🇱" },
-  { pais: "Sudáfrica", emoji: "🇿🇦" },
-  { pais: "Nigeria", emoji: "🇳🇬" },
-  { pais: "Kenia", emoji: "🇰🇪" },
-  { pais: "Egipto", emoji: "🇪🇬" },
-  { pais: "Marruecos", emoji: "🇲🇦" },
-  { pais: "Argelia", emoji: "🇩🇿" }, 
-  { pais: "Australia", emoji: "🇦🇺" },
-  { pais: "Nueva Zelanda", emoji: "🇳🇿" },
-  { pais: "Fiyi", emoji: "🇫🇯" },
-  { pais: "LGBT", emoji: "🏳️‍🌈" },
-  { pais: "Orgullo trans", emoji: "🏳️‍⚧️" },
-  { pais: "ONU", emoji: "🇺🇳" },
-  { pais: "Palestina", emoji: "🇵🇸" },
-  { pais: "Ucrania", emoji: "🇺🇦" }
-]
+  { pais: "Países Bajos", emoji: "🇳🏳️‍🌈ldos"},
+  // ... (resto de banderas)
+];
 
-const juegoBanderas = new Map()
+const juegoBanderas = new Map();
 
 function elegirBanderaAleatoria() {
-  return banderas[Math.floor(Math.random() * banderas.length)]
+    return banderas[Math.floor(Math.random() * banderas.length)];
 }
 
 let handler = async (m, { conn }) => {
-  if (juegoBanderas.has(m.sender)) {
-    return conn.reply(m.chat, "Ya tienes un juego en curso. ¡Responde primero!", m)
-  }
+    if (juegoBanderas.has(m.sender)) {
+        return conn.reply(m.chat, 'Ya tienes un juego en curso. ¡Responde primero!', m);
+    }
 
-  const seleccionada = elegirBanderaAleatoria()
-  juegoBanderas.set(m.sender, { pais: seleccionada.pais.toLowerCase(), intentos: 2 })
+    const seleccionada = elegirBanderaAleatoria();
+    juegoBanderas.set(m.sender, { pais : seleccionada.pais.toLowerCase(), intentos : 2 });
 
-  let text = `🎌 Adivina la bandera:\n\n» ${seleccionada.emoji}\n\n*Responde con el nombre del país.*\nTienes 2 corazones ❤️❤️`
-  conn.reply(m.chat, text, m)
+    let text = `🎌 Adivina la bandera:\n\n» ${seleccionada.emoji}\n\n*Responde con el nombre del país.*\nTienes ${juego.intentos} corazones ❤️❤️`;
+    
+    const button = {
+        buttonText : 'Siguiente',
+        id : 'siguiente'
+    };
+
+    conn.sendButton(m.chat, text, button, m);
 }
 
 handler.before = async (m, { conn }) => {
-  const juego = juegoBanderas.get(m.sender)
-  if (!juego) return
+    const juego = juegoBanderas.get(m.sender);
+    if (!juego) return;
 
-  const respuesta = m.text.trim().toLowerCase()
-  if (respuesta === juego.pais) {
-    juegoBanderas.delete(m.sender)
-    return conn.reply(m.chat, `¡Correcto! Adivinaste la bandera de *${juego.pais.charAt(0).toUpperCase() + juego.pais.slice(1)}* 🥳`, m)
-  } else {
-    juego.intentos--
-    if (juego.intentos <= 0) {
-      juegoBanderas.delete(m.sender)
-      return conn.reply(m.chat, `❌ Perdiste. La respuesta correcta era *${juego.pais.charAt(0).toUpperCase() + juego.pais.slice(1)}*`, m)
+    const respuesta = m.text.trim().toLowerCase();
+    if (respuesta === juego.pais) {
+        juegoBanderas.delete(m.sender);
+        return conn.reply(m.chat, `¡Correcto! Adivinaste la bandera de *${juego.pais.charAt(0).toUpperCase() + juego.pais.slice(1)}* 🥳`, m);
     } else {
-      return conn.reply(m.chat, `❌ Incorrecto. Te quedan ${juego.intentos} corazón(es) ❤️`, m)
+        juego.intentos--;
+        if (juego.intentos <= 0) {
+            juegoBanderas.delete(m.sender);
+            return conn.reply(m.chat, `❌ Perdiste. La respuesta correcta era *${juego.pais.charAt(0).toUpperCase() + juego.pais.slice(1)}*`, m);
+        } else {
+            return conn.reply(m.chat, `❌ Incorrecto. Te quedan ${juego.intentos} corazón(es) ❤️`, m);
+        }
     }
-  }
 }
 
-handler.help = ['adivinabandera']
-handler.tags = ['game']
-handler.command = ['adivinabandera']
-handler.group = true
-handler.register = true
+handler.help = ['adivinabandera'];
+handler.tags = ['game'];
+handler.command = ['adivinabandera'];
+handler.group = true;
+handler.register = true;
 
-export default handler
+export default handler;
