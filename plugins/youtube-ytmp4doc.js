@@ -14,7 +14,7 @@ let texto = `「❖」𝗥𝗲𝘀𝘂𝗹𝘁𝗮𝗱𝗼 𝗗𝗲 ${pene.data.
 
 m.react('🕒')
 conn.sendMessage(m.chat, { image: { url: pene.data.image }, caption: texto }, { quoted: m });
-m.react(done);
+m.react('✅');
 
 if (command == 'ytmp3doc' || command == 'mp3doc' || command == 'ytadoc') {
 let api = await(await fetch(`https://api.neoxr.eu/api/youtube?url=${args[0]}&type=audio&quality=128kbps&apikey=GataDios`)).json();
