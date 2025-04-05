@@ -51,6 +51,7 @@
     "fluid-spotify.js": "*",
     "cheerio": "npm:cheerio@1.0.0-rc.12",
     "express": "^4.18.1",
+    "senna-fg": "latest",
     "file-type": "^18.0.0",
     "fluent-ffmpeg": "^2.1.2",
     "formdata-node": "^5.0.0",
