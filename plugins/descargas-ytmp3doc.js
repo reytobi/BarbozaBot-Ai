@@ -1,64 +1,38 @@
-import fetch from "node-fetch";
+import fetch from 'node-fetch';
 
-// Función para manejar reintentos de solicitudes
-const fetchWithRetries = async (url, maxRetries = 2) => {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      if (data?.status === 200 && data?.result?.download?.url) return data.result;
-    } catch (error) {
-      console.error(`Error en el intento ${attempt + 1}:`, error.message);
-    }
-  }
-  throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
-};
+let handler = async (m, { conn, args, command }) => {
 
-// Reconstruir URL desde base64
-const reconstructUrl = () => {
-  const parts = ["aHR0cHM6Ly9hcGkudnJlZGVu", "LndlYi5pZC9hcGkveXRtcDM="];
-  return Buffer.from(parts.join(""), "base64").toString("utf-8");
-};
+if (!args[0]) return m.reply(`🍭 Ingresa Un Link De YouTube.`);
 
-// Handler principal
-let handler = async (m, { conn, text, usedPrefix }) => {
-  if (!text || !/^https:\/\/(www\.)?youtube\.com\/watch\?v=/.test(text)) {
-    return conn.sendMessage(m.chat, {
-      text: `❗ *Por favor ingresa un enlace válido de YouTube para descargar la música.*\n\n📌 *Ejemplo:* ${usedPrefix}ytmp3doc https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
-    });
-  }
+let pene = await(await fetch(`https://delirius-apiofc.vercel.app/download/ytmp4?url=${args[0]}`)).json();
 
-  const key = await conn.sendMessage(m.chat, {
-    text: `⌘━─━─≪ *Barboza Bot AI* ≫─━─━⌘\n\n🔎 *Procesando tu solicitud, por favor espera...*`,
-  });
+let texto = `「❖」𝗥𝗲𝘀𝘂𝗹𝘁𝗮𝗱𝗼 𝗗𝗲 ${pene.data.title}\n\n✦ *Autor:* ${pene.data.author}\n✦ *Duración:* ${pene.data.duration}\n✦ *Comentarios:* ${pene.data.comments}\n✦ *Vistas:* ${pene.data.views}\n> ${dev}`
 
-  try {
-    const apiUrl = `${reconstructUrl()}?url=${encodeURIComponent(text)}`;
-    const { metadata, download } = await fetchWithRetries(apiUrl);
-    const { title, duration, views, author, url: videoUrl } = metadata;
-    const { url: downloadUrl } = download;
+m.react(rwait)
+conn.sendMessage(m.chat, { image: { url: pene.data.image }, caption: texto }, { quoted: m });
+m.react(done);
 
-    const description = `⌘━─━─≪ *Barboza Bot AI* ≫─━─━⌘\n\n🎵 *Título:* ${title}\n⏳ *Duración:* ${duration.timestamp || "Desconocida"}\n👁️ *Vistas:* ${views.toLocaleString() || "Desconocidas"}\n✍️ *Autor:* ${author.name || "Desconocido"}\n🔗 *Enlace del video:* ${videoUrl}\n\n✨ *Tu archivo se está enviando como documento, por favor espera...*\n\n⌘━━─≪ Power By Barboza Bot AI ≫─━━⌘`;
+if (command == 'ytmp3doc' || command == 'mp3doc' || command == 'ytadoc') {
+let api = await(await fetch(`https://api.neoxr.eu/api/youtube?url=${args[0]}&type=audio&quality=128kbps&apikey=GataDios`)).json();
 
-    await conn.sendMessage(m.chat, { text: description, edit: key });
-    await conn.sendMessage(
-      m.chat,
-      {
-        document: { url: downloadUrl },
-        mimetype: "audio/mpeg",
-        fileName: `${title}.mp3`,
-        caption: `🎶 *Descarga completada por Barboza Bot AI*`,
-      },
-      { quoted: m }
-    );
-  } catch (error) {
-    console.error("Error al procesar la solicitud:", error);
-    await conn.sendMessage(m.chat, {
-      text: `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
-      edit: key,
-    });
-  }
-};
+if (!api?.data.url) return m.reply('No Se  Encontraron Resultados');
 
-handler.command = /^ytmp3doc$/i;
+await conn.sendMessage(m.chat, { document: { url: api.data.url }, mimetype: 'audio/mpeg', fileName: `${pene.data.title}.mp3` }, { quoted: m });
+ }
+
+if (command == 'ytmp4doc' || command == 'mp4doc' || command == 'ytvdoc') {
+let video = await (await fetch(`https://api.agungny.my.id/api/youtube-video?url=${args[0]}`)).json();
+
+let link = video?.result.result.download;
+
+if (!link) return m.reply('No Hubo Resultados');
+
+await conn.sendMessage(m.chat, { document: { url: link }, fileName: `${video.result.result.title}.mp4`, caption: `> ${wm}`, mimetype: 'video/mp4' }, { quoted: m })    
+   }
+}
+
+handler.help = ['ytmp3doc', 'ytmp4doc'];
+handler.tag = ['descargas'];
+handler.command = ['ytmp3doc', 'mp3doc', 'ytmp4doc', 'mp4doc', 'ytadoc', 'ytvdoc'];
+
 export default handler;
