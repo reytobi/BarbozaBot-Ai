@@ -12,7 +12,7 @@ let pene = await(await fetch(`https://delirius-apiofc.vercel.app/download/ytmp4?
 
 let texto = `「❖」𝗥𝗲𝘀𝘂𝗹𝘁𝗮𝗱𝗼 𝗗𝗲 ${pene.data.title}\n\n✦ *Autor:* ${pene.data.author}\n✦ *Duración:* ${pene.data.duration}\n✦ *Comentarios:* ${pene.data.comments}\n✦ *Vistas:* ${pene.data.views}\n> ${dev}`
 
-m.react(rwait)
+m.react('🕒')
 conn.sendMessage(m.chat, { image: { url: pene.data.image }, caption: texto }, { quoted: m });
 m.react(done);
 
