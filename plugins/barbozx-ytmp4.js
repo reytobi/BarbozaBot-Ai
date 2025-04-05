@@ -1,103 +1,42 @@
-import fetch from "node-fetch";
+import fetch from 'node-fetch';
+import fg from 'senna-fg';
 
-// Decodificar Base64
-const decodeBase64 = (encoded) => Buffer.from(encoded, "base64").toString("utf-8");
+let handler = async(m, { conn, args, text }) => {
 
-// Manejo de solicitudes con reintentos
-const fetchWithRetries = async (url, maxRetries = 2) => {
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      if (data?.status === 200 && data?.data?.download?.url) return data.data;
-    } catch (error) {
-      console.error(`Error en el intento ${attempt + 1}:`, error.message);
-    }
-  }
-  throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
-};
+if (!text) return m.reply(`🍭 Ingresa Un Link De YouTube\n> *Ejemplo:* https://youtube.com/shorts/ZisXJqH1jtw?si=0RZacIJU5zhoCmWh`);
 
-// Handler principal
-let handler = async (m, { conn, text, usedPrefix }) => {
-  if (!text || !/^https:\/\/(www\.)?youtube\.com\/watch\?v=/.test(text)) {
-    return conn.sendMessage(m.chat, {
-      text: `⚠️ *¡Enlace inválido!*\n\n🔗 *Por favor, ingresa un enlace válido de YouTube para descargar el video.*\n\n📌 *Ejemplo:* ${usedPrefix}ytmp4 https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
-    });
-  }
+m.react(rwait);
 
-  try {
-    // Mensaje inicial
-    const initialMessage = `
-╭━━━📡 **Barboza Bot AI** 📡━━━╮
-🔍 *Procesando tu solicitud...*
-💾 *Descargando el video...*
-⏳ *Esto puede tardar unos momentos.*
-╰━━━━━━━━━━━━━━━━━━━━━━╯
-    `;
-    const key = await conn.sendMessage(m.chat, { text: initialMessage });
 
-    // URL de la API
-    const encodedApiUrl = "aHR0cHM6Ly9yZXN0YXBpLmFwaWJvdHdhLmJpei5pZC9hcGkveXRtcDQ=";
-    const apiUrl = `${decodeBase64(encodedApiUrl)}?url=${encodeURIComponent(text)}`;
-    const apiData = await fetchWithRetries(apiUrl);
+// let video = await (await fetch(`https://api.agungny.my.id/api/youtube-video?url=${text}`)).json();
 
-    // Datos del video
-    const { metadata, download } = apiData;
-    const { title, duration, thumbnail, description } = metadata;
-    const { url: downloadUrl, quality, filename } = download;
+let data = await fg.ytmp4(text);
+let url = data.dl_url;
+// let link = video.result.result.download;
 
-    // Calcular el tamaño del archivo
-    const fileResponse = await fetch(downloadUrl, { method: "HEAD" });
-    const fileSize = parseInt(fileResponse.headers.get("content-length") || 0);
-    const fileSizeInMB = fileSize / (1024 * 1024);
+if (!url) return m.reply('《✧》Hubo un error al intentar acceder al link.\n> Si el problema persiste, reportalo en el grupo de soporte.');
 
-    // Formato del mensaje con información del video
-    const videoInfo = `
-📥 **Video Encontrado**  
-━━━━━━━━━━━━━━━━━━━━━  
-🎵 *Título:* ${title}  
-⏱️ *Duración:* ${duration.timestamp || "No disponible"}  
-📦 *Tamaño:* ${fileSizeInMB.toFixed(2)} MB  
-📽️ *Calidad:* ${quality || "No disponible"}  
+/* let limit = 5 * 1024 * 1024; // 5MB porque si
 
-📌 **Descripción:**  
-${description || "Sin descripción disponible"}  
-━━━━━━━━━━━━━━━━━━━━━  
-📤 *Preparando para enviar...*
-    `;
-    await conn.sendMessage(m.chat, { text: videoInfo, edit: key });
+if (video?.data?.size > limit) {
+await conn.sendMessage(m.chat, {
+      document: { url: url },
+      fileName: `${data.title}.mp4`,
+      mimetype: 'video/mp4', caption: '✅ Descargado Con Exito.',
+      thumbnail: video.thumbnail },          
+      { quoted: m })
 
-    // Enviar como documento si es mayor a 70 MB, de lo contrario como video reproducible
-    if (fileSizeInMB > 70) {
-      await conn.sendMessage(
-        m.chat,
-        {
-          document: { url: downloadUrl },
-          mimetype: "video/mp4",
-          fileName: filename || `${title}.mp4`,
-          caption: `📂 *Video enviado en formato documento:*\n🎵 *Título:* ${title}\n📦 *Tamaño:* ${fileSizeInMB.toFixed(2)} MB`,
-        },
-        { quoted: m }
-      );
-    } else {
-      await conn.sendMessage(
-        m.chat,
-        {
-          video: { url: downloadUrl },
-          mimetype: "video/mp4",
-          fileName: filename || `${title}.mp4`,
-          caption: `🎥 *Video reproducible:*\n🎵 *Título:* ${title}\n📦 *Tamaño:* ${fileSizeInMB.toFixed(2)} MB`,
-        },
-        { quoted: m }
-      );
-    }
-  } catch (error) {
-    console.error("Error al procesar la solicitud:", error);
-    await conn.sendMessage(m.chat, {
-      text: `❌ *Ocurrió un error:*\n${error.message || "Error desconocido"}`,
-    });
-  }
-};
+} else { 
+*/
 
-handler.command = /^ytmp4$/i;
+await conn.sendMessage(m.chat, {
+      video: { url: url },
+      mimetype: "video/mp4",
+      caption: `${dev}`,
+    }, { quoted: m });
+    m.react(done);
+ }
+
+handler.command = ['ytv', 'ytmp4', 'ymp4']
+
 export default handler;
