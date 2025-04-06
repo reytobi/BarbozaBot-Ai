@@ -5,7 +5,7 @@ let handler = async(m, { conn, text, usedPrefix, command }) => {
 if (!text) return m.reply('🍭 Ingresa Un Nombre De Un Pais');
 
 try {
-let api = `https://api.siputzx.my.id/api/tools/countryInfo?name=${text}`;
+let api = `https://api.siputzx.my.id/api/tools/countryInfo?name=Indonesia{text}`;
 
 let response = await fetch(api);
 let json = await response.json();
