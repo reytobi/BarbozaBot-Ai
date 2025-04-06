@@ -29,6 +29,6 @@ conn.sendFile(m.chat, imagen, 'MoonForce.jpg', moon, m, null);
 conn.sendMessage(m.chat, { audio: { url: force.download }, mimetype: 'audio/mpeg' }, { quoted: m });
 }
 
-MF.command = ['spotify', 'spdl'];
+MF.command = ['spotifydl', 'spdl'];
 
 export default MF;
