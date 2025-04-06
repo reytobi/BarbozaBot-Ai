@@ -1,6 +1,3 @@
-/* Codigo creado por 
- - @Rayo-ofc 
-*/
 import axios from 'axios';
 
 const handler = async (m, { conn, text }) => {
@@ -10,8 +7,7 @@ const handler = async (m, { conn, text }) => {
             return;
         }
 
-        const response = await axios.get(`https://archive-ui.tanakadomp.biz.id/search/pinterest?q=
-${encodeURIComponent(text)}`);
+        const response = await axios.get(`https://api.siputzx.my.id/api/s/pinterest?query=${encodeURIComponent(text)}`);
         const data = response.data.data;
 
         if (data.length === 0) {
