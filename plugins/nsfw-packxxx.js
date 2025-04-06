@@ -5,7 +5,7 @@ let handler = async(m, { conn, text, usedPrefix, command }) => {
 
 m.react('🕑');
 
-let txt = 'Packxxx🔥🔥🔥\n> Pon De Nuevo .pack para mirar el siguiente ✨';
+let txt = 'Disfruta 🔥🥵';
 
 let img = 'https://delirius-apiofc.vercel.app/nsfw/boobs';
 
