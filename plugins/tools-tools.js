@@ -5,7 +5,7 @@ const handler = async (m, { conn, args }) => {
   }
 
   const countryName = args.join(' ');
-  const apiUrl = `https://api.siputzx.my.id/api/tools/countryInfo?name=${countryName}`; // Asegúrate de usar comillas invertidas
+  const apiUrl = `https://api.siputzx.my.id/api/tools/countryInfo?name=${countryName}`; // Comillas invertidas para interpolar
 
   try {
     const response = await fetch(apiUrl);
