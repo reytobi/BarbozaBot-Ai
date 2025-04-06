@@ -27,9 +27,9 @@ let handler = async (m, { conn, args }) => {
     const Minimum_Temperature = res.main.temp_min + "°C";
     const Maximum_Temperature = res.main.temp_max + "°C";
     const Humidity = res.main.humidity + "%";
-    const Wind = res.wind.speed + "km/h";
-    const wea = `「 📍 」LUGAR: ${name}\n「 🗺️ 」PAIS: ${Country}\n「 🌤️ 」TIEMPO: ${Weather}\n「 🌡️ 」TEMPERATURA: ${Temperature}\n「 💠 」TEMPERATURA MINIMA: ${Minimum_Temperature}\n「 📛 」TEMPERATURA MAXIMA: ${Maximum_Temperature}\n「 💦 」HUMEDAD: ${Humidity}\n「 🌬️ 」VIENTO: ${Wind}`.trim();
 
+
+const wea = `📍 LUGAR: ${name}\n🗺️ PAIS: ${Country}\n🏛️ CAPITAL: ${Capital}\n👥 POBLACION: ${Population}\n🌤️ TIEMPO: ${Weather}\n🌡️ TEMPERATURA: ${Temperature}\n💠 TEMPERATURA MINIMA: ${Minimum_Temperature}\n📛 TEMPERATURA MAXIMA: ${Maximum_Temperature}\n💦 HUMEDAD: ${Humidity}\n🌬️ VIENTO: ${Wind}`;
     let txt = '';
     let count = 0;
     for (const c of wea) {
