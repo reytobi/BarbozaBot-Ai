@@ -1,6 +1,6 @@
 
 const handler = async (m, { conn }) => {
-  const args = m.text.split(" ");
+  const args = m.text.trim().split(" ");
   const pais = args[1]; // Obtener el nombre del país del mensaje
 
   // Base de datos simple de información de países
@@ -26,9 +26,14 @@ const handler = async (m, { conn }) => {
     // Agrega más países aquí...
   };
 
+  // Verificar si se proporcionó un país
+  if (!pais) {
+    return conn.sendMessage(m.chat, '❌ *Por favor, especifica un país.*\nEjemplo: .infopais Argentina', { quoted: m });
+  }
+
   // Verificar si el país está en la base de datos
-  if (infoPaises[pais]) {
-    const info = infoPaises[pais];
+  const info = infoPaises[pais];
+  if (info) {
     const mensaje = `🌍 *Información sobre ${pais}:*\n` +
                     `🏛️ Capital: ${info.capital}\n` +
                     `👥 Población: ${info.poblacion}\n` +
