@@ -8,7 +8,7 @@ m.react('🕒');
 await conn.sendMessage(m.chat, {text: '*🧑‍💻 Espere, Estamos Trabajando en su imagen*'}, {quoted: m});
 try {
 // Hacemos la solicitud a la API con el texto proporcionado
-const response = await fetch(`https://eliasar-yt-api.vercel.app/api/ai/text2img?prompt=${encodeURIComponent(text)}`);
+const response = await fetch(`https://archive-ui.tanakadomp.biz.id/maker/text2img?text=${encodeURIComponent(text)}`);
 // Verificamos si la respuesta fue exitosa
 if (!response.ok) throw new Error('Network response was not ok');
 // Obtenemos el buffer de la imagen
