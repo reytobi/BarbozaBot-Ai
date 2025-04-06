@@ -15,5 +15,5 @@ throw `*🚨 Error inesperado*`;
 }
 handler.tags = ['tools'];
 handler.help = ['genearimg'];
-handler.command = [''geneimg, 'imgg'];
+handler.command = ["geneimg, 'imgg'];
 export default handler;
