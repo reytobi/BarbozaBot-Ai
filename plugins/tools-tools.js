@@ -1,41 +1,63 @@
+import axios from "axios";
 
-const handler = async (m, { conn, args }) => {
+let handler = async (m, { conn, args }) => {
   if (!args[0]) {
-    return conn.sendMessage(m.chat, 'Por favor, proporciona el nombre de un país.', m);
+    let resp = `*[❗ Atención amigo/@❗] ESCRIBA EL NOMBRE DE SU PAIS*`;
+    let txt = '';
+    let count = 0;
+    for (const c of resp) {
+      await new Promise(resolve => setTimeout(resolve, 5));
+      txt += c;
+      count++;
+      if (count % 10 === 0) {
+        conn.sendPresenceUpdate('composing', m.chat);
+      }
+    }
+    await conn.sendMessage(m.chat, { text: txt.trim(), mentions: conn.parseMention(txt) }, { quoted: m, ephemeralExpiration: 24*60*60, disappearingMessagesInChat: 24*60*60 });
+    return;
   }
 
-  const countryName = args.join(' ');
-  const apiUrl = `https://api.siputzx.my.id/api/tools/countryInfo?name=${countryName}`;
-
   try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+    const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${args[0]}&units=metric&appid=060a6bcfa19809c2cd4d97a212b19273`);
+    const res = response.data;
+    const name = res.name;
+    const Country = res.sys.country;
+    const Weather = res.weather[0].description;
+    const Temperature = res.main.temp + "°C";
+    const Minimum_Temperature = res.main.temp_min + "°C";
+    const Maximum_Temperature = res.main.temp_max + "°C";
+    const Humidity = res.main.humidity + "%";
+    const Wind = res.wind.speed + "km/h";
+    const wea = `「 📍 」LUGAR: ${name}\n「 🗺️ 」PAIS: ${Country}\n「 🌤️ 」TIEMPO: ${Weather}\n「 🌡️ 」TEMPERATURA: ${Temperature}\n「 💠 」TEMPERATURA MINIMA: ${Minimum_Temperature}\n「 📛 」TEMPERATURA MAXIMA: ${Maximum_Temperature}\n「 💦 」HUMEDAD: ${Humidity}\n「 🌬️ 」VIENTO: ${Wind}`.trim();
 
-    if (data && data.status === 'success') {
-      const countryInfo = data.data;
-      const infoMessage = `
-        *Información sobre ${countryInfo.name}:*
-        - Capital: ${countryInfo.capital}
-        - Población: ${countryInfo.population}
-        - Área: ${countryInfo.area} km²
-        - Idioma(s): ${countryInfo.languages.join(', ')}
-        - Moneda: ${countryInfo.currencies.map(curr => curr.name).join(', ')}
-        - Región: ${countryInfo.region}
-        - Subregión: ${countryInfo.subregion}
-        - Frontera(s): ${countryInfo.borders.join(', ') || 'Ninguna'}
-      `;
-      await conn.sendMessage(m.chat, infoMessage, m);
-    } else {
-      await conn.sendMessage(m.chat, 'No se encontró información sobre ese país.', m);
+    let txt = '';
+    let count = 0;
+    for (const c of wea) {
+      await new Promise(resolve => setTimeout(resolve, 5));
+      txt += c;
+      count++;
+      if (count % 10 === 0) {
+        conn.sendPresenceUpdate('composing', m.chat);
+      }
     }
-  } catch (error) {
-    console.error(error);
-    await conn.sendMessage(m.chat, 'Ocurrió un error al obtener la información del país.', m);
+    await conn.sendMessage(m.chat, { text: txt.trim(), mentions: conn.parseMention(txt) }, { quoted: m, ephemeralExpiration: 24*60*60, disappearingMessagesInChat: 24*60*60 });
+  } catch (e) {
+    let resp = " *[❗INFO❗] Error!\n _No se encontraron resultados, trate de escribir un país o ciudad existente._* ";
+    let txt = '';
+    let count = 0;
+    for (const c of resp) {
+      await new Promise(resolve => setTimeout(resolve, 5));
+      txt += c;
+      count++;
+      if (count % 10 === 0) {
+        conn.sendPresenceUpdate('composing', m.chat);
+      }
+    }
+    await conn.sendMessage(m.chat, { text: txt.trim(), mentions: conn.parseMention(txt) }, { quoted: m, ephemeralExpiration: 24*60*60, disappearingMessagesInChat: 24*60*60 });
   }
 };
 
-handler.help = ['infopais <nombre del país>'];
-handler.tags = ['info'];
-handler.command = /^infopais$/i;
-
+handler.help = ['infopais *<ciudad/país>*'];
+handler.tags = ['herramientas'];
+handler.command = /^(infopais|tiempo)$/i;
 export default handler;
