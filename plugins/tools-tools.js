@@ -5,15 +5,14 @@ const handler = async (m, { conn, args }) => {
   }
 
   const countryName = args.join(' ');
-  const apiUrl = `https://api.siputzx.my.id/api/tools/countryInfo?name=${countryName}`; // Asegúrate de usar comillas invertidas
+  const apiUrl = `https://api.siputzx.my.id/api/tools/countryInfo?name=${countryName}`;
 
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
 
-    // Asegúrate de que la respuesta tenga la estructura esperada
     if (data && data.status === 'success') {
-      const countryInfo = data.data; // Verifica que esta estructura sea correcta según la respuesta de la API
+      const countryInfo = data.data;
       const infoMessage = `
         *Información sobre ${countryInfo.name}:*
         - Capital: ${countryInfo.capital}
@@ -21,6 +20,9 @@ const handler = async (m, { conn, args }) => {
         - Área: ${countryInfo.area} km²
         - Idioma(s): ${countryInfo.languages.join(', ')}
         - Moneda: ${countryInfo.currencies.map(curr => curr.name).join(', ')}
+        - Región: ${countryInfo.region}
+        - Subregión: ${countryInfo.subregion}
+        - Frontera(s): ${countryInfo.borders.join(', ') || 'Ninguna'}
       `;
       await conn.sendMessage(m.chat, infoMessage, m);
     } else {
