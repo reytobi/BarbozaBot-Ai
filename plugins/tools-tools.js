@@ -80,11 +80,8 @@ let handler = async (m, { conn, args }) => {
   }
 };
 
-handler.help = ['clima *<ciudad/país>*'];
+handler.help = ['infopais *<ciudad/país>*'];
 handler.tags = ['herramientas'];
-handler.command = /^(clima|tiempo)$/i;
+handler.command = /^(infopais|tiempo)$/i;
 
 export default handler;
-```
-
-Con estas modificaciones, tu bot ahora proporcionará información adicional sobre la población, el idioma oficial y la moneda del país consultado. Si necesitas más ayuda o tienes alguna otra idea que quieras implementar, ¡avísame!
