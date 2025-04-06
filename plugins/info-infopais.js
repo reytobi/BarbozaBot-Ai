@@ -31,10 +31,13 @@ const handler = async (m, { conn }) => {
     return conn.sendMessage(m.chat, '❌ *Por favor, especifica un país.*\nEjemplo: .infopais Argentina', { quoted: m });
   }
 
+  // Normalizar el nombre del país a mayúsculas para la búsqueda
+  const paisNormalizado = pais.charAt(0).toUpperCase() + pais.slice(1).toLowerCase();
+
   // Verificar si el país está en la base de datos
-  const info = infoPaises[pais];
-  if (info) {
-    const mensaje = `🌍 *Información sobre ${pais}:*\n` +
+  if (infoPaises[paisNormalizado]) {
+    const info = infoPaises[paisNormalizado];
+    const mensaje = `🌍 *Información sobre ${paisNormalizado}:*\n` +
                     `🏛️ Capital: ${info.capital}\n` +
                     `👥 Población: ${info.poblacion}\n` +
                     `🗣️ Idioma: ${info.idioma}\n` +
