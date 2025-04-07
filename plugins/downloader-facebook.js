@@ -6,7 +6,7 @@ let HS = async (m, { conn, text }) => {
     if (!text) return conn.reply(m.chat, '❀ Ingresa un link de facebook', m);
 
     try {
-        let api = await fetch(`https://delirius-apiofc.vercel.app/download/facebook?url=${text}`);
+        let api = await fetch(`https://vapis.my.id/api/fbdl?url=https://www.facebook.com/share/r/12BFZAtjpS8/?mibextid=qDwCgo{text}`);
         let json = await api.json();
         
         // Asegúrate de que la respuesta tenga los datos esperados
