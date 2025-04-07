@@ -12,7 +12,7 @@ let handler = async (m, { conn, usedPrefix, command, text }) => {
   await m.react('🕓');
   
   try {
-    const response = await axios.get(`https://apis-starlights-team.koyeb.app/starlight/tiktok-user-posts?user=${text}`);
+    const response = await axios.get(`https://vapis.my.id/api/tt-stalk?username=djayyz_1{text}`);
     
     if (response.data.status === 200) {
       const videos = response.data.data.videos;
