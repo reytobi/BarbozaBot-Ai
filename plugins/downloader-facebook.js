@@ -1,39 +1,21 @@
-/*
-- Código By Barboza 
-- 🌙 Moon Force Team 
--   https://whatsapp.com/channel/0029Vb4Dnh611ulGUbu7Xg1q
-*/
 import fetch from 'node-fetch';
-import axios from 'axios';
 
-let HS = async (m, { conn, text }) => {
-    if (!text) return conn.reply(m.chat, '📌Atención futuro cliente proporcione un link de facebook para descargar su video', m);
+let MF = async(m, { conn, usedPrefix, command, args }) => {
 
-    try {
-        let api = await fetch(`https://vapis.my.id/api/fbdl?url=https://www.facebook.com/share/r/12BFZAtjpS8/?mibextid=qDwCgo{text}`);
-        let json = await api.json();
+if (!args[0]) return m.reply(`🌃 Por Favor Ingrese El Link Junto Al Comando\n> *Ejemplo:* ${usedPrefix + command} https://www.facebook.com/share/r/12BFZAtjpS8/?mibextid=qDwCgo`);
 
-        if (!json.data) {
-            return conn.reply(m.chat, '📌 No se descargo el vídeo . Verifica el enlace.', m);
-        }
+let fbDL = await facebookdl(args[0]);
 
-        let { title, durasi, hd_url } = json.data;
-        let VidBuffer = await getBuffer(hd_url);
+let vid = fbDL.hd_url;
 
-        let caption = `- *Título:* ${title}\n- *Duración:* ${durasi}`;
+conn.sendMessage(m.chat, { video: { url: vid }, mimetype: 'video/mp4' }, { quoted: m });
+}
 
-        await conn.sendMessage(m.chat, { video: VidBuffer, mimetype: "video/mp4", caption }, { quoted: m });
-    } catch (error) {
-        console.error(error);
-        conn.reply(m.chat, '📌 Ocurrió un error inesperado contacta con el creador.', m);
-    }
-};
+MF.command = ['fbdl', 'facebookdl'];
 
-HS.command = ['fbdl', 'fb', 'facebook', 'facebookdl'];
+export default MF;
 
-export default HS;
-
-const getBuffer = async (url, options = {}) => {
-    const res = await axios({ method: 'get', url, headers: { 'DNT': 1, 'Upgrade-Insecure-Request': 1 }, ...options, responseType: 'arraybuffer' });
-    return res.data;
-};
+async function facebookdl(url) {
+let moon = await(await fetch(`https://vapis.my.id/api/fbdl?url=https://www.facebook.com/share/r/12BFZAtjpS8/?mibextid=qDwCgo{url}`)).json();
+return moon;
+}
