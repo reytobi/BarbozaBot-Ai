@@ -22,7 +22,7 @@ let HS = async (m, { conn, text }) => {
         await conn.sendMessage(m.chat, { video: VidBuffer, mimetype: "video/mp4", caption }, { quoted: m });
     } catch (error) {
         console.error(error);
-        conn.reply(m.chat, '❀ Ocurrió un error al intentar descargar el video.', m);
+        conn.reply(m.chat, '📌 Ocurrió un error inesperado contacta con el creador.', m);
     }
 };
 
