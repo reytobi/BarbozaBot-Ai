@@ -10,7 +10,7 @@ let HS = async (m, { conn, text }) => {
     if (!text) return conn.reply(m.chat, '📌Atención futuro cliente proporcione un link de facebook para descargar su video', m);
 
     try {
-        let api = await fetch(`https://api.dorratz.com/fbvideo?url=https://www.facebook.com/share/v/12DoEUCoFji/?mibextid=rS40aB7S9Ucbxw6v{text}`);
+        let api = await fetch(`https://apis.davidcyriltech.my.id/facebook2?url=${url}`);
         let json = await api.json();
 
         if (!json.data) {
