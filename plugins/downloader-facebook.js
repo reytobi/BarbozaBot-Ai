@@ -11,7 +11,7 @@ let vid = fbDL.hd_url;
 conn.sendMessage(m.chat, { video: { url: vid }, mimetype: 'video/mp4' }, { quoted: m });
 }
 
-MF.command = ['fbdl', 'facebookdl'];
+MF.command = ['fb', 'facebook'];
 
 export default MF;
 
