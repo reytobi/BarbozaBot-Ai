@@ -1,22 +1,26 @@
-
+/*
+- Código By Barboza 
+- 🌙 Moon Force Team 
+-   https://whatsapp.com/channel/0029Vb4Dnh611ulGUbu7Xg1q
+*/
 import fetch from 'node-fetch';
 import axios from 'axios';
 
 let HS = async (m, { conn, text }) => {
-    if (!text) return conn.reply(m.chat, '📌 Atención futuro cliente proporcione un link de facebook para descargar su video', m);
+    if (!text) return conn.reply(m.chat, '📌Atención futuro cliente proporcione un link de facebook para descargar su video', m);
 
     try {
-        let api = await fetch(`https://vapis.my.id/api/fbdl?url=${text}`);
+        let api = await fetch(`https://vapis.my.id/api/fbdl?url=https://www.facebook.com/share/r/12BFZAtjpS8/?mibextid=qDwCgo{text}`);
         let json = await api.json();
 
         if (!json.data) {
-            return conn.reply(m.chat, '📌 No se descargó el vídeo. Verifica el enlace.', m);
+            return conn.reply(m.chat, '📌 No se descargo el vídeo . Verifica el enlace.', m);
         }
 
-        let { title, durasi, hd_url, size, upload_date } = json.data;
+        let { title, durasi, hd_url } = json.data;
         let VidBuffer = await getBuffer(hd_url);
 
-        let caption = `- *Título:* ${title}\n- *Duración:* ${durasi}\n- *Tamaño:* ${size}\n- *Fecha de Publicación:* ${upload_date}`;
+        let caption = `- *Título:* ${title}\n- *Duración:* ${durasi}`;
 
         await conn.sendMessage(m.chat, { video: VidBuffer, mimetype: "video/mp4", caption }, { quoted: m });
     } catch (error) {
@@ -33,8 +37,3 @@ const getBuffer = async (url, options = {}) => {
     const res = await axios({ method: 'get', url, headers: { 'DNT': 1, 'Upgrade-Insecure-Request': 1 }, ...options, responseType: 'arraybuffer' });
     return res.data;
 };
-```
-
-Con estos cambios, al recibir un video desde Facebook podrás mostrar no solo el título y la duración, sino también el tamaño del archivo y la fecha de publicación. Asegúrate de que esos datos estén disponibles en la respuesta de la API que estás utilizando.
-
-Si necesitas más ayuda o si hay algo específico que te gustaría agregar o modificar, ¡dímelo!
