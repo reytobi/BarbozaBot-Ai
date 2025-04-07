@@ -16,6 +16,6 @@ MF.command = ['fbdl', 'facebookdl'];
 export default MF;
 
 async function facebookdl(url) {
-let moon = await(await fetch(`https://vapis.my.id/api/fbdl?url=https://www.facebook.com/share/r/12BFZAtjpS8/?mibextid=qDwCgo{url}`)).json();
+let moon = await(await fetch(`https://vapis.my.id/api/fbdl?url=https://www.facebook.com/share/r/12BFZAtjpS8/?mibextid=qDwCgo{text}`)).json();
 return moon;
 }
