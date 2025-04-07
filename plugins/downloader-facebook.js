@@ -22,7 +22,7 @@ let HS = async (m, { conn, text }) => {
 if (!text)  return conn.reply(m.chat, `❀ Ingresa un link de facebook`, m)
 
 try {
-let api = await fetch(`https://vapis.my.id/api/fbdl?url=${text}`)
+let api = await fetch(`https://delirius-apiofc.vercel.app/download/facebook?url=${text}`)
 let json = await api.json()
 let { title, durasi, hd_url } = json.data
 let VidBuffer = await getBuffer(hd_url)
