@@ -1,42 +1,32 @@
 import fetch from 'node-fetch';
-import fg from 'senna-fg';
 
-let handler = async(m, { conn, args, text }) => {
+let handler = async(m, { conn, usedPrefix, command, text }) => {
 
-if (!text) return m.reply(`🍭 Ingresa Un Link De YouTube\n> *Ejemplo:* https://youtube.com/shorts/ZisXJqH1jtw?si=0RZacIJU5zhoCmWh`);
+if (!text) return m.reply(`🍭 Ingresa Un Texto Para Buscar En Youtube\n> *Ejemplo:* ${usedPrefix + command}Edist sumi`);
 
-m.react(rwait);
+try {
+let api = await (await fetch(`https://delirius-apiofc.vercel.app/search/ytsearch?q=${text}`)).json();
 
+let results = api.data[0];
 
-// let video = await (await fetch(`https://api.agungny.my.id/api/youtube-video?url=${text}`)).json();
+let txt = `✨ *Título:* ${results.title}\n⌛ *Duración:* ${results.duration}\n📎 *Link:* ${results.url}\n📆 *Publicado:* ${results.publishedAt}`;
 
-let data = await fg.ytmp4(text);
-let url = data.dl_url;
-// let link = video.result.result.download;
+let img = results.image;
 
-if (!url) return m.reply('《✧》Hubo un error al intentar acceder al link.\n> Si el problema persiste, reportalo en el grupo de soporte.');
+conn.sendMessage(m.chat, { image: { url: img }, caption: txt }, { quoted: m });
 
-/* let limit = 5 * 1024 * 1024; // 5MB porque si
+let api2 = await(await fetch(`https://api.fgmods.xyz/api/downloader/ytmp3?url=${results.url}&quality=480p&apikey=elrebelde21`)).json();
 
-if (video?.data?.size > limit) {
-await conn.sendMessage(m.chat, {
-      document: { url: url },
-      fileName: `${data.title}.mp4`,
-      mimetype: 'video/mp4', caption: '✅ Descargado Con Exito.',
-      thumbnail: video.thumbnail },          
-      { quoted: m })
+if (!api2?.result.dl_url) return m.reply('No Se  Encontraron Resultados');
 
-} else { 
-*/
+await conn.sendMessage(m.chat, { document: { url: api2.result.dl_url }, mimetype: 'audio/mpeg', fileName: `${api2.result.title}.mp3` }, { quoted: m });
 
-await conn.sendMessage(m.chat, {
-      video: { url: url },
-      mimetype: "video/mp4",
-      caption: `${dev}`,
-    }, { quoted: m });
-    m.react(done);
- }
+} catch (e) {
+m.reply(`Error: ${e.message}`);
+m.react('✖️');
+  }
+}
 
-handler.command = ['ytv', 'ytmp4', 'ymp4']
+handler.command = ['play', 'pdoc'];
 
-export default handler;
+export default handler
