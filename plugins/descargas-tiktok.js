@@ -36,11 +36,11 @@ conn.sendMessage(m.chat, { video: { url: ttdl.result.video_no_watermark }, mimet
 m.react('✅');
 }
 
-MF.command = ['tiktok', 'ttdl'];
+MF.command = ['tiktokdl', 'ttdl'];
 
 export default MF;
 
 async function tiktokdl(url) {
-    let apiDownload = await (await fetch(`https://vapis.my.id/api/ttdl?url=https://vm.tiktok.com/ZSjVn47bC/{url}&apikey=makangratis`)).json();
+    let apiDownload = await (await fetch(`https://api.ssateam.my.id/api/tiktok?url=${url}&apikey=makangratis`)).json();
     return apiDownload;
 }
