@@ -1,39 +1,49 @@
-/*
-- Código By Barboza 
-- 🌙 Moon Force Team 
--   https://whatsapp.com/channel/0029Vb4Dnh611ulGUbu7Xg1q
-*/
-import fetch from 'node-fetch';
-import axios from 'axios';
+import { igdl } from 'ruhend-scraper';
 
-let HS = async (m, { conn, text }) => {
-    if (!text) return conn.reply(m.chat, '📌Atención futuro cliente proporcione un link de facebook para descargar su video', m);
+const handler = async (m, { text, conn, args, usedPrefix, command }) => {
+  if (!args[0]) {
+    return conn.reply(m.chat, '*\`Ingresa El link Del vídeo a descargar ❤️‍🔥\`*', m, fake);
+  }
 
-    try {
-        let api = await fetch(`https://mahiru-shiina.vercel.app/download/facebook=${url}`);
-        let json = await api.json();
+  await m.react('🕒');
+  let res;
+  try {
+    res = await igdl(args[0]);
+  } catch (error) {
+    return conn.reply(m.chat, '*`Error al obtener datos. Verifica el enlace.`*', m);
+  }
 
-        if (!json.data) {
-            return conn.reply(m.chat, '📌 No se descargo el vídeo . Verifica el enlace.', m);
-        }
+  let result = res.data;
+  if (!result || result.length === 0) {
+    return conn.reply(m.chat, '*`No se encontraron resultados.`*', m);
+  }
 
-        let { title, durasi, hd_url } = json.data;
-        let VidBuffer = await getBuffer(hd_url);
+  let data;
+  try {
+    data = result.find(i => i.resolution === "720p (HD)") || result.find(i => i.resolution === "360p (SD)");
+  } catch (error) {
+    return conn.reply(m.chat, '*`Error al procesar los datos.`*', m);
+  }
 
-        let caption = `- *Título:* ${title}\n- *Duración:* ${durasi}`;
+  if (!data) {
+    return conn.reply(m.chat, '*`No se encontró una resolución adecuada.`*', m);
+  }
 
-        await conn.sendMessage(m.chat, { video: VidBuffer, mimetype: "video/mp4", caption }, { quoted: m });
-    } catch (error) {
-        console.error(error);
-        conn.reply(m.chat, '📌 Ocurrió un error inesperado contacta con el creador.', m);
-    }
+  await m.react('✅');
+  let video = data.url;
+
+  try {
+    await conn.sendMessage(m.chat, { video: { url: video }, caption: dev, fileName: 'fb.mp4', mimetype: 'video/mp4' }, { quoted: m });
+  } catch (error) {
+    return conn.reply(m.chat, '*`Error al enviar el video.`*', m);
+  await m.react('❌');
+  }
 };
 
-HS.command = ['fbdl', 'fb', 'facebook', 'facebookdl'];
+handler.help = ['fb *<link>*'];
+handler.estrellas = 2
+handler.tags = ['downloader']
+handler.command = /^(fb|facebook|fbdl)$/i;
+handler.register = true
 
-export default HS;
-
-const getBuffer = async (url, options = {}) => {
-    const res = await axios({ method: 'get', url, headers: { 'DNT': 1, 'Upgrade-Insecure-Request': 1 }, ...options, responseType: 'arraybuffer' });
-    return res.data;
-};
+export default handler;                                                                                                                                                                                                                                          
