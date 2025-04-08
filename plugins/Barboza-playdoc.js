@@ -15,7 +15,7 @@ let img = results.image;
 
 conn.sendMessage(m.chat, { image: { url: img }, caption: txt }, { quoted: m });
 
-let api2 = await(await fetch(`https://api.fgmods.xyz/api/downloader/ytmp3?url=${results.url}&quality=480p&apikey=elrebelde21`)).json();
+let api2 = await(await fetch(`https://mahiru-shiina.vercel.app/download/ytmp3?url=${results.url}&quality=480p&apikey=elrebelde21`)).json();
 
 if (!api2?.result.dl_url) return m.reply('No Se  Encontraron Resultados');
 
