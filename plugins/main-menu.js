@@ -60,7 +60,7 @@ Hola *%name* soy *Barboza*
 ╚═════ ♢.✰.♢ ═══════
 
 ╔══════ •『 𝑰𝑵𝑭𝑶-𝑼𝑺𝑬𝑹』
-║  🤖 Bot: ©Bot-Agust-Ai®
+║  🤖 Bot: ©Bot-Barboza-Ai®
 ║  💎 Modo Público
 ║  💨 Baileys: Multi Device
 ║  🪄 Tiempo Activo: %muptime
