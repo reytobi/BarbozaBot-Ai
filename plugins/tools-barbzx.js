@@ -4,7 +4,7 @@ if (!text) throw `*👻 ingrese un texto para generar poder generar su imagen*`;
 m.react('🕒');
 await conn.sendMessage(m.chat, {text: '*👻 Generando Imagen*'}, {quoted: m});
 try {
-const response = await fetch(`https://eliasar-yt-api.vercel.app/api/ai/text2img?prompt$=gatos{encodeURIComponent(text)}`);
+const response = await fetch(``https://api.dorratz.com/v3/ai-image?prompt=${text}`;{encodeURIComponent(text)}`);
 if (!response.ok) throw new Error('Network response was not ok');
 const buffer = await response.buffer();
 m.react('✔️');
