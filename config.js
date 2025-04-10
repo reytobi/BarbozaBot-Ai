@@ -10,6 +10,7 @@ import axios from 'axios'
 
 global.owner = [
   ['584146277368', 'Barboza OFC',true],
+  ['50585389943', 'Goku',true],
   ['584123989549', 'sisked',true],
   ['50557865603', 'Willzek',true],
   ['5212441357601', 'Emma (Violets Version)',true],
