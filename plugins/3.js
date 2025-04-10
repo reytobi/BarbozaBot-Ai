@@ -9,7 +9,7 @@ const imageHandler = async (m, { conn, command, usedPrefix }) => {
 
     // Definir las APIs disponibles
     const api1 = "https://delirius-apiofc.vercel.app/nsfw/girls";
-    const api2 = "https://delirius-apiofc.vercel.app/nsfw/boobs";
+    const api2 = "https://api.dorratz.com/nsfw/tetas";
 
     // Alternar entre las dos APIs
     const apiUrl = session.lastApi === api1 ? api2 : api1;
