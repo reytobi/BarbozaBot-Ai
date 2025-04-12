@@ -22,7 +22,12 @@ async function handler(m, { conn: stars, usedPrefix }) {
       let name = v.user?.name || '-';
       // Calcular el tiempo conectado en milisegundos
       let timeConnected = Math.floor((Date.now() - v.user.connectedAt) / 1000); // en segundos
-      return `*${index + 1}.-* @${jid.replace(/[^0-9]/g, '')}\n*Link:* https://wa.me/${jid.replace(/[^0-9]/g, '')}\n*Nombre:* ${name}\n*Tiempo Conectado:* ${timeConnected} segundos`;
+
+      let hours = Math.floor(timeConnected / 3600);
+      let minutes = Math.floor((timeConnected % 3600) / 60);
+      let seconds = timeConnected % 60;
+
+      return `*${index + 1}.-* @${jid.replace(/[^0-9]/g, '')}\n*Link:* https://wa.me/${jid.replace(/[^0-9]/g, '')}\n*Nombre:* ${name}\n*Tiempo Conectado:* ${hours}h ${minutes}m ${seconds}s`;
     })
     .join('\n\n');
 
