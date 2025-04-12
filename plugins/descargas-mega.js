@@ -13,8 +13,8 @@ let handler = async (m, { conn, args, usedPrefix, text, command }) => {
 
         if (file.size >= 300000000) return m.reply('Error: El archivo es demasiado pesado (Peso máximo: 300MB (Premium: 800MB))');
 
-        // Se elimina la línea de reacción, ya que `rwait` no está definido
-        // Puedes usar una reacción válida como esta: m.react('✅');
+        // Reemplazamos rwait con una reacción válida, como una marca de verificación
+        m.react('✅'); // Puedes personalizar el emoji según prefieras
 
         const caption = `   *--- ${botName} ---*\nFile: ${file.name}\nSize: ${formatBytes(file.size)}\n> ৎ୭࠭͢Bot Barboza Súper Bot𓆪͟͞ `;
 
