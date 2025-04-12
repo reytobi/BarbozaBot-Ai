@@ -1,3 +1,4 @@
+
 import ws from 'ws';
 
 async function handler(m, { conn: stars, usedPrefix }) {
@@ -5,6 +6,10 @@ async function handler(m, { conn: stars, usedPrefix }) {
 
   global.conns.forEach((conn) => {
     if (conn && conn.user && conn.ws && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED) {
+      // Guardar la fecha de conexión si no está guardada
+      if (!conn.user.connectedAt) {
+        conn.user.connectedAt = Date.now();
+      }
       uniqueUsers.set(conn.user.jid, conn);
     }
   });
@@ -15,13 +20,15 @@ async function handler(m, { conn: stars, usedPrefix }) {
     .map((v, index) => {
       let jid = v.user?.jid || '-';
       let name = v.user?.name || '-';
-      return `*${index + 1}.-* @${jid.replace(/[^0-9]/g, '')}\n*Link:* https://wa.me/${jid.replace(/[^0-9]/g, '')}\n*Nombre:* ${name}`;
+      // Calcular el tiempo conectado en milisegundos
+      let timeConnected = Math.floor((Date.now() - v.user.connectedAt) / 1000); // en segundos
+      return `*${index + 1}.-* @${jid.replace(/[^0-9]/g, '')}\n*Link:* https://wa.me/${jid.replace(/[^0-9]/g, '')}\n*Nombre:* ${name}\n*Tiempo Conectado:* ${timeConnected} segundos`;
     })
     .join('\n\n');
 
   let replyMessage = message.length === 0 ? '' : message;
   let totalUsers = users.length;
-  let responseMessage = `*Total de Bots* : ${totalUsers || '0'}\n\n${replyMessage.trim()}`.trim();
+  let responseMessage = `*Total de Bots*: ${totalUsers || '0'}\n\n${replyMessage.trim()}`;
 
   await stars.sendMessage(
     m.chat,
