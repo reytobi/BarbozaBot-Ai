@@ -1,3 +1,4 @@
+
 import { File } from "megajs";
 import path from "path";
 
@@ -5,14 +6,15 @@ const botName = 'Descarga de MEGA';
 
 let handler = async (m, { conn, args, usedPrefix, text, command }) => {
     try {
-        if (!text) return conn.reply(m.chat, `\`\`\`[ 💨 ] Uso correcto del comando:\`\`\` ${usedPrefix + command} https://mega.nz/file/ovJTHaQZ#yAbkrvQgykcH_NDKQ8eIc0zvsN7jonBbHZ_HTQL6lZ8`, null, { quoted: fkontak });
+        if (!text) return conn.reply(m.chat, `\`\`\`[ 💨 ] Uso correcto del comando:\`\`\` ${usedPrefix + command} https://mega.nz/file/ovJTHaQZ#yAbkrvQgykcH_NDKQ8eIc0zvsN7jonBbHZ_HTQL6lZ8`, null);
 
         const file = File.fromURL(text);
         await file.loadAttributes();
 
-        if (file.size >= 300000000) return m.reply('Error: El archivo es demasiado pesado (Peso máximo: 300MB ( Premium: 800MB )');
+        if (file.size >= 300000000) return m.reply('Error: El archivo es demasiado pesado (Peso máximo: 300MB (Premium: 800MB))');
 
-        m.react(rwait);
+        // Se elimina la línea de reacción, ya que `rwait` no está definido
+        // Puedes usar una reacción válida como esta: m.react('✅');
 
         const caption = `   *--- ${botName} ---*\nFile: ${file.name}\nSize: ${formatBytes(file.size)}\n> ৎ୭࠭͢Bot Barboza Súper Bot𓆪͟͞ `;
 
@@ -37,7 +39,7 @@ let handler = async (m, { conn, args, usedPrefix, text, command }) => {
     } catch (error) {
         return m.reply(`Error: ${error.message}`);
     }
-}
+};
 
 handler.help = ["mega"];
 handler.tags = ["descargas"];
