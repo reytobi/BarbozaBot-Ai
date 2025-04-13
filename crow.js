@@ -104,7 +104,7 @@ loadChatgptDB();
 
 global.creds = 'creds.json'
 global.authFile = 'crowSession'
-global.authFileJB  = 'crowJadiBot'
+global.authFileJB  = 'BarbozaJadiBot'
 /*global.rutaBot = join(__dirname, authFile)
 global.rutaJadiBot = join(__dirname, authFileJB)
 
@@ -278,7 +278,7 @@ console.log(chalk.bold.redBright(`\n⚠️❗ RAZON DE DESCONEXIÓN DESCONOCIDA:
 process.on('uncaughtException', console.error);
 
 async function connectSubBots() {
-const subBotDirectory = './YukiJadiBot';
+const subBotDirectory = './BarbozaJadiBot';
 if (!existsSync(subBotDirectory)) {
 console.log('🌠 BarbozaBot-Ai no tiene Sub-Bots vinculados.');
 return;
@@ -464,7 +464,7 @@ console.log(chalk.bold.cyanBright(`\n╭» ⚪ CrowJadiBot ⚪\n│→ ARCHIVOS 
 console.log(chalk.bold.red(`\n╭» 🔴 CrowJadiBot 🔴\n│→ OCURRIÓ UN ERROR\n╰― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― ― 🗑️♻️\n` + err))
 }}
 function purgeOldFiles() {
-const directories = ['./CrowSession/', './CrowJadiBot/']
+const directories = ['./CrowSession/', './BarbozaJadiBot/']
 directories.forEach(dir => {
 readdirSync(dir, (err, files) => {
 if (err) throw err
