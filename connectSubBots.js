@@ -17,7 +17,7 @@ import {
 global.conns = global.conns || []
 
 export async function connectSubBots() {
-  const subBotDir = './BarbozaJadiBot/'
+  const subBotDir = './barbozaJadi2/'
   if (!fs.existsSync(subBotDir)) {
     console.log('🔃 No hay subbots para reconectar.')
     return
