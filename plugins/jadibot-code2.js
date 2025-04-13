@@ -23,7 +23,7 @@ return conn.reply(m.chat, `「💭」Solo puedes usar este comando en el bot pri
 async function serbot() {
 let authFolderB = crypto.randomBytes(10).toString('hex').slice(0, 8);
 if (!fs.existsSync("./BarbozaJadiBot/" + authFolderB)) {
-fs.mkdirSync("./IanJadiBot/" + authFolderB, { recursive: true });
+fs.mkdirSync("./BarbozaJadiBot/" + authFolderB, { recursive: true });
 }
 if (args[0]) {
 fs.writeFileSync(`barbozaJadi2/creds.json`, Buffer.from(args[0], 'base64').toString('utf-8'))
