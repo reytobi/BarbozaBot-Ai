@@ -1,6 +1,6 @@
 /*
 
-reconexion de subbors, by github.com/DIEGO-OFC
+reconexion de subbots, by github.com/DIEGO-OFC
 
 */
 
