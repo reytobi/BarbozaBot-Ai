@@ -1,19 +1,27 @@
 /*
-
-reconexion de subbots, by github.com/DIEGO-OFC
-
+reconexión de subbots automática al reiniciar el bot
+by github.com/DIEGO-OFC adaptado para BarbozaBot
 */
 
 import fs from 'fs'
 import path from 'path'
 import pino from 'pino'
-import { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, jidNormalizedUser } from '@whiskeysockets/baileys'
+import { 
+  makeWASocket, 
+  useMultiFileAuthState, 
+  makeCacheableSignalKeyStore, 
+  fetchLatestBaileysVersion, 
+  jidNormalizedUser 
+} from '@whiskeysockets/baileys'
 
 global.conns = global.conns || []
 
 export async function connectSubBots() {
-  const subBotDir = './IanBot/'
-  if (!fs.existsSync(subBotDir)) return console.log('🔃 No hay subbots para reconectar.')
+  const subBotDir = './BarbozaJadibot/'
+  if (!fs.existsSync(subBotDir)) {
+    console.log('🔃 No hay subbots para reconectar.')
+    return
+  }
 
   const folders = fs.readdirSync(subBotDir).filter(name =>
     fs.existsSync(path.join(subBotDir, name, 'creds.json'))
