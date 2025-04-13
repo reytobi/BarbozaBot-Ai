@@ -1,3 +1,9 @@
+/*
+
+reconexion de subbors, by github.com/DIEGO-OFC
+
+*/
+
 import fs from 'fs'
 import path from 'path'
 import pino from 'pino'
