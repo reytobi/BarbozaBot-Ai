@@ -22,7 +22,7 @@ return conn.reply(m.chat, `「💭」Solo puedes usar este comando en el bot pri
 }
 async function serbot() {
 let serbotFolder = crypto.randomBytes(10).toString('hex').slice(0, 8)
-let folderSub = `./CrowJadiBot/${serbotFolder}`
+let folderSub = `./IanJadiBot/${serbotFolder}`
 if (!fs.existsSync(folderSub)) {
 fs.mkdirSync(folderSub, { recursive: true })
 }
