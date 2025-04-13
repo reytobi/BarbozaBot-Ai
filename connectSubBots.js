@@ -12,7 +12,7 @@ import { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetch
 global.conns = global.conns || []
 
 export async function connectSubBots() {
-  const subBotDir = './CrowJadiBot/'
+  const subBotDir = './IanJadiBot/'
   if (!fs.existsSync(subBotDir)) return console.log('🔃 No hay subbots para reconectar.')
 
   const folders = fs.readdirSync(subBotDir).filter(name =>
