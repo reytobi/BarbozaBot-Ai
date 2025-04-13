@@ -67,6 +67,12 @@ process.on('warning', (warning) => {
   }
 })
 start('crow.js')
+process.on('exit', () => {
+  console.log('🔃 Reconectando sub-bots antes de salir...')
+  connectSubBots()
+})
 
-// Llamada para reconectar subbots automáticamente después de iniciar el bot principal
-connectSubBots()
+setInterval(() => {
+  console.log('🔃 Verificando conexión de sub-bots...')
+  connectSubBots()
+}, 3600000)
