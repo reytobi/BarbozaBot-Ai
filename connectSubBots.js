@@ -1,5 +1,5 @@
-/*
-reconexión de subbots automática al reiniciar el bot
+/* 
+RECONEXIÓN DE SUBBOTS AUTOMÁTICA AL REINICIAR EL BOT
 by github.com/DIEGO-OFC adaptado para BarbozaBot
 */
 
@@ -11,13 +11,14 @@ import {
   useMultiFileAuthState, 
   makeCacheableSignalKeyStore, 
   fetchLatestBaileysVersion, 
-  jidNormalizedUser 
+  jidNormalizedUser,
+  DisconnectReason
 } from '@whiskeysockets/baileys'
 
 global.conns = global.conns || []
 
 export async function connectSubBots() {
-  const subBotDir = './barbozaJadi2/'
+  const subBotDir = './BarbozaJadiBot/'
   if (!fs.existsSync(subBotDir)) {
     console.log('🔃 No hay subbots para reconectar.')
     return
@@ -49,6 +50,19 @@ export async function connectSubBots() {
         version
       })
 
+      conn.ev.on('connection.update', (update) => {
+        const { connection, lastDisconnect } = update
+        if (connection === 'close') {
+          const shouldReconnect = lastDisconnect.error?.output?.statusCode !== DisconnectReason.loggedOut
+          console.log(`connection closed due to ${lastDisconnect.error}, reconnecting ${shouldReconnect}`)
+          if (shouldReconnect) {
+            connectSubBots()
+          }
+        } else if (connection === 'open') {
+          console.log(`✅ Subbot reconectado: ${folder}`)
+        }
+      })
+
       conn.ev.on('creds.update', saveCreds)
       global.conns.push(conn)
       console.log(`✅ Subbot reconectado: ${folder}`)
@@ -57,3 +71,6 @@ export async function connectSubBots() {
     }
   }
 }
+
+// Llamada para reconectar subbots automáticamente después de iniciar el bot principal
+connectSubBots()
