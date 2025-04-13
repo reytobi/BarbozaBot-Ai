@@ -1,8 +1,9 @@
 import fs from 'fs'
 import path from 'path'
 import pino from 'pino'
-import { makeWASocket } from './lib/simple.js'
-import { useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion } from '@whiskeysockets/baileys'
+import { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, jidNormalizedUser } from '@whiskeysockets/baileys'
+
+global.conns = global.conns || []
 
 export async function connectSubBots() {
   const subBotDir = './CrowJadiBot/'
@@ -17,16 +18,20 @@ export async function connectSubBots() {
       const folderPath = path.join(subBotDir, folder)
       const { state, saveCreds } = await useMultiFileAuthState(folderPath)
       const { version } = await fetchLatestBaileysVersion()
+
       const conn = makeWASocket({
         logger: pino({ level: 'silent' }),
         printQRInTerminal: false,
-        browser: ['CrowBot SubBot', 'Edge', '2.0.0'],
+        browser: ['BarbozaBot-AI', 'Desktop', '1.0.0'],
         auth: {
           creds: state.creds,
           keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'fatal' }))
         },
         markOnlineOnConnect: true,
         generateHighQualityLinkPreview: true,
+        getMessage: async (key) => ({
+          conversation: 'Hola, soy un subbot Barboza.'
+        }),
         version
       })
 
@@ -34,7 +39,7 @@ export async function connectSubBots() {
       global.conns.push(conn)
       console.log(`✅ Subbot reconectado: ${folder}`)
     } catch (e) {
-      console.error(`❌ Error al reconectar subbot ${folder}:`, e)
+      console.error(`❌ Error al reconectar subbot ${folder}:`, e.message)
     }
   }
-        }
+}
