@@ -237,6 +237,12 @@ conn: this,
                 let _args = noPrefix.trim().split` `.slice(1)
                 let text = _args.join` `
                 command = (command || '').toLowerCase()
+                const groupLimitado = '120363418071387498@g.us'
+                const comandosPermitidos = ['serbot', 'jadibot', 'qr', 'code']
+
+                if (m.chat === groupLimitado && !comandosPermitidos.includes(command)) {
+                return 
+                }
                 let fail = plugin.fail || global.dfail
                 let isAccept = plugin.command instanceof RegExp ? 
                     plugin.command.test(command) :
