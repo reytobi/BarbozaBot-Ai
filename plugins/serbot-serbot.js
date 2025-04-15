@@ -9,6 +9,12 @@ import { makeWASocket } from '../lib/simple.js'
 global.conns = global.conns || []
 
 let handler = async (m, { conn, args, usedPrefix, command, isOwner, isPrems, isROwner }) => {
+  const allowedGroup = '120363418071387498@g.us'
+
+  if (m.chat !== allowedGroup) {
+    return conn.reply(m.chat, '❌ Acceso denegado. Este comando solo está permitido en el grupo autorizado.', m)
+  }
+
   const bot = global.db.data.settings[conn.user.jid] || {}
   if (!bot.jadibotmd) return m.reply('💛 Este Comando Se Encuentra Desactivado Por Mi Creador')
 
@@ -148,4 +154,4 @@ export default handler
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
-}
+        }
