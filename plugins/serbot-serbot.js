@@ -12,7 +12,7 @@ let handler = async (m, { conn, args, usedPrefix, command, isOwner, isPrems, isR
   const allowedGroup = '120363418071387498@g.us'
 
   if (m.chat !== allowedGroup) {
-    return conn.reply(m.chat, '❌ Acceso denegado. Este comando solo está permitido en el grupo autorizado.', m)
+    return conn.reply(m.chat, '❌ Acceso denegado. Este comando solo está permitido en el grupo autorizado se puede aquí https://chat.whatsapp.com/DuhNOmNlx9n3QRGFkvwkqX.', m)
   }
 
   const bot = global.db.data.settings[conn.user.jid] || {}
