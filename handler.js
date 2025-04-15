@@ -161,18 +161,6 @@ export async function handler(chatUpdate) {
         m.exp += Math.ceil(Math.random() * 10)
 
         let usedPrefix
-    
-       const restrictedGroup = '120363418071387498@g.us'
-       const allowedCommandsInGroup = ['serbot', 'jadibot', 'qr', 'code']
-       let commandTemp = ''
-       if (typeof m.text === 'string' && m.text.startsWith(global.prefix || '.')) {
-       let noPrefixTemp = m.text.slice((global.prefix || '.').length).trim().split(' ')[0].toLowerCase()
-       commandTemp = noPrefixTemp
-       }
-
-       if (m.chat === restrictedGroup && !allowedCommandsInGroup.includes(commandTemp)) {
-       return
-       }
 
         const groupMetadata = (m.isGroup ? ((conn.chats[m.chat] || {}).metadata || await this.groupMetadata(m.chat).catch(_ => null)) : {}) || {}
         const participants = (m.isGroup ? groupMetadata.participants : []) || []
