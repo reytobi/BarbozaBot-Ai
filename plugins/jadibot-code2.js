@@ -16,8 +16,7 @@ if (!(global.conns instanceof Array)) global.conns = [];
 let handler = async (m, { conn: _conn, args, usedPrefix, command, isOwner, isROwner }) => {
   const allowedGroup = '120363418071387498@g.us'; 
   if (m.chat !== allowedGroup) {
-    return conn.reply(m.chat, '❌ Acceso denegado. Este comando solo está permitido en el grupo autorizado
-aqui es donde se puede https://chat.whatsapp.com/DuhNOmNlx9n3QRGFkvwkqX.', m);
+    return conn.reply(m.chat, '❌ Acceso denegado. Este comando solo está permitido en el grupo autorizado https://chat.whatsapp.com/DuhNOmNlx9n3QRGFkvwkqX.', m);
   }
 
   if (!global.db.data.settings[_conn.user.jid].jadibotmd && !isROwner) {
