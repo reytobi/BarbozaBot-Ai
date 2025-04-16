@@ -38,7 +38,7 @@ async function handler(m, { conn: stars, usedPrefix }) {
   await stars.sendMessage(
     m.chat,
     { text: responseMessage, mentions: stars.parseMention(responseMessage) },
-    { quoted: m }
+    { quoted: m,rcanal }
   );
 }
 
