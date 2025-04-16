@@ -1,6 +1,6 @@
 // CREADOR DARK - CORE  //
 
-let handler = async (m, { conn }) => {
+let handler = async (m,rcanal { conn }) => {
 
     await m.react('💫');
 
