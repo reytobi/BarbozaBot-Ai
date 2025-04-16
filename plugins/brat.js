@@ -26,7 +26,7 @@ const fetchSticker = async (text, attempt = 1) => {
     }
 };
 
-const handler = async (m,rcanal {
+const handler = async (m, {
     text,
     conn
 }) => {
@@ -34,7 +34,7 @@ const handler = async (m,rcanal {
         return conn.sendMessage(m.chat, {
             text: '🍬 Por favor ingresa el texto para hacer un sticker.',
         }, {
-            quoted: m,rcanal
+            quoted: m,
         });
     }
 
@@ -68,7 +68,7 @@ const handler = async (m,rcanal {
         return conn.sendMessage(m.chat, {
             text: `⚠️ Ocurrio un erro.`,
         }, {
-            quoted: m,rcanal
+            quoted: m,
         });
     }
 };
