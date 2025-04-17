@@ -3,7 +3,7 @@ import fs from 'fs'
 let timeout = 15000
 let poin = 1000
 
-let handler = async (m,rcanal { conn, usedPrefix }) => {
+let handler = async (m, { conn, usedPrefix }) => {
     conn.tekateki = conn.tekateki ? conn.tekateki : {}
     let id = m.chat
     if (id in conn.tekateki) {
@@ -104,7 +104,7 @@ let handler = async (m,rcanal { conn, usedPrefix }) => {
         { pais: 'Japón', response: 'Tokio' },
         { pais: 'Jordania', response: 'Amán' },
         { pais: 'Kazajistán', response: 'Astaná' },
-        { pais: 'Kenia', response: 'Nairobi' },
+        { pais: 'Kenia', response: 'Nairobi' },8
         { pais: 'Kirguistán', response: 'Biskek' },
         { pais: 'Kiribati', response: 'Tarawa' },
         { pais: 'Kuwait', response: 'Kuwait' },
@@ -143,7 +143,7 @@ let handler = async (m,rcanal { conn, usedPrefix }) => {
 `.trim();
 
     conn.tekateki[id] = [
-       await conn.reply(m.chat, caption, m,rcanal),
+       await conn.reply(m.chat, caption, m,),
         json, poin,
         setTimeout(async () => {
             if (conn.tekateki[id]) await conn.reply(m.chat, `Se acabó el tiempo!, intenta descubrir la capital de otro país.`, conn.tekateki[id][0]);
