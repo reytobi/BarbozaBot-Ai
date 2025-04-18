@@ -32,6 +32,7 @@ global.dev = '© ⍴᥆ᥕᥱrᥱძ ᑲᥡ ᑲᥲrᑲ᥆zᥲ ❀'
 global.wait = '🌪️ *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛ𝙾... ฅ^•ﻌ•^ฅ\n\n> ᑲ᥆𝗍 ᑲᥲrᑲ᥆zᥲ 🌪️*'
 global.botname = '[ 🌪️𝐁𝐚𝐫𝐛𝐨𝐳𝐚 𝐀𝐢 𝐖𝐡𝐚𝐬𝐀𝐩𝐩 𝐁𝐨𝐭 ]'
 global.textbot = `Powered By Bot Barboza🌪️`
+global.dev = 'barboza gay'
 global.listo = '*Aqui tiene ฅ^•ﻌ•^ฅ*'
 global.namechannel = 'ᑲ᥆𝗍 ᑲᥲrᑲ᥆zᥲ-ᥲі🌪️'
 
