@@ -1,4 +1,3 @@
-codigo echo por barboza 
 
 let handler = async (m, { conn, args, command }) => {
     if (!args[0] || !args[1]) {
@@ -12,7 +11,8 @@ let handler = async (m, { conn, args, command }) => {
     }
 
     try {
-        / numero.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
+        // Formatear número de teléfono
+        const numeroFormateado = numero.replace(/[^0-9]/g, "") + "@s.whatsapp.net";
 
         // Enviar el mensaje al número proporcionado
         await conn.sendMessage(numeroFormateado, { text: mensaje }, { quoted: m });
