@@ -1,24 +1,24 @@
 
-import fetch from 'node-fetch';
+import PhoneNumber from 'awesome-phonenumber';
 
-let handler = async (m, { conn, usedPrefix, text, args, command }) => {
-   await m.react('🔥');
+async function handler(m, { conn }) { 
+    let numcreador = '584146277368';
+    let ownerJid = numcreador + '@s.whatsapp.net';
 
-   let numcreador = '584146277368';
-   let ownerJid = numcreador + '@s.whatsapp.net';
-   let name = await conn.getName(ownerJid) || 'Owner';
-   let empresa = 'Barboza - Servicios Tecnológicos';
-   let imagen = 'https://qu.ax/Mvhfa.jpg'; // URL de la imagen del creador
+    let name = await conn.getName(ownerJid) || 'Owner'; 
+    let about = (await conn.fetchStatus(ownerJid).catch(() => {}))?.status || 'Creador de bots de WhatsApp y del Bot Barboza Ai';
+    let empresa = 'Barboza- Servicios Tecnológicos';
+    let imagen = 'https://qu.ax/Mvhfa.jpg'; // Reemplaza con la URL de la imagen que deseas mostrar
 
-   // Enviar solo la imagen con enlace al número sin mostrarlo directamente
-   await conn.sendMessage(m.chat, { 
-       image: { url: imagen },
-       caption: `📞 [Contactar al creador](https://wa.me/${numcreador})`, // Muestra el texto como enlace, no el número directamente
-   }, { quoted: m });
-};
+    // Enviar imagen junto con el número del dueño y sus detalles
+    await conn.sendMessage(m.chat, { 
+        image: { url: imagen },
+        caption: `👤 *Dueño del bot*\n📌 *Nombre:* ${name}\n📞 *Número:* wa.me/${numcreador}\n📝 *Descripción:* ${about}\n🏢 *Empresa:* ${empresa}\n📧 *Email:* sebastianbarbaro82@gmail.com\n🌐 *Instagram:* https://www.instagram.com/sebastian_barboza13`,
+    }, { quoted: m });
+}
 
-handler.help = ['owner', 'creator'];
-handler.tags = ['main'];
-handler.command = /^(owner|creator|creador|dueño)$/i;
+handler.help = ['owner']; 
+handler.tags = ['main']; 
+handler.command = ['owner', 'creator', 'creador', 'dueño'];
 
 export default handler;
