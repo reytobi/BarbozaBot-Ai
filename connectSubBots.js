@@ -1,95 +1,146 @@
-/* 
-RECONEXIÓN DE SUBBOTS AUTOMÁTICA AL REINICIAR EL BOT
-by github.com/DIEGO-OFC adaptado para BarbozaBot
-*/
+const {
+  useMultiFileAuthState,
+  DisconnectReason,
+  makeCacheableSignalKeyStore,
+  fetchLatestBaileysVersion
+} = await import("@whiskeysockets/baileys");
+import qrcode from "qrcode";
+import nodeCache from "node-cache";
+import fs from "fs/promises";
+import path from "path";
+import pino from "pino";
+import util from "util";
+import * as ws from "ws";
+const { child, spawn, exec } = await import("child_process");
+const { CONNECTING } = ws;
+import chalk from 'chalk';
+import { makeWASocket } from "../lib/simple.js";
+import pLimit from 'p-limit'; 
+if (!global.conns || !Array.isArray(global.conns)) {
+  global.conns = [];
+}
 
-import fs from 'fs'
-import path from 'path'
-import pino from 'pino'
-import chalk from 'chalk'
-import { 
-  makeWASocket, 
-  useMultiFileAuthState, 
-  makeCacheableSignalKeyStore, 
-  fetchLatestBaileysVersion,
-  DisconnectReason
-} from '@whiskeysockets/baileys'
+const limit = 100;
+const concurrencyLimit = pLimit(5);
 
-global.conns = global.conns || []
-
-export async function connectSubBots() {
+async function resetSesi(carpeta) {
   try {
-    const subBotDir = './BarbozaJadiBot/'
-    if (!fs.existsSync(subBotDir)) {
-      console.log(chalk.yellow('ℹ️ No hay subbots para reconectar.'))
-      return
-    }
+    const SBF = await fs.readdir('./' + carpeta);
+    await Promise.all(SBF.map(async (folder) => {
+      if (global.conns.length >= limit) {
+        console.log(chalk.cyan(`🌙 Límite de ${limit} subbots alcanzado.`));
+        return;
+      }
+      return concurrencyLimit(async () => {
+        const folderPath = `./${carpeta}/${folder}`;
+        const stats = await fs.stat(folderPath);
+        if (!stats.isDirectory()) return;
 
-    const folders = fs.readdirSync(subBotDir).filter(folder => {
-      const folderPath = path.join(subBotDir, folder)
-      return fs.existsSync(path.join(folderPath, 'creds.json'))
-    })
+        const { state, saveCreds } = await useMultiFileAuthState(folderPath);
+        const { version } = await fetchLatestBaileysVersion();
 
-    if (folders.length === 0) {
-      console.log(chalk.yellow('ℹ️ No se encontraron credenciales de subbots.'))
-      return
-    }
-
-    console.log(chalk.blue(`🔍 Intentando reconectar ${folders.length} subbot(s)...`))
-
-    for (const folder of folders) {
-      try {
-        const folderPath = path.join(subBotDir, folder)
-        const { state, saveCreds } = await useMultiFileAuthState(folderPath)
-        const { version } = await fetchLatestBaileysVersion()
-
-        const conn = makeWASocket({
-          logger: pino({ level: 'silent' }),
+        const connectionOptions = {
+          version,
+          keepAliveIntervalMs: 30000,
           printQRInTerminal: false,
-          browser: ['BarbozaBot-AI', 'Desktop', '1.0.0'],
-          auth: {
-            creds: state.creds,
-            keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }))
-          },
-          markOnlineOnConnect: true,
-          generateHighQualityLinkPreview: true,
-          version
-        })
+          logger: pino({ level: "fatal" }),
+          auth: state,
+          browser: [`Crow`, "Opera", "4.1.0"],
+        };
 
-        conn.ev.on('connection.update', (update) => {
-          const { connection, lastDisconnect } = update
-          if (connection === 'close') {
-            const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode
-            if (code === DisconnectReason.loggedOut) {
-              console.log(chalk.red(`❌ Subbot ${folder} cerró sesión, eliminando credenciales...`))
-              fs.rmSync(folderPath, { recursive: true, force: true })
+        let conn = makeWASocket(connectionOptions);
+        conn.isInit = false;
+        let isInit = true;
+
+        let RCA = 0;
+        async function connectionUpdate(update) {
+          const { connection, lastDisconnect, isNewLogin } = update;
+          if (isNewLogin) conn.isInit = true;
+          
+          const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode;
+          if (code && code !== DisconnectReason.loggedOut && conn?.ws.socket == null) {
+            const i = global.conns.indexOf(conn);
+            if (i >= 0) {
+              global.conns.splice(i, 1);
             }
-            console.log(chalk.yellow(`⚠️ Subbot ${folder} desconectado, intentando reconectar...`))
-            setTimeout(() => connectSubBots(), 10000)
-          } else if (connection === 'open') {
-            console.log(chalk.green(`✅ Subbot reconectado: ${folder}`))
           }
-        })
 
-        conn.ev.on('creds.update', saveCreds)
-        setTimeout(() => {
-          if (!conn.user) {
-            console.log(chalk.yellow(`⚠️ Subbot ${folder} no se conectó, reintentando...`))
-            conn.ws.close()
+          if (connection === "open") {
+            conn.uptime = new Date();
+            conn.isInit = true;
+            global.conns.push(conn);
+            console.log(chalk.blue(`🪐 Subbot ${folder} conectado exitosamente.`));
           }
-        }, 5000)
-        const existingIndex = global.conns.findIndex(c => c.user?.jid === conn.user?.jid)
-        if (existingIndex >= 0) {
-          global.conns[existingIndex] = conn
-        } else {
-          global.conns.push(conn)
+
+          if (connection === 'close' || connection === 'error') {
+            RCA++;
+            let waitTime = [1000, 2000, 3000, 5000, 10000][Math.min(RCA - 1, 4)];
+
+            setTimeout(async () => {
+              try {
+                conn.ws.close();
+                conn.ev.removeAllListeners();
+                conn = makeWASocket(connectionOptions);
+                conn.handler = handler.handler.bind(conn);
+                conn.connectionUpdate = connectionUpdate.bind(conn);
+                conn.credsUpdate = saveCreds.bind(conn, true);
+                conn.ev.on('messages.upsert', conn.handler);
+                conn.ev.on('connection.update', conn.connectionUpdate);
+                conn.ev.on('creds.update', conn.credsUpdate);
+                await creloadHandler(false);
+              } catch (error) {
+                console.log(chalk.red('Error durante la reconexión:', error));    
+              }
+            }, waitTime);
+          }
+
+          if (code === DisconnectReason.loggedOut) {
+            try {
+              await fs.rm(folderPath, { recursive: true });
+              console.log(chalk.yellow(`🍂 Carpeta de credenciales eliminada para el subbot ${folder}.`));
+            } catch (e) {
+              console.error(chalk.red('Error al eliminar carpeta:', e));
+            }
+          }
         }
 
-      } catch (e) {
-        console.error(chalk.red(`❌ Error al reconectar subbot ${folder}:`), e)
-      }
-    }
+        let handler = await import("../handler.js");
+        let creloadHandler = async function (restatConn) {
+          try {
+            const Handler = await import(`../handler.js?update=${Date.now()}`).catch(console.error);
+            if (Handler && Object.keys(Handler).length) handler = Handler;
+          } catch (e) {
+            console.error(e);
+          }
+          if (restatConn) {
+            try {
+              conn.ws.close();
+            } catch {}
+            conn.ev.removeAllListeners();
+            conn = makeWASocket(connectionOptions);
+            isInit = true;
+          }
+          if (!isInit) {
+            conn.ev.off("messages.upsert", conn.handler);
+            conn.ev.off("connection.update", conn.connectionUpdate);
+            conn.ev.off('creds.update', conn.credsUpdate);
+          }
+          conn.handler = handler.handler.bind(conn);
+          conn.connectionUpdate = connectionUpdate.bind(conn);
+          conn.credsUpdate = saveCreds.bind(conn, true);
+          conn.ev.on("messages.upsert", conn.handler);
+          conn.ev.on("connection.update", conn.connectionUpdate);
+          conn.ev.on("creds.update", conn.credsUpdate);
+          isInit = false;
+          return true;
+        };
+
+        await creloadHandler(false);
+      });
+    }));
   } catch (error) {
-    console.error(chalk.red('❌ Error en connectSubBots:'), error)
+    console.error(chalk.red('Error en al conectar los subbots :', error));
   }
 }
+
+await resetSesi("Sesiones/Subbots");
