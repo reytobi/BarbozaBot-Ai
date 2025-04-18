@@ -1,35 +1,47 @@
 
+//código creado por Barbosa
 import PhoneNumber from 'awesome-phonenumber';
 
-async function handler(m, { conn, args }) { 
+async function handler(m, { conn }) { 
     let numcreador = '584146277368';
     let ownerJid = numcreador + '@s.whatsapp.net';
 
-    let name = await conn.getName(ownerJid) || 'Owner'; 
-    let imagen = 'https://qu.ax/Mvhfa.jpg'; // Reemplaza con la URL de la imagen que deseas usar
+    let name = await conn.getName(ownerJid) || 'owner'; 
+    let about = (await conn.fetchStatus(ownerJid).catch(() => {}))?.status || 'Creador de bots de WhatsApp y Creador del Bot Barboza Ai';
 
-    // Formatear el mensaje para enviar directamente
-    const mensaje = args.join(" ") || "¡Hola! Este mensaje es enviado por el bot Barboza AI.";
+    let empresa = 'Barboza- Servicios Tecnológicos';
+  
+   let imagen = 'https://qu.ax/Mvhfa.jpg';
 
-    // Enviar la imagen y el número
+    let vcard = `
+BEGIN:VCARD
+VERSION:3.0
+N:;${name};;;
+FN:${name}
+ORG:${empresa};
+TITLE:CEO & Fundador
+TEL;waid=${numcreador}:${new PhoneNumber('+' + numcreador).getNumber('international')}
+EMAIL:sebastianbarbaro82@gmail.com
+URL:https://www.instagram.com/sebastian_barboza13
+NOTE:${about}
+ADR:;;Dirección de tu empresa;;;;
+X-ABADR:ES
+X-ABLabel:Dirección Web
+X-ABLabel:Correo Electrónico
+X-ABLabel:Teléfono de contacto
+X-WA-BIZ-NAME:${name}
+X-WA-BIZ-DESCRIPTION:${about}
+END:VCARD`.trim();
+
     await conn.sendMessage(m.chat, { 
-        image: { url: imagen },
-        caption: `📞 *Número del dueño:* wa.me/${numcreador}\n\n*Para enviar mensaje:*\n${mensaje}`,
+        contacts: { 
+            displayName: name, 
+            contacts: [{ vcard }]
+        } 
     }, { quoted: m });
-
-    // Enviar el mensaje al dueño (opcional)
-    try {
-        await conn.sendMessage(ownerJid, { 
-            text: `📩 Nuevo mensaje enviado desde el bot:\n${mensaje}`,
-        });
-        m.reply(`✅ Tu mensaje ha sido enviado al dueño.`);
-    } catch (error) {
-        console.error("Error al enviar el mensaje:", error);
-        m.reply("❌ Ocurrió un error al enviar el mensaje. Intenta nuevamente.");
-    }
 }
 
-handler.help = ['owner <mensaje>']; 
+handler.help = ['owner']; 
 handler.tags = ['main']; 
 handler.command = ['owner', 'creator', 'creador', 'dueño'];
 
