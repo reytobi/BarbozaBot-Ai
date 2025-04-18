@@ -10,38 +10,10 @@ async function handler(m, { conn }) {
     let empresa = 'Barboza- Servicios Tecnológicos';
     let imagen = 'https://qu.ax/Mvhfa.jpg'; // Reemplaza con la URL de la imagen que deseas mostrar
 
-    let vcard = `
-BEGIN:VCARD
-VERSION:3.0
-N:;${name};;;
-FN:${name}
-ORG:${empresa};
-TITLE:CEO & Fundador
-TEL;waid=${numcreador}:${new PhoneNumber('+' + numcreador).getNumber('international')}
-EMAIL:sebastianbarbaro82@gmail.com
-URL:https://www.instagram.com/sebastian_barboza13
-NOTE:${about}
-ADR:;;Dirección de tu empresa;;;;
-X-ABADR:ES
-X-ABLabel:Dirección Web
-X-ABLabel:Correo Electrónico
-X-ABLabel:Teléfono de contacto
-X-WA-BIZ-NAME:${name}
-X-WA-BIZ-DESCRIPTION:${about}
-END:VCARD`.trim();
-
-    // Enviar imagen junto con el número del dueño
+    // Enviar imagen junto con el número del dueño y sus detalles
     await conn.sendMessage(m.chat, { 
         image: { url: imagen },
-        caption: `👤 *Dueño del bot*\n📌 *Nombre:* ${name}\n📞 *Número:* wa.me/${numcreador}\n📝 *Descripción:* ${about}`,
-    }, { quoted: m });
-
-    // Enviar vCard con detalles del dueño
-    await conn.sendMessage(m.chat, { 
-        contacts: { 
-            displayName: name, 
-            contacts: [{ vcard }]
-        } 
+        caption: `👤 *Dueño del bot*\n📌 *Nombre:* ${name}\n📞 *Número:* wa.me/${numcreador}\n📝 *Descripción:* ${about}\n🏢 *Empresa:* ${empresa}\n📧 *Email:* sebastianbarbaro82@gmail.com\n🌐 *Instagram:* https://www.instagram.com/sebastian_barboza13`,
     }, { quoted: m });
 }
 
