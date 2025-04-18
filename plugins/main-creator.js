@@ -8,7 +8,7 @@ async function handler(m, { conn }) {
     let name = await conn.getName(ownerJid) || 'Owner'; 
     let about = (await conn.fetchStatus(ownerJid).catch(() => {}))?.status || 'Creador de bots de WhatsApp y del Bot Barboza Ai';
     let empresa = 'Barboza- Servicios Tecnológicos';
-    let imagen = 'https://i.ibb.co/XYZ123/imagen-owner.jpg'; // Reemplaza con la URL de la imagen que deseas mostrar
+    let imagen = 'https://qu.ax/Mvhfa.jpg'; // Reemplaza con la URL de la imagen que deseas mostrar
 
     let vcard = `
 BEGIN:VCARD
