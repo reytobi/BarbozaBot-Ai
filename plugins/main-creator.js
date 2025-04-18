@@ -7,13 +7,13 @@ async function handler(m, { conn }) {
 
     let name = await conn.getName(ownerJid) || 'Owner'; 
     let about = (await conn.fetchStatus(ownerJid).catch(() => {}))?.status || 'Creador de bots de WhatsApp y del Bot Barboza Ai';
-    let empresa = 'Barboza - Servicios Tecnológicos';
+    let empresa = 'Barboza- Servicios Tecnológicos';
     let imagen = 'https://qu.ax/Mvhfa.jpg'; // Reemplaza con la URL de la imagen que deseas mostrar
 
-    // Enviar imagen con la información del dueño abajo
+    // Enviar imagen junto con el número del dueño y sus detalles
     await conn.sendMessage(m.chat, { 
         image: { url: imagen },
-        caption: `👤 *Dueño del bot*\n\n📌 *Nombre:* ${name}\n📞 *Número:* wa.me/${numcreador}`,
+        caption: `👤 *Dueño del bot*\n📌 *Nombre:* ${name}\n📞 *Número:* wa.me/${numcreador}\n📝 *Descripción:* ${about}\n🏢 *Empresa:* ${empresa}\n📧 *Email:* sebastianbarbaro82@gmail.com\n🌐 *Instagram:* https://www.instagram.com/sebastian_barboza13`,
     }, { quoted: m });
 }
 
