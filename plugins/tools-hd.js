@@ -1,38 +1,66 @@
-import axios from "axios";
-const handler = async (m, { conn }) => {
-  try {
-    let q = m.quoted ? m.quoted : m;
-    let mime = (q.msg || q).mimetype || q.mediaType || "";
-    if (!mime) return conn.reply(m.chat, `❗ Por favor, responde a una imagen para mejorar a HD.`, m);
-    if (!/image\/(jpe?g|png)/.test(mime)) return conn.reply(m.chat, `❗ El archivo (${mime}) no es compatible. Usa JPG o PNG.`, m);
+import FormData from "form-data"
+import Jimp from "jimp"
 
-    conn.reply(m.chat, `⏳ Mejorando la calidad de la imagen...`, m);
+const handler = async (m, {conn, usedPrefix, command}) => {
+try {    
+let q = m.quoted ? m.quoted : m
+let mime = (q.msg || q).mimetype || q.mediaType || ""
 
-    let img = await q.download?.();
-    let buffer = await upscaleAnonymous(img);
+if (!mime.startsWith('image')) throw await tr(`⚠️ Responde a una imagen!`)
+await m.react('⌛')
 
-    conn.sendMessage(m.chat, { image: buffer }, { quoted: m });
-  } catch (e) {
-    console.error(e);
-    return m.reply(`⚠️ Ocurrió un error al procesar la imagen.`);
-  }
-};
-handler.help = ["remini", "hd", "enhance"];
-handler.tags = ["tools"];
-handler.command = ["remini", "hd", "enhance"];
-export default handler;
+let img = await q.download?.()
+if (!img) throw await tr(`⚠️ No se pudo descargar la imagen. Por favor intenta nuevamente.`)
+let pr = await remini(img, "enhance")
 
-async function upscaleAnonymous(imageBuffer) {
-  const form = new FormData();
-  form.append("image", imageBuffer, {
-    filename: "image.jpg",
-    contentType: "image/jpeg",
-  });
+if (!pr) throw await tr(`⚠️ Hubo un problema al procesar la imagen. Intenta nuevamente más tarde.`)
+await conn.sendFile(m.chat, pr, 'thumbnail.jpg', await tr("*Aqui tiene sus imagen en HD*"), m, null, fake)
+await m.react('✅')
+} catch (e) {
+handler.limit = 0
+await m.react('❌')
+console.error(e)
+m.reply(`⚠️ Ocurrió un error: ${e.message}`)
+}}
+handler.help = ["hd"]
+handler.tags = ["tools"]
+handler.command = ["remini", "hd", "enhance"]
+handler.register = true 
+handler.limit = 1
+export default handler
 
-  const { data } = await axios.post("https://api.deepai.org/api/torch-srgan", form, {
-    headers: form.getHeaders(),
-    responseType: "arraybuffer",
-  });
+async function remini(imageData, operation) {
+  return new Promise(async (resolve, reject) => {
+    const availableOperations = ["enhance", "recolor", "dehaze"]
+    if (!availableOperations.includes(operation)) {
+      operation = availableOperations[0]
+    }
 
-  return Buffer.from(data);
+    const baseUrl = "https://inferenceengine.vyro.ai/" + operation + ".vyro"
+    const formData = new FormData()
+    formData.append("image", Buffer.from(imageData), {filename: "enhance_image_body.jpg", contentType: "image/jpeg"})
+    formData.append("model_version", 1, {"Content-Transfer-Encoding": "binary", contentType: "multipart/form-data; charset=utf-8"})
+
+    formData.submit({
+      url: baseUrl,
+      host: "inferenceengine.vyro.ai",
+      path: "/" + operation,
+      protocol: "https:",
+      headers: {
+        "User-Agent": "okhttp/4.9.3",
+        "Connection": "Keep-Alive",
+        "Accept-Encoding": "gzip"
+      }
+    }, function (err, res) {
+      if (err) {
+        reject(new Error(`Error en la solicitud a la API: ${err.message}`))
+      }
+      const chunks = []
+      res.on("data", function (chunk) { chunks.push(chunk) })
+      res.on("end", function () { resolve(Buffer.concat(chunks)) })
+      res.on("error", function (err) {
+        reject(new Error(`Error al recibir la respuesta: ${err.message}`))
+      })
+    })
+  })
 }
