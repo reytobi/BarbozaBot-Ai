@@ -2,7 +2,7 @@
 import fetch from 'node-fetch';
 
 let handler = async (m, { conn, usedPrefix, text, args, command }) => {
-   await m.react('🎩');
+   await m.react('🔥');
 
    let numcreador = '584146277368';
    let ownerJid = numcreador + '@s.whatsapp.net';
@@ -10,10 +10,10 @@ let handler = async (m, { conn, usedPrefix, text, args, command }) => {
    let empresa = 'Barboza - Servicios Tecnológicos';
    let imagen = 'https://qu.ax/Mvhfa.jpg'; // URL de la imagen del creador
 
-   // Enviar solo la imagen con el número debajo
+   // Enviar solo la imagen con enlace al número sin mostrarlo directamente
    await conn.sendMessage(m.chat, { 
        image: { url: imagen },
-       caption: `📞 ${numcreador}`,
+       caption: `📞 [Contactar al creador](https://wa.me/${numcreador})`, // Muestra el texto como enlace, no el número directamente
    }, { quoted: m });
 };
 
