@@ -8,10 +8,10 @@ let uniqid = `${who.split`@`[0]}`
 let userS = `${conn.getName(who)}`
 
 try {
-await fs.rmdir("./BarbozaJadiBot/" + uniqid, { recursive: true, force: true })
+await fs.rmdir("./CrowJadiBot/" + uniqid, { recursive: true, force: true })
 await parentw.sendMessage(m.chat, { text: '🚩 Sub-Bot eliminado.' }, { quoted: fkontak })
 } catch(err) {
-if (err.code === 'ENOENT' && err.path === `./BarbozaJadiBot/${uniqid}`) {
+if (err.code === 'ENOENT' && err.path === `./CrowJadiBot/${uniqid}`) {
 await parentw.sendMessage(m.chat, { text: "🌠 No cuentas con ninguna sesión de Sub-Bot." }, { quoted: fkontak })
 } else {
 await m.react(error)
@@ -22,4 +22,4 @@ handler.command = /^(deletesess?ion|eliminarsesion|borrarsesion|delsess?ion|cerr
 //handler.private = true
 handler.fail = null
 
-export default handler y 
+export default handler
