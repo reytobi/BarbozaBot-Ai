@@ -70,11 +70,6 @@ global.maxwarn = '2' // máxima advertencias
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
-global.ch = {
-ch1: '120363375378707428@newsletter',
-ch2: '120363414007802886@newsletter',
-}
-
 //Apis
 
 global.APIs = {
