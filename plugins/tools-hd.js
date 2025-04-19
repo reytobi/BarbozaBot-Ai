@@ -1,46 +1,43 @@
-import FormData from "form-data"
-import Jimp from "jimp"
-const handler = async (m, {conn, usedPrefix, command}) => {
-  try {    
-  let q = m.quoted ? m.quoted : m
-  let mime = (q.msg || q).mimetype || q.mediaType || ""
-  if (!mime) return conn.reply(m.chat, `🍭 Responde a una *Imagen.*`, m, rcanal)
-  await m.react('🕓')
-  let img = await q.download?.()
-  let pr = await remini(img, "enhance")
-  await conn.sendFile(m.chat, pr, 'thumbnail.jpg', listo, m, null, rcanal)
-  await m.react('✅')
-  } catch {
-  await m.react('✖️')
-}}
-handler.help = ["hd"]
-handler.tags = ["tools"]
-handler.command = ["remini", "hd", "enhance"]
-handler.register = true 
-export default handler
+import uploadImage from '../lib/uploadImage.js'
+import fetch from 'node-fetch'
 
-async function remini(imageData, operation) {
-  return new Promise(async (resolve, reject) => {
-    const availableOperations = ["enhance", "recolor", "dehaze"]
-    if (availableOperations.includes(operation)) {
-      operation = operation
-    } else {
-      operation = availableOperations[0]
-    }
-    const baseUrl = "https://inferenceengine.vyro.ai/" + operation + ".vyro"
-    const formData = new FormData()
-    formData.append("image", Buffer.from(imageData), {filename: "enhance_image_body.jpg", contentType: "image/jpeg"})
-    formData.append("model_version", 1, {"Content-Transfer-Encoding": "binary", contentType: "multipart/form-data; charset=utf-8"})
-    formData.submit({url: baseUrl, host: "inferenceengine.vyro.ai", path: "/" + operation, protocol: "https:", headers: {"User-Agent": "okhttp/4.9.3", Connection: "Keep-Alive", "Accept-Encoding": "gzip"}},
-      function (err, res) {
-        if (err) reject(err);
-        const chunks = [];
-        res.on("data", function (chunk) {chunks.push(chunk)});
-        res.on("end", function () {resolve(Buffer.concat(chunks))});
-        res.on("error", function (err) {
-        reject(err);
-        });
-      },
-    )
-  })
+export const handler = async (m, { conn, usedPrefix, command }) => {
+  // Se intenta detectar la imagen: si el mensaje es una respuesta, se toma m.quoted;
+  // de lo contrario, se toma el propio mensaje m.
+  const msgData = m.quoted || m
+  
+  // Verificar si existe el mimetype y que sea una imagen (JPG o PNG).
+  // Algunos bots pueden tener el mimetype directamente en msgData
+  const mime = msgData.mimetype || (msgData.msg ? msgData.msg.mimetype : '')
+  if (!mime || !/image\/(jpe?g|png)/.test(mime)) {
+    throw `✳️ Debes enviar o responder a una imagen válida (JPG/PNG) con: ${usedPrefix + command}`
+  }
+
+  // Descargar los datos de la imagen
+  const imageData = await msgData.download()
+  if (!imageData) throw "❌ No se pudo descargar la imagen."
+
+  // Subir la imagen a un servidor para obtener una URL pública
+  const imageUrl = await uploadImage(imageData)
+
+  // Construir la URL de la API codificando el parámetro de la imagen
+  const apiUrl = `https://api.siputzx.my.id/api/iloveimg/upscale?image=${encodeURIComponent(imageUrl)}`
+
+  // Se envía una reacción (por ejemplo, "procesando")
+  await conn.sendMessage(m.chat, { react: { text: '🔄', key: m.key } })
+
+  try {
+    // Se envía la imagen procesada por la API
+    await conn.sendMessage(m.chat, {
+      image: { url: apiUrl },
+      caption: `🛠️ *HD Completado*\n\nTu imagen se ha mejorado con éxito.`
+    }, { quoted: m })
+    // Reacción final de confirmación
+    await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } })
+  } catch (err) {
+    throw `❌ Error al procesar la imagen.\n\n${err}`
+  }
 }
+
+handler.command = /^hd$/i
+export default handler
