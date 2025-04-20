@@ -21,17 +21,24 @@ const handler = async (m, { conn }) => {
     const contentType = response.headers.get('content-type');
     
     // Verificar si el tipo de contenido es soportado
-    if (!contentType.startsWith('image/')) {
+    if (!contentType.startsWith('image/') && contentType !== 'application/octet-stream') {
       throw new Error(`Formato de imagen no soportado: ${contentType}`);
     }
 
     const buffer = await response.buffer();
 
-    // Mejorar la calidad usando sharp
-    const improvedImage = await sharp(buffer)
-      .resize({ width: 800 }) // Cambia el tamaño según tus necesidades
-      .toFormat('jpeg', { quality: 90 }) // Mejora la calidad a 90%
-      .toBuffer();
+    // Intentar procesar la imagen
+    let improvedImage;
+    
+    // Manejar diferentes formatos de imagen
+    if (contentType === 'image/png' || contentType === 'image/jpeg' || contentType === 'application/octet-stream') {
+      improvedImage = await sharp(buffer)
+        .resize({ width: 800 }) // Cambia el tamaño según tus necesidades
+        .toFormat('jpeg', { quality: 90 }) // Mejora la calidad a 90%
+        .toBuffer();
+    } else {
+      throw new Error(`Formato de imagen no soportado para conversión.`);
+    }
 
     // Enviar la imagen mejorada
     conn.sendFile(m.chat, improvedImage, 'improved_image.jpg', 'Aquí tienes tu imagen mejorada.', m);
