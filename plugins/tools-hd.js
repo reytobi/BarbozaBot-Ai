@@ -18,6 +18,13 @@ const handler = async (m, { conn }) => {
       throw new Error(`Error al obtener la imagen: ${response.statusText}`);
     }
 
+    const contentType = response.headers.get('content-type');
+    
+    // Verificar si el tipo de contenido es soportado
+    if (!contentType.startsWith('image/')) {
+      throw new Error(`Formato de imagen no soportado: ${contentType}`);
+    }
+
     const buffer = await response.buffer();
 
     // Mejorar la calidad usando sharp
