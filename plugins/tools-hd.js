@@ -13,6 +13,11 @@ const handler = async (m, { conn }) => {
 
     // Obtener la imagen original
     const response = await fetch(imageUrl);
+
+    if (!response.ok) {
+      throw new Error(`Error al obtener la imagen: ${response.statusText}`);
+    }
+
     const buffer = await response.buffer();
 
     // Mejorar la calidad usando sharp
@@ -25,9 +30,9 @@ const handler = async (m, { conn }) => {
     conn.sendFile(m.chat, improvedImage, 'improved_image.jpg', 'Aquí tienes tu imagen mejorada.', m);
   } catch (error) {
     console.error(error);
-    conn.sendMessage(m.chat, { text: "Ocurrió un error al procesar la imagen." }, { quoted: m });
+    conn.sendMessage(m.chat, { text: `Ocurrió un error al procesar la imagen: ${error.message}` }, { quoted: m });
   }
 };
 
-handler.command = /^(hd)$/i; 
+handler.command = /^(hd|improve)$/i; // Comando para activar la mejora
 export default handler;
