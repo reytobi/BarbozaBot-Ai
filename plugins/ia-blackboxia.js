@@ -1,30 +1,48 @@
 
-const axios = require('axios');
+import fetch from 'node-fetch';
 
-const handler = async (m, { conn, command, text }) => {
-    if (!text) {
-        throw '🍭 𝙀𝙎𝘾𝙍𝙄𝘽𝙀 𝙀𝙇 𝙏𝙀𝙓𝙊 𝘼 𝘿𝙄𝙂𝙄𝙏𝘼𝙍.';
-    }
+const apis = [
+    "https://deliriussapi-oficial.vercel.app/tools/simi?text=",
+    "https://vapis.my.id/api/blackbox?q=",
+    "https://archive-ui.tanakadomp.biz.id/ai/blackbox?text=",
+    "https://api.siputzx.my.id/api/ai/blackboxai-pro?content="
+];
 
+const handler = async (m, { conn, args, usedPrefix, command }) => {
     try {
-        const response = await axios.get('https://api.siputzx.my.id/api/ai/blackboxai-pro', {
-            params: { content: text }
-        });
-
-        if (response.data) {
-            const aiResponse = response.data; // Aquí puedes procesar la respuesta como necesites
-            m.reply(aiResponse);
-        } else {
-            m.reply('No se obtuvo una respuesta válida de la API.');
+        if (!args.length) {
+            return m.reply(`❌ Debes proporcionar una pregunta.\n\nEjemplo: *${usedPrefix + command} ¿Cuál es el origen del universo?*`);
         }
-    } catch (error) {
-        console.error(error);
-        m.reply('Hubo un error al conectar con la API.');
+
+        const query = encodeURIComponent(args.join(" "));
+        let responseText = null;
+
+        for (let api of apis) {
+            try {
+                const response = await fetch(api + query);
+                if (!response.ok) throw new Error(`❌ API falló: ${api}`);
+
+                const result = await response.json();
+                if (result.response) {
+                    responseText = result.response;
+                    break;
+                }
+            } catch (err) {
+                console.warn(`⚠️ Error en ${api}, probando siguiente API...`);
+            }
+        }
+
+        if (!responseText) throw new Error("❌ Todas las APIs fallaron.");
+
+        await conn.sendMessage(m.chat, { react: { text: '🤖', key: m.key } });
+        await conn.sendMessage(m.chat, { text: responseText }, { quoted: m });
+        await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
+
+    } catch (err) {
+        console.error(err);
+        m.reply(`❌ Ocurrió un error al procesar tu pregunta.`);
     }
 };
 
-handler.help = ['blackboxai'];
-handler.tags = ['ai'];
-handler.command = /^(blackboxai)$/i;
-
+handler.command = /^blackboxai$/i;
 export default handler;
