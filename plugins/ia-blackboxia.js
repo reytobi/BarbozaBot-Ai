@@ -8,7 +8,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         }
 
         const query = encodeURIComponent(args.join(" "));
-        const apiUrl = `https://vapis.my.id/api/blackbox?q=${query}`;
+        const apiUrl = `https://deliriussapi-oficial.vercel.app/tools/simi?text=${query}`;
 
         await conn.sendMessage(m.chat, { react: { text: '🤖', key: m.key } });
 
