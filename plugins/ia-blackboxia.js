@@ -1,30 +1,30 @@
 
-import fetch from 'node-fetch';
+const axios = require('axios');
 
-const handler = async (m, { conn, args, usedPrefix, command }) => {
+const handler = async (m, { conn, command, text }) => {
+    if (!text) {
+        throw '🍭 𝙀𝙎𝘾𝙍𝙄𝘽𝙀 𝙀𝙇 𝙏𝙀𝙓𝙊 𝘼 𝘿𝙄𝙂𝙄𝙏𝘼𝙍.';
+    }
+
     try {
-        if (!args.length) {
-            return m.reply(`❌ Debes proporcionar una pregunta.\n\nEjemplo: *${usedPrefix + command} ¿Cuál es el origen del universo?*`);
+        const response = await axios.get('https://api.siputzx.my.id/api/ai/blackboxai-pro', {
+            params: { content: text }
+        });
+
+        if (response.data) {
+            const aiResponse = response.data; // Aquí puedes procesar la respuesta como necesites
+            m.reply(aiResponse);
+        } else {
+            m.reply('No se obtuvo una respuesta válida de la API.');
         }
-
-        const query = encodeURIComponent(args.join(" "));
-        const apiUrl = `https://deliriussapi-oficial.vercel.app/tools/simi?text=${query}`;
-
-        await conn.sendMessage(m.chat, { react: { text: '🤖', key: m.key } });
-
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error('❌ Error en la API.');
-        const result = await response.json();
-
-        await conn.sendMessage(m.chat, { text: result.response }, { quoted: m });
-
-        await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
-
-    } catch (err) {
-        console.error(err);
-        m.reply(`❌ Ocurrió un error al procesar tu pregunta.`);
+    } catch (error) {
+        console.error(error);
+        m.reply('Hubo un error al conectar con la API.');
     }
 };
 
-handler.command = /^blackboxai$/i;
+handler.help = ['blackboxai'];
+handler.tags = ['ai'];
+handler.command = /^(blackboxai)$/i;
+
 export default handler;
