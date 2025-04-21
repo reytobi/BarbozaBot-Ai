@@ -1,79 +1,73 @@
 
-import axios from 'axios';
 import { createHash } from 'crypto';
-import PhoneNumber from 'awesome-phonenumber';
-import moment from 'moment-timezone';
 
-let Reg = /\|?(.*)([.|] *?)([0-9]*)$/i;
-
-const handler = async (m, { conn, text, args, usedPrefix, command }) => {
+let handler = async (m, { conn, text, args, usedPrefix, command }) => {
     let user = global.db.data.users[m.sender];
-    let whe = m.mentionedJid[0] ? m.mentionedJid[0] : m.quoted ? m.quoted.sender : m.sender;
-    
-    // Obtener el nombre del usuario de manera confiable
-    let nameUser = await conn.getName(m.sender);
-    let perfil = await conn.profilePictureUrl(whe, 'image').catch(_ => 'https://qu.ax/Mvhfa.jpg');
+    let channelID = '120363414007802886@newsletter'; // ID del canal donde se enviará la notificación
+    let regFormat = /\|?(.*)([.|] *?)([0-9]*)$/i;
 
-    // Verificar si el usuario ya está registrado
+    // Validar si el usuario ya está registrado
     if (user.registered) {
-        return m.reply(`《★》𝗬𝗮 𝘁𝗲 𝗲𝗻𝗰𝘂𝗲𝗻𝘁𝗿𝗮𝘀 𝗿𝗲𝗴𝗶𝘀𝘁𝗿𝗮𝗱𝗼.\n\n¿𝗤𝘂𝗶𝗲𝗿𝗲 𝘃𝗼𝗹𝘃𝗲𝗿 𝗮 𝗿𝗲𝗴𝗶𝘀𝘁𝗿𝗮𝗿𝘀𝗲?\n\n𝗨𝘀𝗲 𝗲𝘀𝘁𝗲 𝗰𝗼𝗺𝗮𝗻𝗱𝗼 𝗽𝗮𝗿𝗮 𝗲𝗹𝗶𝗺𝗶𝗻𝗮𝗿 𝘀𝘂 𝗿𝗲𝗴𝗶𝘀𝘁𝗿𝗼.\n*${usedPrefix}unreg*`);
+        return m.reply(`✅ Ya estás registrado.\n\nSi deseas registrarte nuevamente, elimina tu registro actual usando el comando:\n*${usedPrefix}unreg*`);
     }
 
-    if (!Reg.test(text)) {
-        return m.reply(`《★》Eʟ ғᴏʀᴍᴀᴛᴏ ɪɴɢʀᴇsᴀᴅᴏ ᴇs ɪɴᴄᴏʀʀᴇᴄᴛᴏ\n\nUsᴏ ᴅᴇʟ ᴄᴏᴍᴀɴᴅᴏ: ${usedPrefix + command} 𝗻𝗼𝗺𝗯𝗿𝗲.𝗲𝗱𝗮𝗱\nEᴊᴇᴍᴘʟᴏ : *${usedPrefix + command} ${nameUser}.14*`);
+    // Validar formato del comando
+    if (!regFormat.test(text)) {
+        return m.reply(`❌ Formato incorrecto.\n\nUsa el comando así: *${usedPrefix + command} nombre.edad*\nEjemplo: *${usedPrefix + command} Barboza.18*`);
     }
 
-    let [_, name, splitter, age] = text.match(Reg);
-    if (!name || !age) return m.reply('《★》El nombre y la edad no pueden estar vacíos.');
-    if (name.length > 50) return m.reply('《★》El nombre es demasiado largo.');
-    
+    let [_, name, splitter, age] = text.match(regFormat);
+    if (!name || !age) return m.reply('❌ El nombre y la edad son obligatorios.');
+    if (name.length > 50) return m.reply('❌ El nombre no puede exceder los 50 caracteres.');
+
     age = parseInt(age);
-    if (age < 5 || age > 100) return m.reply('《★》La edad ingresada es incorrecta.');
+    if (isNaN(age) || age < 5 || age > 100) return m.reply('❌ La edad ingresada no es válida.');
 
+    // Asignar datos al usuario
     user.name = name.trim();
     user.age = age;
-    user.regTime = +new Date();
     user.registered = true;
+    user.regTime = +new Date();
 
-    let sn = createHash('md5').update(m.sender).digest('hex');
+    // Generar un hash único para el usuario
+    let userHash = createHash('md5').update(m.sender).digest('hex');
 
-    let regbot = `🎩 *Registro - Bot Barboza*\n`;
-    regbot += `💛 *Nombre:* ${name}\n`;
-    regbot += `💛 *Edad:* ${age} años\n`;
-    regbot += `⌨️ Usa *#perfil* para ver tu información personal.\n`;
+    // Confirmación al usuario registrado
+    let confirmMessage = `🎉 *¡Registro exitoso!*\n\n📂 Información registrada:\n👤 *Usuario:* ${name}\n🎂 *Edad:* ${age} años\n✅ *Estado:* Verificado\n\nUsa *#perfil* para ver tus detalles.`;
 
     await conn.sendMessage(m.chat, {
-        text: regbot,
+        text: confirmMessage,
         contextInfo: {
             externalAdReply: {
-                title: '✅ ¡Registro completo!',
-                thumbnailUrl: perfil,
+                title: '✅ Registro completado',
+                body: 'Gracias por registrarte.',
+                thumbnailUrl: 'https://qu.ax/Mvhfa.jpg', // Imagen proporcionada
+                sourceUrl: 'https://your-website.com', // Personaliza con tu enlace
                 mediaType: 1,
                 renderLargerThumbnail: true
             }
         }
     }, { quoted: m });
 
-    let channelID = '120363414007802886@newsletter';
-    let notificationText = `👤 *Usuario registrado*: ${name}\n🎂 *Edad*: ${age} años.\n📥 ¡Nuevo registro!`;
-
+    // Enviar notificación al canal
+    let notificationMessage = `📥 *Nuevo usuario registrado:*\n\n👤 *Nombre:* ${name}\n🎂 *Edad:* ${age} años\n🆔 *Registro Hash:* ${userHash}\n✅ *Estado:* Verificado`;
     await conn.sendMessage(channelID, {
-        text: notificationText,
+        text: notificationMessage,
         contextInfo: {
             externalAdReply: {
-                title: '🔔 Notificación de registro',
-                body: 'Nuevo usuario agregado a la base de datos.',
-                thumbnailUrl: perfil,
-                sourceUrl: 'https://qu.ax/Mvhfa.jpg',
+                title: '🔔 Nuevo registro',
+                body: `Usuario ${name} ha sido registrado con éxito.`,
+                thumbnailUrl: 'https://qu.ax/Mvhfa.jpg', // Imagen proporcionada
+                sourceUrl: 'https://your-website.com', // Personaliza con tu enlace
                 mediaType: 1,
                 renderLargerThumbnail: true
             }
         }
-    }, { quoted: null });
+    });
 };
 
 handler.help = ['reg'];
-handler.tags = ['rg'];
-handler.command = ['verify', 'verificar', 'reg', 'register', 'registrar'];
+handler.tags = ['register'];
+handler.command = ['reg', 'register', 'verificar', 'verify']; // Alias del comando
 
 export default handler;
