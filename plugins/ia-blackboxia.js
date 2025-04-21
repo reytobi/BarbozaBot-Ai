@@ -8,7 +8,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         }
 
         const query = encodeURIComponent(args.join(" "));
-        const apiUrl = `https://archive-ui.tanakadomp.biz.id/ai/blackbox?text=${query}`;
+        const apiUrl = `https://vapis.my.id/api/blackbox?q=${query}`;
 
         await conn.sendMessage(m.chat, { react: { text: '🤖', key: m.key } });
 
