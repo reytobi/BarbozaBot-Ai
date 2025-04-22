@@ -1,11 +1,6 @@
 
 import fetch from 'node-fetch';
 
-const apis = [
-    "https://api.siputzx.my.id/api/d/spotify?url=",
-    "https://api.diioffc.web.id/api/download/spotify?url="
-];
-
 const handler = async (m, { conn, args, usedPrefix, command }) => {
     try {
         if (!args[0]) {
@@ -13,31 +8,21 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         }
 
         const spotifyUrl = encodeURIComponent(args[0]);
-        let responseJson = null;
+        const apiUrl = `https://api.siputzx.my.id/api/d/spotify?url=${spotifyUrl}`;
 
-        for (let api of apis) {
-            try {
-                const response = await fetch(api + spotifyUrl);
-                if (!response.ok) throw new Error(`❌ API falló: ${api}`);
+        await conn.sendMessage(m.chat, { react: { text: '🎵', key: m.key } });
 
-                responseJson = await response.json();
-                if (responseJson.audio) break;
-            } catch (err) {
-                console.warn(`⚠️ Error en ${api}, probando siguiente API...`);
-            }
-        }
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error('❌ Error en la API.');
 
-        if (!responseJson || !responseJson.audio) throw new Error("❌ Todas las APIs fallaron al obtener el audio.");
-
-        const detailsText = `🎶 *Detalles de la canción:*\n👤 *Título:* ${responseJson.title || 'Desconocido'}\n🎤 *Artista:* ${responseJson.artist || 'Desconocido'}\n📀 *Álbum:* ${responseJson.album || 'Desconocido'}\n💽 *Audio disponible:* Sí`;
-
-        await conn.sendMessage(m.chat, { text: detailsText }, { quoted: m });
+        const result = await response.json();
+        if (!result.audio) throw new Error('❌ No se encontró el audio.');
 
         await conn.sendMessage(m.chat, {
-            audio: { url: responseJson.audio },
+            audio: { url: result.audio },
             mimetype: 'audio/mpeg',
-            fileName: `${responseJson.title || 'Canción'}.mp3`,
-            caption: `🎶 Aquí tienes la canción.\n🌟 ¡Disfrútala!`
+            fileName: `${result.title || 'Canción'}.mp3`,
+            caption: `🎶 *Canción:* ${result.title || 'Desconocido'}\n🎤 *Artista:* ${result.artist || 'Desconocido'}\n📀 *Álbum:* ${result.album || 'Desconocido'}`
         }, { quoted: m });
 
         await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
