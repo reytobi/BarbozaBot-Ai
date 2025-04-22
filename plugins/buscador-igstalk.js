@@ -1,36 +1,34 @@
 
-import fetch from 'node-fetch';
+const axios = require('axios'); // Asegúrate de tener axios instalado
 
-const handler = async (m, { conn, args, usedPrefix, command }) => {
+var handler = async (m, { conn, command, text }) => {
+    if (!text) throw '🍭 𝙀𝙎𝘾𝙍𝙄𝘽𝙀 𝙀𝙇 𝙉𝙊𝙈𝘽𝙍𝙀 𝘿𝙀 𝘿𝙊𝙎 𝙋𝙀𝙍𝙎𝙊ℕ𝘼𝙎 𝘼 𝗖𝗔𝗟𝗖𝗨𝗟𝗔𝗥 𝗦𝗨 𝗔𝗠𝗢𝗥.'
+
     try {
-        if (!args[0]) {
-            return m.reply(`❌ Debes proporcionar un nombre de usuario de Instagram.\n\nEjemplo: *${usedPrefix + command} username*`);
+        const response = await axios.get(`https://api.diioffc.web.id/api/download/instagram?username=${text}`);
+        const data = response.data;
+
+        if (data) {
+            let info = `
+            📸 *Nombre:* ${data.full_name}
+            📝 *Biografía:* ${data.biography}
+            📊 *Seguidores:* ${data.followers}
+            👥 *Siguiendo:* ${data.following}
+            🔗 *Enlace:* ${data.external_url}
+            `.trim();
+
+            m.reply(info);
+        } else {
+            throw 'No se encontró información para este usuario.';
         }
-
-        const username = encodeURIComponent(args[0]);
-        const apiUrl = `https://api.agatz.xyz/api/igstalk?name=${username}`;
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error('❌ Error en la API.');
-
-        const result = await response.json();
-        if (!result.username) throw new Error('❌ No se encontró información del perfil.');
-
-        const profileInfo = `📸 *Información de Instagram*\n\n👤 *Usuario:* ${result.username}\n📌 *Nombre:* ${result.fullname}\n📷 *Foto de perfil:* ${result.profile_picture}\n📦 *Biografía:* ${result.biography}\n🔢 *Seguidores:* ${result.followers}\n👥 *Siguiendo:* ${result.following}\n📮 *Publicaciones:* ${result.posts}`;
-
-        await conn.sendMessage(m.chat, { text: profileInfo }, { quoted: m });
-
-        await conn.sendMessage(m.chat, {
-            image: { url: result.profile_picture },
-            caption: `📸 *Foto de perfil de ${result.username}*`
-        }, { quoted: m });
-
-        await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
-
-    } catch (err) {
-        console.error(err);
-        m.reply(`❌ Ocurrió un error al obtener la información del perfil.`);
+    } catch (error) {
+        console.error(error);
+        m.reply('Ocurrió un error al obtener la información. Verifica el nombre de usuario.');
     }
-};
+}
 
-handler.command = /^igstalk$/i;
+handler.help = ['igstalk <usuario>'];
+handler.tags = ['fun'];
+handler.command = /^(igstalk)$/i;
+
 export default handler;
