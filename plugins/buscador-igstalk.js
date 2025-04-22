@@ -1,8 +1,6 @@
 
 import fetch from 'node-fetch';
 
-const apiUrl = "https://api.agatz.xyz/api/igstalk?name=";
-
 const handler = async (m, { conn, args, usedPrefix, command }) => {
     try {
         if (!args[0]) {
@@ -10,13 +8,14 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         }
 
         const username = encodeURIComponent(args[0]);
-        const response = await fetch(apiUrl + username);
+        const apiUrl = `https://api.agatz.xyz/api/igstalk?name=${username}`;
+        const response = await fetch(apiUrl);
         if (!response.ok) throw new Error('❌ Error en la API.');
 
         const result = await response.json();
         if (!result.username) throw new Error('❌ No se encontró información del perfil.');
 
-        const profileInfo = `📸 *Instagram Stalker*\n\n👤 *Usuario:* ${result.username}\n📌 *Nombre:* ${result.fullname}\n📷 *Fotos:* ${result.profile_picture}\n📦 *Biografía:* ${result.biography}\n🔢 *Seguidores:* ${result.followers}\n👥 *Siguiendo:* ${result.following}\n📮 *Publicaciones:* ${result.posts}`;
+        const profileInfo = `📸 *Información de Instagram*\n\n👤 *Usuario:* ${result.username}\n📌 *Nombre:* ${result.fullname}\n📷 *Foto de perfil:* ${result.profile_picture}\n📦 *Biografía:* ${result.biography}\n🔢 *Seguidores:* ${result.followers}\n👥 *Siguiendo:* ${result.following}\n📮 *Publicaciones:* ${result.posts}`;
 
         await conn.sendMessage(m.chat, { text: profileInfo }, { quoted: m });
 
