@@ -1,37 +1,25 @@
-
 import fetch from 'node-fetch';
 
-const apiUrl = "https://api.diioffc.web.id/api/download/spotify?url=";
+let MF = async (m, { conn, args, command, usedPrefix }) => {
 
-const handler = async (m, { conn, args, usedPrefix, command }) => {
-    try {
-        if (!args[0]) {
-            return m.reply(`❌ Debes proporcionar un enlace de Spotify.\n\nEjemplo: *${usedPrefix + command} https://open.spotify.com/track/ID_DE_CANCION*`);
-        }
+if (!args[0]) return m.reply(`🌙 INGRESE UN Link De Spotify\n> *Ejemplo:* ${usedPrefix + command} https://open.spotify.com/track/0jH15Y9z2EpwTWRQI11xbj`);
 
-        const spotifyUrl = encodeURIComponent(args[0]);
-        const response = await fetch(apiUrl + spotifyUrl);
-        if (!response.ok) throw new Error('❌ Error en la API.');
+let api = await (await fetch(`https://archive-ui.tanakadomp.biz.id/download/spotify?url=${args[0]}`)).json();
 
-        const result = await response.json();
-        if (!result.audio) throw new Error('❌ No se encontró el audio.');
+let force = api.result.data;
+let imagen = force.image;
 
-        await conn.sendMessage(m.chat, { react: { text: '🎵', key: m.key } });
+let moon = `\`𝚂𝙿𝙾𝚃𝙸𝙵𝚈 𝑋 𝙳𝙴𝚂𝙲𝙰𝚁𝙶𝙰\`.\n\n`
+moon += `☪︎ *Título:* ${force.title}\n`
+moon += `☪︎ *Artista:* ${force.artis}\n`
+moon += `☪︎ *Duración:* ${force.durasi}\n`
+moon += `───── ･ ｡ﾟ☆: *.☽ .* :☆ﾟ. ─────`;
 
-        await conn.sendMessage(m.chat, {
-            audio: { url: result.audio },
-            mimetype: 'audio/mpeg',
-            fileName: `${result.title || 'Canción'}.mp3`,
-            caption: `🎶 *Canción:* ${result.title || 'Desconocido'}\n🎤 *Artista:* ${result.artist || 'Desconocido'}\n📀 *Álbum:* ${result.album || 'Desconocido'}`
-        }, { quoted: m });
+conn.sendFile(m.chat, imagen, 'MoonForce.jpg', moon, m, null);
 
-        await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
+conn.sendMessage(m.chat, { audio: { url: force.download }, mimetype: 'audio/mpeg' }, { quoted: m });
+}
 
-    } catch (err) {
-        console.error(err);
-        m.reply(`❌ Ocurrió un error al descargar la canción.`);
-    }
-};
+MF.command = ['spotify', 'spdl'];
 
-handler.command = /^spotify$/i;
-export default handler;
+export default MF;
