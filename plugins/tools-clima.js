@@ -1,32 +1,63 @@
+import axios from "axios";
 
-import fetch from 'node-fetch';
-
-const handler = async (m, { conn, args, usedPrefix, command }) => {
-    try {
-        if (!args[0]) {
-            return m.reply(`❌ Debes proporcionar el nombre de una ciudad o país.\n\nEjemplo: *${usedPrefix + command} Tokio*`);
-        }
-
-        const location = encodeURIComponent(args.join(" "));
-        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=TU_API_KEY&units=metric&lang=es`;
-
-        const response = await fetch(apiUrl);
-        if (!response.ok) throw new Error('❌ Error en la API.');
-
-        const result = await response.json();
-        if (!result.weather) throw new Error('❌ No se encontró información del clima.');
-
-        const countryInfo = `🌍 *Información sobre ${result.sys.country}:*\n🗺️ *Ciudad:* ${result.name}\n🌡️ *Temperatura:* ${result.main.temp}°C\n☁️ *Clima:* ${result.weather[0].description}\n💨 *Viento:* ${result.wind.speed} km/h\n📈 *Humedad:* ${result.main.humidity}%`;
-
-        await conn.sendMessage(m.chat, { text: countryInfo }, { quoted: m });
-
-        await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
-
-    } catch (err) {
-        console.error(err);
-        m.reply(`❌ Ocurrió un error al obtener la información del clima.`);
+let handler = async (m, { conn, args }) => {
+  if (!args[0]) {
+    let resp = `*[❗INFO❗] ESCRIBA EL NOMBRE DE SU PAIS O CIUDAD*`;
+    let txt = '';
+    let count = 0;
+    for (const c of resp) {
+      await new Promise(resolve => setTimeout(resolve, 5));
+      txt += c;
+      count++;
+      if (count % 10 === 0) {
+        conn.sendPresenceUpdate('composing', m.chat);
+      }
     }
+    await conn.sendMessage(m.chat, { text: txt.trim(), mentions: conn.parseMention(txt) }, { quoted: m, ephemeralExpiration: 24*60*60, disappearingMessagesInChat: 24*60*60 });
+    return;
+  }
+
+  try {
+    const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${args[0]}&units=metric&appid=060a6bcfa19809c2cd4d97a212b19273`);
+    const res = response.data;
+    const name = res.name;
+    const Country = res.sys.country;
+    const Weather = res.weather[0].description;
+    const Temperature = res.main.temp + "°C";
+    const Minimum_Temperature = res.main.temp_min + "°C";
+    const Maximum_Temperature = res.main.temp_max + "°C";
+    const Humidity = res.main.humidity + "%";
+    const Wind = res.wind.speed + "km/h";
+    const wea = `「 📍 」LUGAR: ${name}\n「 🗺️ 」PAIS: ${Country}\n「 🌤️ 」TIEMPO: ${Weather}\n「 🌡️ 」TEMPERATURA: ${Temperature}\n「 💠 」TEMPERATURA MINIMA: ${Minimum_Temperature}\n「 📛 」TEMPERATURA MAXIMA: ${Maximum_Temperature}\n「 💦 」HUMEDAD: ${Humidity}\n「 🌬️ 」VIENTO: ${Wind}`.trim();
+
+    let txt = '';
+    let count = 0;
+    for (const c of wea) {
+      await new Promise(resolve => setTimeout(resolve, 5));
+      txt += c;
+      count++;
+      if (count % 10 === 0) {
+        conn.sendPresenceUpdate('composing', m.chat);
+      }
+    }
+    await conn.sendMessage(m.chat, { text: txt.trim(), mentions: conn.parseMention(txt) }, { quoted: m, ephemeralExpiration: 24*60*60, disappearingMessagesInChat: 24*60*60 });
+  } catch (e) {
+    let resp = " *[❗INFO❗] Error!\n _No se encontraron resultados, trate de escribir un país o ciudad existente._* ";
+    let txt = '';
+    let count = 0;
+    for (const c of resp) {
+      await new Promise(resolve => setTimeout(resolve, 5));
+      txt += c;
+      count++;
+      if (count % 10 === 0) {
+        conn.sendPresenceUpdate('composing', m.chat);
+      }
+    }
+    await conn.sendMessage(m.chat, { text: txt.trim(), mentions: conn.parseMention(txt) }, { quoted: m, ephemeralExpiration: 24*60*60, disappearingMessagesInChat: 24*60*60 });
+  }
 };
 
-handler.command = /^clima$/i;
+handler.help = ['clima *<ciudad/país>*'];
+handler.tags = ['herramientas'];
+handler.command = /^(clima|tiempo)$/i;
 export default handler;
