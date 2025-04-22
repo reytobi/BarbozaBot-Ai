@@ -1,46 +1,39 @@
-
 import fetch from 'node-fetch';
-
-const apis = [
-    "https://deliriussapi-oficial.vercel.app/tools/simi?text=",
-    "https://vapis.my.id/api/blackbox?q=",
-    "https://archive-ui.tanakadomp.biz.id/ai/blackbox?text=",
-    "https://api.siputzx.my.id/api/ai/blackboxai-pro?content="
-];
 
 const handler = async (m, { conn, args, usedPrefix, command }) => {
     try {
         if (!args.length) {
-            return m.reply(`❌ Debes proporcionar una pregunta.\n\nEjemplo: *${usedPrefix + command} ¿Cuál es el origen del universo?*`);
+            return await conn.reply(m.chat, `❌ Debes proporcionar una pregunta.\n\nEjemplo: *${usedPrefix + command} ¿Cuál es el origen del universo?*`, m);
         }
 
         const query = encodeURIComponent(args.join(" "));
-        let responseText = null;
-
-        for (let api of apis) {
-            try {
-                const response = await fetch(api + query);
-                if (!response.ok) throw new Error(`❌ API falló: ${api}`);
-
-                const result = await response.json();
-                if (result.response) {
-                    responseText = result.response;
-                    break;
-                }
-            } catch (err) {
-                console.warn(`⚠️ Error en ${api}, probando siguiente API...`);
-            }
-        }
-
-        if (!responseText) throw new Error("❌ Todas las APIs fallaron.");
+        const apiUrl = `https://api.siputzx.my.id/api/ai/blackboxai-pro?content=${query}`;
 
         await conn.sendMessage(m.chat, { react: { text: '🤖', key: m.key } });
-        await conn.sendMessage(m.chat, { text: responseText }, { quoted: m });
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000); // 10 segundos
+
+        const response = await fetch(apiUrl, { signal: controller.signal });
+        clearTimeout(timeout);
+
+        if (!response.ok) throw new Error('❌ Error al contactar la API.');
+
+        const result = await response.json();
+
+        if (!result.status || !result.data) {
+            throw new Error('❌ La API no devolvió una respuesta válida.');
+        }
+
+        const cleanText = result.data.replace(/<[^>]*>/g, '').trim();
+
+        await conn.reply(m.chat, `🧠 *Blackbox AI responde:*\n\n${cleanText}`, m);
+
         await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
 
     } catch (err) {
         console.error(err);
-        m.reply(`❌ Ocurrió un error al procesar tu pregunta.`);
+        await conn.reply(m.chat, `❌ Ocurrió un error al procesar tu pregunta.\n\n${err.name === 'AbortError' ? '⏱️ Tiempo de espera agotado.' : err.message}`, m);
     }
 };
 
