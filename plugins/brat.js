@@ -1,33 +1,17 @@
+import axios from 'axios'
 
-import fetch from "node-fetch";
+let handler = async (m, { conn, text }) => {
+  if (!text) return m.reply('Ingresa un texto para generar un sticker')
 
-/**
- * Código creado por Barboza
- */
+  m.react('🕒️')
+  let url = `https://api.siputzx.my.id/api/m/brat?text=${text}&isVideo=false&delay=500`
+  let buffer = await axios.get(url, { responseType: 'arraybuffer' })
+  await conn.sendFile(m.chat, buffer.data, 'sticker.webp', '', m, true)
+  m.react('✅')
+}
 
-const handler = async (m, { conn, args, usedPrefix, command }) => {
-  try {
-    if (!args[0]) {
-      return m.reply(`❌ Ingresa el texto para el sticker.\n\nEjemplo: *${usedPrefix + command} Barboza*`);
-    }
+handler.command = ['brat']
+handler.tags = ['sticker']
+handler.help = ['brat <texto>']
 
-    const text = encodeURIComponent(args.join(" "));
-    const apiUrl = `https://api.siputzx.my.id/api/m/brat?text=${text}`;
-
-    // React de carga
-    await conn.sendMessage(m.chat, { react: { text: "🎨", key: m.key } });
-
-    // Envío del sticker
-    await conn.sendMessage(m.chat, { sticker: { url: apiUrl } }, { quoted: m });
-
-    // React de éxito
-    await conn.sendMessage(m.chat, { react: { text: "✅", key: m.key } });
-
-  } catch (err) {
-    console.error("❌ Error al generar el sticker:", err);
-    m.reply("❌ Ocurrió un error al generar el sticker. Inténtalo nuevamente.");
-  }
-};
-
-handler.command = ["brat"];
-export default handler;
+export default handler
