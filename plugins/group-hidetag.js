@@ -69,6 +69,6 @@ handler.help = ['hidetag'];
 handler.tags = ['group'];
 handler.command = /^(hidetag|notify|notificar|noti|n|hidetah|hidet)$/i;
 handler.group = true;
-handler.botAdmin = true;
+handler.Botadmin = true;
 
 export default handler;
