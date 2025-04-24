@@ -1,16 +1,15 @@
 let handler = async (m, { conn, text, isROwner, isOwner }) => {
-let fkontak = { "key": { "participants":"0@s.whatsapp.net", "remoteJid": "status@broadcast", "fromMe": false, "id": "Halo" }, "message": { "contactMessage": { "vcard": `BEGIN:VCARD\nVERSION:3.0\nN:Sy;Bot;;;\nFN:y\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD` }}, "participant": "0@s.whatsapp.net" }
 
 if (text) {
 global.db.data.chats[m.chat].sWelcome = text
-conn.reply(m.chat, '_*LA BIENVENIDA DEL GRUPO HA SIDO CONFIGURADA*_', fkontak, m)
+conn.reply(m.chat, '𝘓𝘢 𝘣𝘪𝘦𝘯𝘷𝘦𝘯𝘪𝘥𝘢 𝘩𝘢 𝘴𝘪𝘥𝘰 𝘮𝘰𝘥𝘪𝘧𝘪𝘤𝘢𝘥𝘢.🥖', m)
 
 } else {
-    conn.reply(m.chat, `*_ESCRIBE EL MENSAJE DE BIENVENIDA_*\n*_OPCIONAL PUEDE USAR LO QUE ESTA CON "@" PARA AGREGAR MÁS INFORMACIÓN:_*\n\n*⚡ @user (Mención al usuario(a))*\n*⚡ @group (Nombre de grupo)*\n*⚡ @desc (Description de grupo)*\n\n*RECUERDE QUE LOS "@" SON OPCIONALES*`, m)
+        m.reply('𝘈𝘨𝘳𝘦𝘨𝘢 𝘭𝘢 𝘣𝘪𝘦𝘯𝘷𝘦𝘯𝘪𝘥𝘢 𝘲𝘶𝘦 𝘥𝘦𝘴𝘦𝘢𝘴 𝘮𝘰𝘥𝘪𝘧𝘪𝘤𝘢𝘳, 𝘦𝘫𝘦𝘮𝘱𝘭𝘰: .𝘴𝘦𝘵𝘸𝘦𝘭𝘤𝘰𝘮𝘦 (𝘵𝘦𝘹𝘵𝘰).🥖');
 }
 }
-handler.help = ['setwelcome @user + texto']
-handler.tags = ['group']
+
+
 handler.command = ['setwelcome', 'bienvenida'] 
 handler.botAdmin = true
 handler.admin = true
