@@ -101,6 +101,10 @@ export async function handler(chatUpdate) {
                     chat.nsfw = false
                 if (!isNumber(chat.expired))
                     chat.expired = 0
+                if (!('antiLag' in chat))
+                    chat.antiLag = false
+                if (!('per' in chat))
+                    chat.per = []
             } else
                 global.db.data.chats[m.chat] = {
                     isBanned: false,
@@ -112,6 +116,8 @@ export async function handler(chatUpdate) {
                     audios: false,
                     modoadmin: false, 
                     expired: 0, 
+                    antiLag: false,
+                    per: [],
                 }
             var settings = global.db.data.settings[this.user.jid]
             if (typeof settings !== 'object') global.db.data.settings[this.user.jid] = {}
@@ -132,6 +138,16 @@ export async function handler(chatUpdate) {
         } catch (e) {
             console.error(e)
         }
+        // Tesis estuvo aquí 🤤
+       const mainBot = global.conn.user.jid
+       const chat = global.db.data.chats[m.chat] || {}
+       const isSubbs = chat.antiLag === true
+       const allowedBots = chat.per || []
+       if (!allowedBots.includes(mainBot)) allowedBots.push(mainBot)
+       const isAllowed = allowedBots.includes(this.user.jid)
+       if (isSubbs && !isAllowed) 
+            return
+        // --
         if (opts['nyimak'])  return
         if (!m.fromMe && opts['self'])  return
         if (opts['swonly'] && m.chat !== 'status@broadcast')  return
