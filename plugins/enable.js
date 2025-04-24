@@ -22,6 +22,7 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       }
       chat.bienvenida = isEnable;
       break;
+
     case 'antilag':
       if (!m.isGroup) {
         if (!isOwner) {
