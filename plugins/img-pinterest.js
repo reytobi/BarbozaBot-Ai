@@ -1,55 +1,67 @@
-import axios from 'axios';
 
-const handler = async (m, { conn, text }) => {
-    try {
-        if (!text) {
-            await conn.sendMessage(m.chat, { text: '✎ Por favor proporciona un término de búsqueda.' }, { quoted: m, rcanal });
-            return;
-        }
+import fetch from "node-fetch";
 
-        const response = await axios.get(`https://api.siputzx.my.id/api/s/pinterest?query=${encodeURIComponent(text)}`);
-        const data = response.data.data;
+const handler = async (m, { conn, args, text, usedPrefix, command }) => {
+  try {
+    if (args[0]?.startsWith("http")) {
+      // API para descargar contenido de Pinterest
+      let res = await fetch(`https://api.sylphy.xyz/download/pinterest?url=${args[0]}&apikey=sylph`);
+      let i = await res.json();
 
-        if (data.length === 0) {
-            await conn.sendMessage(m.chat, { text: `❌ No se encontraron imágenes para "${text}".` }, { quoted: m });
-            return;
-        }
+      if (!i?.data?.download) {
+        throw new Error("No se pudo obtener el enlace de descarga.");
+      }
 
-        const randomImage = data[Math.floor(Math.random() * data.length)];
-        const imageUrl = randomImage.images_url;
-        const title = randomImage.grid_title || `¡Aquí tienes una imagen de ${text}!`;
+      // Verificar si es video o imagen
+      let isVideo = i.data.download.includes(".mp4");
+      let messageType = isVideo ? "video" : "image";
 
-        await m.react('🕓');
+      // Enviar contenido al chat
+      await conn.sendMessage(
+        m.chat,
+        { [messageType]: { url: i.data.download }, caption: i.data.title || "Contenido descargado de Pinterest" },
+        { quoted: m }
+      );
 
-        await conn.sendMessage(
-            m.chat,
-            { 
-                image: { url: imageUrl },
-                caption: `\t\t⚘ *${title}*\n ${global.dev}`,
-                buttons: [
-                    { 
-                        buttonId: `.pinterest ${text}`, 
-                        buttonText: { displayText: 'ᯓsiguente' },
-                        type: 1  
-                    }
-                ],
-                viewOnce: true,
-                headerType: 4
-            },
-            { quoted: m }
-        );
+      // Reacción de éxito
+      await m.react("☑️");
+    } else if (text) {
+      // API para buscar contenido en Pinterest
+      await m.react("🕒"); // Reacción indicando que está buscando
 
-        await m.react('✅');
-    } catch (error) {
-        await m.react('✖️');
-        console.error('Error al obtener la imagen:', error);
-        await conn.sendMessage(m.chat, { text: '❌ Ocurrió un error al intentar obtener la imagen. Inténtalo nuevamente.' }, { quoted: m });
+      let res = await fetch(`https://api.sylphy.xyz/search/pinterest?q=${encodeURIComponent(text)}&apikey=sylph`);
+      let searchResults = await res.json();
+
+      if (!searchResults?.data || searchResults.data.length === 0) {
+        throw new Error("No se encontraron resultados.");
+      }
+
+      // Procesar y mostrar los primeros resultados
+      let message = `🔍 *Resultados para:* ${text}\n\n`;
+      searchResults.data.slice(0, 5).forEach((result, index) => {
+        message += `*${index + 1}.* ${result.title || "Sin título"}\n${result.url}\n\n`;
+      });
+
+      await conn.sendMessage(
+        m.chat,
+        { text: message.trim(), mentions: [m.sender] },
+        { quoted: m }
+      );
+
+      // Reacción de éxito
+      await m.react("☑️");
+    } else {
+      throw new Error(`Uso incorrecto del comando. Intenta usarlo así:\n\n*${usedPrefix + command} <url|texto>*`);
     }
+  } catch (err) {
+    console.error(err);
+    await conn.sendMessage(
+      m.chat,
+      { text: `❌ Ocurrió un error:\n${err.message}` },
+      { quoted: m }
+    );
+  }
 };
 
-handler.help = ['pinterest <término>'];
-handler.tags = ['img'];
-handler.register = true;
-handler.command = ['pinterest'];
-
+handler.command = ["pinterest", "pinsearch"]; // Registra los comandos
 export default handler;
