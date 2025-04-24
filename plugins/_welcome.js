@@ -1,81 +1,65 @@
-import { WAMessageStubType } from '@whiskeysockets/baileys';
-import fs from 'fs';
-import path from 'path';
-import fetch from 'node-fetch';
 
-async function getUserName(conn, jid) {
-  let name = await conn.getName(jid);
-  if (!name) {
-    const contact = await conn.fetchContact(jid);
-    name = contact?.notify || contact?.name || jid.split('@')[0];
-  }
-  return name;
-}
-
-function getGroupIcon(m) {
-  const dirPath = path.resolve('./groupIcons');
-  const groupIconPath = path.join(dirPath, `${m.chat}.jpg`);
-
-  if (fs.existsSync(groupIconPath)) {
-    return fs.readFileSync(groupIconPath);
-  }
-  return null;
-}
-
-async function getUserProfilePicture(conn, jid) {
-  try {
-    const ppUrl = await conn.profilePictureUrl(jid, 'image');
-    if (ppUrl) {
-      return await (await fetch(ppUrl)).buffer();
-    }
-  } catch (e) {}
-  return null;
-}
+import { WAMessageStubType } from "@whiskeysockets/baileys";
+import fetch from "node-fetch";
 
 export async function before(m, { conn, participants, groupMetadata }) {
-  if (!m.messageStubType || !m.isGroup) return true;
+  try {
+    // Verificar si el mensaje tiene StubType y si pertenece a un grupo
+    if (!m.messageStubType || !m.isGroup) return true;
 
-  let who = m.messageStubParameters[0];
-  let taguser = `@${who.split('@')[0]}`;
-  let chat = global.db.data.chats[m.chat];
+    // Obtener foto de perfil del usuario y manejar errores
+    let ppUrl = await conn.profilePictureUrl(m.messageStubParameters[0], "image").catch(
+      () => "https://qu.ax/Mvhfa.jpg" // URL de imagen predeterminada en caso de error
+    );
+    let img = await fetch(ppUrl).then(res => res.buffer()).catch(() => null); // Si falla el fetch, img será null
 
-  const userJid = m.messageStubParameters[0];
-  let img = await getUserProfilePicture(conn, userJid);
+    // Validar que el grupo tiene configuraciones
+    let chat = global.db?.data?.chats?.[m.chat];
+    if (!chat) return true;
 
+    let botname = "Barboza Bot"; // Nombre del bot
+    let textbot = "Barboza AI"; // Texto identificador del bot
+    let canal = "Canal Oficial"; // Nombre del canal de referencia (puedes personalizar esto)
 
-  if (!img) {
-    img = getGroupIcon(m);
-  }
-  if (!img) {
-    img = fs.readFileSync('./default-image.jpg'); 
-  }
+    // Condición: Bienvenida (StubType == 27)
+    if (chat.bienvenida && m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_ADD) {
+      let user = `@${m.messageStubParameters[0].split("@")[0]}`;
+      let welcomeText = chat.sWelcome
+        ? chat.sWelcome
+            .replace(/@user/g, user)
+            .replace(/@group/g, groupMetadata.subject)
+            .replace(/@desc/g, groupMetadata.desc || "sin descripción")
+        : `┌─★ _Barboza Bot_ \n│「 _Bienvenido_ 」\n└┬★ 「 ${user} 」\n   │✑  _Bienvenido_ a\n   │✑  ${groupMetadata.subject}\n   │✑  _Descripción_:\n${groupMetadata.desc || "_sin descripción_"}\n   └───────────────┈ ⳹`;
 
+      await conn.sendAi(m.chat, botname, textbot, welcomeText, img, img, canal);
+    }
 
-  let message = '';
-  switch (m.messageStubType) {
-    case WAMessageStubType.GROUP_PARTICIPANT_ADD: 
-      message = chat.sWelcome
-        ? chat.sWelcome.replace('@user', taguser).replace('@subject', groupMetadata.subject)
-        : `_🙂 Hola *${taguser}*, bienvenid@ al grupo *${groupMetadata.subject}*._`;
-      break;
-    case WAMessageStubType.GROUP_PARTICIPANT_REMOVE:
-      message = chat.sBye
-        ? chat.sBye.replace('@user', taguser).replace('@subject', groupMetadata.subject)
-        : `_☠️ *${taguser}* fue expulsad@ del grupo._`;
-      break;
-    case WAMessageStubType.GROUP_PARTICIPANT_LEAVE:
-      message = chat.sBye
-        ? chat.sBye.replace('@user', taguser).replace('@subject', groupMetadata.subject)
-        : `_👋 *${taguser}* ha abandonado el grupo._`;
-      break;
-  }
+    // Condición: Despedida (StubType == 28)
+    if (chat.bienvenida && m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_REMOVE) {
+      let user = `@${m.messageStubParameters[0].split("@")[0]}`;
+      let goodbyeText = chat.sBye
+        ? chat.sBye
+            .replace(/@user/g, user)
+            .replace(/@group/g, groupMetadata.subject)
+            .replace(/@desc/g, groupMetadata.desc || "sin descripción")
+        : `┌─★ _Barboza Bot_  \n│「 _Adiós_ 👋 」\n└┬★ 「 ${user} 」\n   │✑  _Lamentamos tu salida_\n   │✑ _Suerte en tu camino_\n   └───────────────┈ ⳹`;
 
+      await conn.sendAi(m.chat, botname, textbot, goodbyeText, img, img, canal);
+    }
 
-  if (message) {
-    await conn.sendMessage(m.chat, {
-      image: img,
-      caption: message,
-      mentions: [userJid],
-    });
+    // Condición: Expulsión (StubType == 32)
+    if (chat.bienvenida && m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_LEAVE) {
+      let user = `@${m.messageStubParameters[0].split("@")[0]}`;
+      let kickText = chat.sBye
+        ? chat.sBye
+            .replace(/@user/g, user)
+            .replace(/@group/g, groupMetadata.subject)
+            .replace(/@desc/g, groupMetadata.desc || "sin descripción")
+        : `┌─★ _Barboza Bot_  \n│「 _Expulsado_ 👋 」\n└┬★ 「 ${user} 」\n   │✑  _Lo sentimos, pero has sido eliminado_\n   │✑ _Esperamos que encuentres otro grupo mejor_\n   └───────────────┈ ⳹`;
+
+      await conn.sendAi(m.chat, botname, textbot, kickText, img, img, canal);
+    }
+  } catch (error) {
+    console.error("❌ Error en el manejo de bienvenida/despedida:", error);
   }
 }
