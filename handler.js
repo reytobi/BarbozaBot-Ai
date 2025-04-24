@@ -267,7 +267,7 @@ const allowed = ['serbot', 'bots', 'kick', 'code', 's', 'n', 'grupo abrir', 'gru
 if (m.chat === gChat && !allowed.includes(cmd)) {
   return
 }
-                }
+                
                 let fail = plugin.fail || global.dfail
                 let isAccept = plugin.command instanceof RegExp ? 
                     plugin.command.test(command) :
