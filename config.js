@@ -10,11 +10,10 @@ import axios from 'axios'
 
 global.owner = [
   ['584146277368', 'Barboza OFC',true],
-  ['5215649707515', 'meldexzz',true],
-  ['5215615180632', 'meldexzz2',true],
-  ['5219981403699', 'mesito',true],
-  ['5219986160826', 'mesitoo',true],
-
+  ['50577688033', 'Goku',true],
+  ['584123989549', 'sisked',true],
+  ['50557865603', 'Willzek',true],
+  ['5212441357601', 'Emma (Violets Version)',true],
 ]
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
@@ -24,18 +23,18 @@ global.prems = []
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
-global.packname = `𝙈𝙚𝙨𝙞𝙩𝙤. /`
-global.author = ' 𝙈𝙚𝙨𝙞𝙩𝙤𝘽𝙤𝙩.🦥'
-global.stickpack = '𝙈𝙚𝙨𝙞𝙩𝙤𝘽𝙤𝙩.🦥'
-global.stickauth = '𝙈𝙚𝙨𝙞𝙩𝙤𝘽𝙤𝙩.🦥'
-global.wm = '𝙈𝙚𝙨𝙞𝙩𝙤𝘽𝙤𝙩.🦥'
-global.dev = '𝘗𝘰𝘸𝘦𝘳 𝘉𝘺 𝘉𝘰𝘭𝘪𝘭𝘭𝘰𝘉𝘰𝘵.🥖'
-global.wait = '🌪️ *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛ𝙾...\n\n> 𝙈𝙚𝙨𝙞𝙩𝙤𝘽𝙤𝙩.🦥'
-global.botname = '𝙈𝙚𝙨𝙞𝙩𝙤𝘽𝙤𝙩.🦥'
-global.textbot = `𝘗𝘰𝘸𝘦𝘳 𝘉𝘺 𝘉𝘰𝘭𝘪𝘭𝘭𝘰𝘉𝘰𝘵.🥖`
-global.dev = '𝘗𝘰𝘸𝘦𝘳 𝘉𝘺 𝘉𝘰𝘭𝘪𝘭𝘭𝘰𝘉𝘰𝘵.🥖'
-global.listo = '*Aqui tiene*'
-global.namechannel = '𝙈𝙚𝙨𝙞𝙩𝙤𝘽𝙤𝙩.🦥'
+global.packname = `[ 🌪️Sticker Maker`
+global.author = 'ᑲ᥆𝗍 ᑲᥲrᑲ᥆zᥲ 🌪️]'
+global.stickpack = '©ᑲ᥆𝗍 ᑲᥲrᑲ᥆zᥲ-ᥲі'
+global.stickauth = 'ᑲᥡ ᑲᥲrᑲ᥆zᥲ'
+global.wm = 'ᑲᥲrᑲ᥆zᥲ 🌪️'
+global.dev = '© 𝖯᥆𝗐ᥱ𝗋ᥱძ ᑲᥡ 𝖲ᥙᥒ𝖿ᥣᥲ𝗋ᥱ  ☂︎  𝖳ᥱᥲ𝗆'
+global.wait = '🌪️ *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛ𝙾... ฅ^•ﻌ•^ฅ\n\n> ᑲ᥆𝗍 ᑲᥲrᑲ᥆zᥲ 🌪️*'
+global.botname = '[ 🌪️𝐁𝐚𝐫𝐛𝐨𝐳𝐚 𝐀𝐢 𝐖𝐡𝐚𝐬𝐀𝐩𝐩 𝐁𝐨𝐭 ]'
+global.textbot = `Powered By Bot Barboza🌪️`
+global.dev = '© 𝖯᥆𝗐ᥱ𝗋ᥱძ ᑲᥡ 𝖲ᥙᥒ𝖿ᥣᥲ𝗋ᥱ  ☂︎  𝖳ᥱᥲ𝗆'
+global.listo = '*Aqui tiene ฅ^•ﻌ•^ฅ*'
+global.namechannel = 'ᑲ᥆𝗍 ᑲᥲrᑲ᥆zᥲ-ᥲі🌪️'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
@@ -44,14 +43,19 @@ global.miniurl = fs.readFileSync('./storage/img/miniurl.jpg')
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
-global.group = ''
-global.canal = ''
-global.insta = ''
+global.group = 'https://chat.whatsapp.com/CBuLXuVZcg9FEfCSHiY6b0'
+global.canal = 'https://whatsapp.com/channel/0029Vaua0ZD3gvWjQaIpSy18'
+global.insta = 'https://www.insta.com/https://www.insta.com/sebastian_barboza13'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.catalogo = fs.readFileSync('./storage/img/catalogo.png');
 global.estilo = { key: {  fromMe: false, participant: `0@s.whatsapp.net`, ...(false ? { remoteJid: "5219992095479-1625305606@g.us" } : {}) }, message: { orderMessage: { itemCount : -999999, status: 1, surface : 1, message: packname, orderTitle: 'Bang', thumbnail: catalogo, sellerJid: '0@s.whatsapp.net'}}}
+
+global.ch = {
+ch1: '120363375378707428@newsletter',
+ch2: '120363414007802886@newsletter'
+}
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
