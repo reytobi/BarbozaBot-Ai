@@ -251,13 +251,22 @@ conn: this,
                 let [command, ...args] = noPrefix.trim().split` `.filter(v => v)
                 args = args || []
                 let _args = noPrefix.trim().split` `.slice(1)
-                let text = _args.join` `
-                command = (command || '').toLowerCase()
-                const groupLimitado = '120363418071387498@g.us'
-                const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 's', 'n', 'grupo abrir', 'grupo cerrar', 'update', 'delsession', 'on', 'off', '=>', '>'];
+// Tesis estuvo aquí 🙀
+                let txt = _args.join` `
+                let msg = m.text || ''
+                let pfx = msg[0]
+                let cmd = msg.slice(1).split(' ')[0].toLowerCase()
 
-                if (m.chat === groupLimitado && !comandosPermitidos.includes(m.text)) {
-                return 
+            if (msg.startsWith('=>') || msg.startsWith('>')) {
+  cmd = msg.startsWith('=>') ? '=>' : '>'
+}
+
+const gChat = '120363418071387498@g.us'
+const allowed = ['serbot', 'bots', 'kick', 'code', 's', 'n', 'grupo abrir', 'grupo cerrar', 'update', 'delsession', 'on', 'off', '=>', '>']
+
+if (m.chat === gChat && !allowed.includes(cmd)) {
+  return
+}
                 }
                 let fail = plugin.fail || global.dfail
                 let isAccept = plugin.command instanceof RegExp ? 
