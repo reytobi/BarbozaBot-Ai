@@ -17,47 +17,47 @@ export async function before(m, { conn, participants, groupMetadata }) {
     let chat = global.db?.data?.chats?.[m.chat];
     if (!chat) return true;
 
-    let botname = "Barboza Bot"; // Nombre del bot
-    let textbot = "Barboza AI"; // Texto identificador del bot
-    let canal = "Canal Oficial"; // Nombre del canal de referencia (puedes personalizar esto)
+    // Variables de configuración del bot
+    const botName = "Barboza Bot";
+    const textBot = "Barboza AI";
+    const canal = "Canal Oficial"; // Personalizable según tus necesidades
 
-    // Condición: Bienvenida (StubType == 27)
+    const user = `@${m.messageStubParameters[0].split("@")[0]}`; // Usuario afectado
+
+    // Bienvenida: StubType == 27 (GROUP_PARTICIPANT_ADD)
     if (chat.bienvenida && m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_ADD) {
-      let user = `@${m.messageStubParameters[0].split("@")[0]}`;
-      let welcomeText = chat.sWelcome
+      const welcomeText = chat.sWelcome
         ? chat.sWelcome
             .replace(/@user/g, user)
             .replace(/@group/g, groupMetadata.subject)
             .replace(/@desc/g, groupMetadata.desc || "sin descripción")
-        : `┌─★ _Barboza Bot_ \n│「 _Bienvenido_ 」\n└┬★ 「 ${user} 」\n   │✑  _Bienvenido_ a\n   │✑  ${groupMetadata.subject}\n   │✑  _Descripción_:\n${groupMetadata.desc || "_sin descripción_"}\n   └───────────────┈ ⳹`;
+        : `┌─★ _${botName}_ \n│「 _Bienvenido_ 」\n└┬★ 「 ${user} 」\n   │✑ _Bienvenido_ a\n   │✑ ${groupMetadata.subject}\n   │✑ _Descripción_:\n${groupMetadata.desc || "_sin descripción_"}\n   └───────────────┈ ⳹`;
 
-      await conn.sendAi(m.chat, botname, textbot, welcomeText, img, img, canal);
+      await conn.sendMessage(m.chat, { text: welcomeText, mentions: [m.messageStubParameters[0]] });
     }
 
-    // Condición: Despedida (StubType == 28)
+    // Despedida: StubType == 28 (GROUP_PARTICIPANT_REMOVE)
     if (chat.bienvenida && m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_REMOVE) {
-      let user = `@${m.messageStubParameters[0].split("@")[0]}`;
-      let goodbyeText = chat.sBye
+      const goodbyeText = chat.sBye
         ? chat.sBye
             .replace(/@user/g, user)
             .replace(/@group/g, groupMetadata.subject)
             .replace(/@desc/g, groupMetadata.desc || "sin descripción")
-        : `┌─★ _Barboza Bot_  \n│「 _Adiós_ 👋 」\n└┬★ 「 ${user} 」\n   │✑  _Lamentamos tu salida_\n   │✑ _Suerte en tu camino_\n   └───────────────┈ ⳹`;
+        : `┌─★ _${botName}_  \n│「 _Adiós_ 👋 」\n└┬★ 「 ${user} 」\n   │✑ _Suerte en tu camino_\n   │✑ _Gracias por haber sido parte del grupo_\n   └───────────────┈ ⳹`;
 
-      await conn.sendAi(m.chat, botname, textbot, goodbyeText, img, img, canal);
+      await conn.sendMessage(m.chat, { text: goodbyeText, mentions: [m.messageStubParameters[0]] });
     }
 
-    // Condición: Expulsión (StubType == 32)
+    // Expulsión: StubType == 32 (GROUP_PARTICIPANT_LEAVE)
     if (chat.bienvenida && m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_LEAVE) {
-      let user = `@${m.messageStubParameters[0].split("@")[0]}`;
-      let kickText = chat.sBye
+      const kickText = chat.sBye
         ? chat.sBye
             .replace(/@user/g, user)
             .replace(/@group/g, groupMetadata.subject)
             .replace(/@desc/g, groupMetadata.desc || "sin descripción")
-        : `┌─★ _Barboza Bot_  \n│「 _Expulsado_ 👋 」\n└┬★ 「 ${user} 」\n   │✑  _Lo sentimos, pero has sido eliminado_\n   │✑ _Esperamos que encuentres otro grupo mejor_\n   └───────────────┈ ⳹`;
+        : `┌─★ _${botName}_  \n│「 _Expulsado_ 👋 」\n└┬★ 「 ${user} 」\n   │✑ _Esperamos que encuentres otro grupo mejor_\n   │✑ _Que tengas suerte_\n   └───────────────┈ ⳹`;
 
-      await conn.sendAi(m.chat, botname, textbot, kickText, img, img, canal);
+      await conn.sendMessage(m.chat, { text: kickText, mentions: [m.messageStubParameters[0]] });
     }
   } catch (error) {
     console.error("❌ Error en el manejo de bienvenida/despedida:", error);
