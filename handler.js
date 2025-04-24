@@ -256,7 +256,7 @@ conn: this,
                 const groupLimitado = '120363418071387498@g.us'
                 const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 's', 'n', 'grupo abrir', 'grupo cerrar', 'update', 'delsession', 'on', 'off', '=>', '>'];
 
-                if (m.chat === groupLimitado && !comandosPermitidos.includes(command)) {
+                if (m.chat === groupLimitado && !comandosPermitidos.includes(m.text)) {
                 return 
                 }
                 let fail = plugin.fail || global.dfail
