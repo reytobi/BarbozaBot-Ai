@@ -22,6 +22,18 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       }
       chat.bienvenida = isEnable;
       break;
+    case 'antilag':
+      if (!m.isGroup) {
+        if (!isOwner) {
+          global.dfail('group', m, conn);
+          throw false;
+        }
+      } else if (!isAdmin) {
+        global.dfail('admin', m, conn);
+        throw false;
+      }
+      chat.antiLag = isEnable;
+      break;
 
     case 'autoread':
     case 'autoleer':
@@ -169,6 +181,8 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
 *Tipo :* nsfw 
 *Descripción :* Des/Activa los comandos *NSFW* para Grupos
 
+*Tipo :* antilag
+*Descripción :* Des/Activa el *AntiLag* en un grupo*
 *Tipo :* antiarabes 
 *Descripción :* Des/Activa el *AntiArabes* para Grupos
 
