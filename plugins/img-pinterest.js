@@ -12,18 +12,15 @@ const handler = async (m, { conn, args, text, usedPrefix, command }) => {
         throw new Error("No se pudo obtener el enlace de descarga.");
       }
 
-      // Verificar si es video o imagen
       let isVideo = i.data.download.includes(".mp4");
       let messageType = isVideo ? "video" : "image";
 
-      // Enviar contenido al chat
       await conn.sendMessage(
         m.chat,
         { [messageType]: { url: i.data.download }, caption: i.data.title || "Contenido descargado de Pinterest" },
         { quoted: m }
       );
 
-      // Reacción de éxito
       await m.react("☑️");
     } else if (text) {
       // API para buscar contenido en Pinterest
@@ -36,10 +33,12 @@ const handler = async (m, { conn, args, text, usedPrefix, command }) => {
         throw new Error("No se encontraron resultados.");
       }
 
-      // Procesar y mostrar los primeros resultados
+      // Procesar y mostrar los primeros resultados, validando datos
       let message = `🔍 *Resultados para:* ${text}\n\n`;
       searchResults.data.slice(0, 5).forEach((result, index) => {
-        message += `*${index + 1}.* ${result.title || "Sin título"}\n${result.url}\n\n`;
+        const title = result.title || "Sin título"; // Validar título
+        const url = result.url || "No disponible"; // Validar enlace
+        message += `*${index + 1}.* ${title}\n${url}\n\n`;
       });
 
       await conn.sendMessage(
@@ -48,7 +47,6 @@ const handler = async (m, { conn, args, text, usedPrefix, command }) => {
         { quoted: m }
       );
 
-      // Reacción de éxito
       await m.react("☑️");
     } else {
       throw new Error(`Uso incorrecto del comando. Intenta usarlo así:\n\n*${usedPrefix + command} <url|texto>*`);
@@ -63,5 +61,5 @@ const handler = async (m, { conn, args, text, usedPrefix, command }) => {
   }
 };
 
-handler.command = ["pinterest", "pinsearch"]; // Registra los comandos
+handler.command = ["pinterest", "pinsearch"];
 export default handler;
