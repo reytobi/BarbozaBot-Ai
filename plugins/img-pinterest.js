@@ -33,13 +33,20 @@ const handler = async (m, { conn, args, text, usedPrefix, command }) => {
         throw new Error("No se encontraron resultados.");
       }
 
-      // Procesar y mostrar los primeros resultados, validando datos
+      // Procesar y mostrar los primeros resultados, validando que sean válidos
       let message = `🔍 *Resultados para:* ${text}\n\n`;
       searchResults.data.slice(0, 5).forEach((result, index) => {
-        const title = result.title || "Sin título"; // Validar título
-        const url = result.url || "No disponible"; // Validar enlace
-        message += `*${index + 1}.* ${title}\n${url}\n\n`;
+        const title = result?.title && result.title !== "Sin título" ? result.title : "Sin título";
+        const url = result?.url && result.url !== "No disponible" ? result.url : "No disponible";
+        if (url !== "No disponible") {
+          message += `*${index + 1}.* ${title}\n${url}\n\n`;
+        }
       });
+
+      if (message.trim() === `🔍 *Resultados para:* ${text}\n\n`) {
+        // En caso de que todos los resultados estén vacíos
+        message += "⚠️ No se encontraron resultados relevantes.";
+      }
 
       await conn.sendMessage(
         m.chat,
