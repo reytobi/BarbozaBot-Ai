@@ -5,7 +5,6 @@ let handler = async (m, { conn, usedPrefix, command, text }) => {
   if (!text) return m.reply(`✨ Ingresa un texto para buscar en YouTube.\n> *Ejemplo:* ${usedPrefix + command} Shakira`);
 
   try {
-    // Buscar información en YouTube con la API
     const searchApi = `https://delirius-apiofc.vercel.app/search/ytsearch?q=${text}`;
     const searchResponse = await fetch(searchApi);
     const searchData = await searchResponse.json();
@@ -23,14 +22,12 @@ let handler = async (m, { conn, usedPrefix, command, text }) => {
 📅 *Publicado:* ${video.publishedAt}
 🌐 *Enlace:* ${video.url}
 `;
-
-    // Enviar los detalles del video con su imagen
+  
     await conn.sendMessage(m.chat, {
       image: { url: video.image },
       caption: videoDetails.trim()
     }, { quoted: m });
 
-    // Descargar audio del video con la API de descarga
     const downloadApi = `https://api.vreden.my.id/api/ytmp3?url=${video.url}`;
     const downloadResponse = await fetch(downloadApi);
     const downloadData = await downloadResponse.json();
@@ -38,15 +35,12 @@ let handler = async (m, { conn, usedPrefix, command, text }) => {
     if (!downloadData?.result?.download?.url) {
       return m.reply("❌ No se pudo obtener el audio del video.");
     }
-
-    // Enviar el audio directamente
     await conn.sendMessage(m.chat, {
       audio: { url: downloadData.result.download.url },
       mimetype: 'audio/mpeg',
       fileName: `${video.title}.mp3`
     }, { quoted: m });
-
-    // Confirmar éxito
+ 
     await m.react("✅");
   } catch (error) {
     console.error(error);
