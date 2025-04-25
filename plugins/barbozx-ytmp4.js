@@ -15,11 +15,15 @@ let handler = async (m, { conn, text }) => {
       return m.reply("❌ No se pudo obtener el audio del video. Verifica el enlace.");
     }
 
-    // Enviar audio al chat
+    // Construcción del mensaje con detalles del audio
+    let audioInfo = `🎵 *Audio Descargado*\n\n🎤 *Título:* ${data.result.title || "Sin título"}\n📺 *Canal:* ${data.result.author || "Desconocido"}\n⏳ *Duración:* ${data.result.duration || "N/A"}\n🌐 *Enlace original:* ${text}`;
+
+    // Enviar audio al chat con descripción
     await conn.sendMessage(m.chat, {
       audio: { url: data.result.download.url },
       mimetype: "audio/mpeg",
-      fileName: `${data.result.title || "audio"}.mp3`
+      fileName: `${data.result.title || "audio"}.mp3`,
+      caption: audioInfo
     }, { quoted: m });
 
     await m.react("✅"); // Confirmación de éxito
