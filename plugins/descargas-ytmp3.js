@@ -1,83 +1,36 @@
+
 import fetch from "node-fetch";
 
-// Función para manejar reintentos de solicitudes
-const fetchWithRetries = async (url, maxRetries = 2) => {
-  let attempt = 0;
-  while (attempt <= maxRetries) {
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-
-      if (data && data.status === 200 && data.result && data.result.download && data.result.download.url) {
-        return data.result;
-      }
-    } catch (error) {
-      console.error(`Error en el intento ${attempt + 1}:`, error.message);
-    }
-    attempt++;
-  }
-  throw new Error("No se pudo obtener una respuesta válida después de varios intentos.");
-};
-
-// Función para reconstruir la URL desde cadenas ofuscadas
-const reconstructUrl = () => {
-  const parts = [
-    "aHR0cHM6Ly9hcGkudnJlZGVu",
-    "LndlYi5pZC9hcGkveXRtcDM=",
-  ];
-  return Buffer.from(parts.join(""), "base64").toString("utf-8");
-};
-
-// Handler principal
-let handler = async (m, { conn, text, usedPrefix }) => {
-  if (!text || !/^https:\/\/(www\.)?youtube\.com\/watch\?v=/.test(text)) {
-    return conn.sendMessage(m.chat, {
-      text: `❗ *Por favor ingresa un enlace válido de YouTube para descargar la música.*\n\n📌 *Ejemplo:* ${usedPrefix}ytmp3 https://www.youtube.com/watch?v=dQw4w9WgXcQ`,
-    });
-  }
-
-  // Mensaje inicial indicando que Barboza Bot AI está procesando la música
-  const key = await conn.sendMessage(m.chat, {
-    text: `⌘━─━─≪ *Barboza Bot AI* ≫─━─━⌘\n\n🔎 *Procesando tu solicitud, por favor espera...*`,
-  });
+let handler = async (m, { conn, text }) => {
+  if (!text) return m.reply("❌ Ingresa un enlace válido de YouTube.\nEjemplo: .ytmp3 https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 
   try {
-    // Reconstruir la URL de la API y construir la solicitud
-    const apiUrl = `${reconstructUrl()}?url=${encodeURIComponent(text)}`;
+    // Llamada a la API para descargar el audio en MP3
+    let apiUrl = `https://api.vreden.my.id/api/ytmp3?url=${encodeURIComponent(text)}`;
+    let response = await fetch(apiUrl);
+    let data = await response.json();
 
-    // Intentar obtener datos con reintentos
-    const apiData = await fetchWithRetries(apiUrl);
+    // Validar respuesta de la API
+    if (!data?.result?.download?.url) {
+      return m.reply("❌ No se pudo obtener el audio del video. Verifica el enlace.");
+    }
 
-    const { metadata, download } = apiData;
-    const { title, duration, views, author, url: videoUrl } = metadata;
-    const { url: downloadUrl } = download;
-
-    // Descripción personalizada para el archivo encontrado
-    const description = `⌘━─━─≪ *Barboza Bot AI* ≫─━─━⌘\n\n🎵 *Título:* ${title}\n⏳ *Duración:* ${duration.timestamp || "Desconocida"}\n👁️ *Vistas:* ${views.toLocaleString() || "Desconocidas"}\n✍️ *Autor:* ${author.name || "Desconocido"}\n🔗 *Enlace del video:* ${videoUrl}\n\n✨ *Tu archivo se está enviando, por favor espera...*\n\n⌘━━─≪ Power By Barboza Bot AI ≫─━━⌘`;
-
-    // Actualizar mensaje inicial con la información específica del video
-    await conn.sendMessage(m.chat, { text: description, edit: key });
-
-    // Enviar archivo como audio
-    await conn.sendMessage(
-      m.chat,
-      {
-        audio: { url: downloadUrl },
-        mimetype: "audio/mpeg",
-        fileName: `${title}.mp3`,
-        caption: `🎶 *Descarga completada por Barboza Bot AI*`,
-      },
-      { quoted: m }
-    );
-  } catch (error) {
-    console.error("Error al procesar la solicitud:", error);
+    // Enviar audio al chat
     await conn.sendMessage(m.chat, {
-      text: `❌ *Ocurrió un error al intentar procesar tu solicitud:*\n${error.message || "Error desconocido"}`,
-      edit: key,
-    });
+      audio: { url: data.result.download.url },
+      mimetype: "audio/mpeg",
+      fileName: `${data.result.title || "audio"}.mp3`
+    }, { quoted: m });
+
+    await m.react("✅"); // Confirmación de éxito
+  } catch (error) {
+    console.error(error);
+    await m.reply(`❌ Error al procesar la solicitud:\n${error.message}`);
   }
 };
 
-handler.command = /^ytmp3$/i; // Comando único: ytmp3
+handler.command = ["ytmp3"];
+handler.help = ["ytmp3 <enlace>"];
+handler.tags = ["download"];
 
 export default handler;
