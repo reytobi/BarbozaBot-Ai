@@ -1,42 +1,49 @@
-import fetch from 'node-fetch';
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
+import fetch from "node-fetch";
+
+let handler = async (m, { conn, text }) => {
   if (!text) {
-    return conn.reply(m.chat, `🚩 Por favor, ingrese un nombre de usuario para buscar.\n\nEjemplo:\n> *${usedPrefix + command}* xrljose`, m, rcanal);
+    return m.reply("❌ Ingresa un nombre de usuario válido de Instagram.\nEjemplo: .igstalk username");
   }
 
-  await m.react('🕓');
   try {
-    const res = await fetch(`https://delirius-apiofc.vercel.app/tools/igstalk?username=${encodeURIComponent(text)}`);
-    const json = await res.json();
+    // Llamada a la API para obtener información del perfil de Instagram
+    const apiUrl = `https://api.vreden.my.id/api/igstalk?query=${encodeURIComponent(text)}`;
+    const response = await fetch(apiUrl);
+    const data = await response.json();
 
-    if (!json.data) {
-      await m.react('✖️');
-      return await conn.reply(m.chat, '❌ No se encontraron resultados para esta búsqueda.', m);
+    // Validar respuesta de la API
+    if (!data?.result) {
+      return m.reply("❌ No se encontró información para el usuario proporcionado.");
     }
 
-    const user = json.data;
-    let txt = `📌 *I N S T A G R A M  -  S T A L K*\n\n`;
-    txt += `👤 *Nombre Completo:* ${user.full_name}\n`;
-    txt += `🔖 *Usuario:* ${user.username}\n`;
-    txt += `📜 *Bio:* ${user.biography || 'Sin descripción'}\n`;
-    txt += `👥 *Seguidores:* ${user.followers}\n`;
-    txt += `🔄 *Siguiendo:* ${user.following}\n`;
-    txt += `📝 *Publicaciones:* ${user.posts}\n`;
-    txt += `🔗 *Perfil:* ${user.url}\n\n`;
+    // Construir mensaje con los detalles del usuario
+    const userDetails = `
+📸 *Información del Usuario de Instagram*\n
+👤 *Nombre:* ${data.result.full_name || "No disponible"}
+📄 *Biografía:* ${data.result.biography || "Sin biografía"}
+🌐 *URL del Perfil:* ${data.result.external_url || "Sin enlace externo"}
+👥 *Seguidores:* ${data.result.followers || "N/A"}
+👍 *Seguidos:* ${data.result.following || "N/A"}
+📸 *Publicaciones:* ${data.result.posts || "N/A"}
+🔗 *Enlace directo:* https://instagram.com/${text}
+`;
 
-    await conn.sendMessage(m.chat, { image: { url: user.profile_picture }, caption: txt }, { quoted: m });
-    await m.react('✅');
+    // Enviar imagen del perfil y detalles
+    await conn.sendMessage(m.chat, {
+      image: { url: data.result.profile_pic_url_hd },
+      caption: userDetails.trim(),
+    }, { quoted: m });
+
+    await m.react("✅"); // Confirmación de éxito
   } catch (error) {
     console.error(error);
-    await m.react('✖️');
-    await conn.reply(m.chat, '⚠️ Hubo un error al procesar la solicitud. Intenta de nuevo más tarde.', m);
+    await m.reply(`❌ Error al procesar la solicitud:\n${error.message}`);
   }
 };
 
-handler.help = ['igstalk *<nombre>*'];
-handler.tags = ['stalk'];
-handler.command = ['igstalk', 'instagramstalk'];
-handler.register = true;
+handler.command = ["igstalk"];
+handler.help = ["igstalk <usuario>"];
+handler.tags = ["instagram"];
 
 export default handler;
