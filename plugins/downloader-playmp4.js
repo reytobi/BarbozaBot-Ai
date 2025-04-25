@@ -14,12 +14,27 @@ let handler = async (m, { conn, text }) => {
     if (!data?.result?.download?.url) {
       return m.reply("❌ No se pudo obtener el video. Verifica el nombre o intenta con otro.");
     }
+
+    const videoDetails = `
+🎥 *Video Descargado de YouTube*
+──────────────────────
+📌 *Título:* ${data.result.title || "Sin título"}
+🎶 *Autor:* ${data.result.author || "Desconocido"}
+📅 *Fecha de Publicación:* ${data.result.publishedAt || "N/A"}
+⏱️ *Duración:* ${data.result.duration || "N/A"}
+👁️ *Vistas:* ${data.result.views || "N/A"}
+❤️ *Likes:* ${data.result.likes || "N/A"}
+💾 *Calidad de Video:* ${data.result.quality || "N/A"}
+🌐 *Enlace Original:* [Ver en YouTube](${data.result.url})
+──────────────────────
+`;
+
     await conn.sendMessage(m.chat, {
       video: { url: data.result.download.url },
-      caption: `🎥 *Video Descargado de YouTube*\n\n🔖 *Título:* ${data.result.title || "Sin título"}\n🎶 *Autor:* ${data.result.author || "Desconocido"}\n⏱️ *Duración:* ${data.result.duration || "N/A"}\n🌐 *Enlace original:* ${data.result.url}`
+      caption: videoDetails.trim()
     }, { quoted: m });
 
-    await m.react("✅");
+    await m.react("✅"); // Confirmación de éxito
   } catch (error) {
     console.error(error);
     await m.reply(`❌ Error al procesar la solicitud:\n${error.message}`);
