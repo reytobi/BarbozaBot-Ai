@@ -1,7 +1,11 @@
 import fetch from "node-fetch";
 import yts from "yt-search";
 
-const API_URL = "https://api.vreden.web.id/api/ytmp3";
+
+const encodedApi = "aHR0cHM6Ly9hcGkudnJlZGVuLndlYi5pZC9hcGkveXRtcDM=";
+
+
+const getApiUrl = () => Buffer.from(encodedApi, "base64").toString("utf-8");
 
 const fetchWithRetries = async (url, maxRetries = 2) => {
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
@@ -18,10 +22,11 @@ const fetchWithRetries = async (url, maxRetries = 2) => {
   throw new Error("No se pudo obtener la música después de varios intentos.");
 };
 
+
 let handler = async (m, { conn, text }) => {
   if (!text || !text.trim()) {
     return conn.sendMessage(m.chat, {
-      text: "*✎ Ingresa el nombre de la música a descargar.*\n\n*Ejemplo:* `.play No llores más`",
+      text: "*✎ ingresa el nombre de la música a descargar.*`\n\n*Ejemplo:* `.play No llores más`",
     });
   }
 
@@ -32,27 +37,20 @@ let handler = async (m, { conn, text }) => {
     const video = searchResults.videos[0];
     if (!video) throw new Error("No se encontraron resultados.");
 
-    const apiUrl = `${API_URL}?url=${encodeURIComponent(video.url)}`;
+    const apiUrl = `${getApiUrl()}?url=${encodeURIComponent(video.url)}`;
     const apiData = await fetchWithRetries(apiUrl);
 
     await conn.sendMessage(m.chat, {
       image: { url: video.thumbnail },
-      caption: `*「✦」Descargando ${video.title}*
+      caption: `*「✦」descargando ${video.title}*
 
-> ✦ Canal » *${video.author.name}*
-> ✰ *Vistas:* » ${video.views}
-> ⴵ *Duración:* » ${video.timestamp}
-> ✐ *Autor:* » ${video.author.name}`,
-    });
+> ✦ Canal » *${video.author.name}*\n> ✰ *Vistas:* » ${video.views}\n> ⴵ *Duración:* » ${video.timestamp}\n> ✐  *Autor:* » ${video.author.name}`,
 
-    // Convertir duración a minutos
-    const durationParts = video.timestamp.split(":").map(Number);
-    const durationInMinutes = durationParts.length === 3
-      ? durationParts[0] * 60 + durationParts[1]
-      : parseInt(durationParts[0]);
+
+   });
 
     const audioMessage = {
-      [durationInMinutes > 10 ? 'document' : 'audio']: { url: apiData.download.url },
+      audio: { url: apiData.download.url },
       mimetype: "audio/mpeg",
       fileName: `${video.title}.mp3`,
     };
@@ -68,8 +66,8 @@ let handler = async (m, { conn, text }) => {
   }
 };
 
-handler.command = ['play','mp3'];
-handler.help = ['playaudio <texto>', 'mp3'];
+handler.command = ['play','mp3',]; // Puedes usar ['play', 'tocar'] si quieres más alias
+handler.help = ['playaudio <texto>','mp3',];
 handler.tags = ['downloader'];
 
 export default handler;
