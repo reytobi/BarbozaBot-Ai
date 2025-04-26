@@ -1,40 +1,30 @@
-
-import fetch from "node-fetch";
-
-let handler = async (m, { conn, text }) => {
-  if (!text) {
-    return m.reply("❌ Ingresa un término de búsqueda.\nEjemplo: .pinterest anime");
-  }
-
-  try {
-    // Llamada a la API de búsqueda de imágenes en Pinterest
-    const apiUrl = `https://api.vreden.my.id/api/search/pinterest?query=${encodeURIComponent(text)}`;
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-
-    // Validar respuesta de la API
-    if (!data?.result?.length) {
-      return m.reply("❌ No se encontraron imágenes. Intenta con otra búsqueda.");
-    }
-
-    // Obtener la primera imagen del resultado
-    const imageUrl = data.result[0];
-
-    // Enviar imagen al chat
-    await conn.sendMessage(m.chat, {
-      image: { url: imageUrl },
-      caption: `🔎 *Resultado de búsqueda en Pinterest*\n📌 *Término:* ${text}\n🔗 *Fuente:* Pinterest`
-    }, { quoted: m });
-
-    await m.react("✅"); // Confirmación de éxito
-  } catch (error) {
-    console.error(error);
-    await m.reply(`❌ Error al procesar la solicitud:\n${error.message}`);
-  }
-};
-
-handler.command = ["pinterest"];
-handler.help = ["pinterest <término>"];
-handler.tags = ["image"];
+import axios from 'axios'
+import fetch from 'node-fetch'
+let handler = async (m, { conn, usedPrefix, command, text }) => {
+if (!text) return m.reply(`*⚠️ Ingresa el término de búsqueda.*\nEj: ${usedPrefix + command} nayeon`);
+try { 
+let response = await axios.get(`https://api.siputzx.my.id/api/s/pinterest?query=${encodeURIComponent(text)}`);
+if (!response.data.status) return await m.reply("❌ No se encontraron resultados.")
+let searchResults = response.data.data; 
+let selectedResults = searchResults.slice(0, 6); 
+let messages = selectedResults.map(result => [result.grid_title || text, wm, result.images_url]);
+await conn.sendCarousel(m.chat, `✅ Resultados para: ${text}`, "🔍 Pinterest Search", messages, m);
+} catch {
+try {
+let { data: response } = await axios.get(`${apis}/search/pinterestv2?text=${encodeURIComponent(text)}`);
+if (!response.status || !response.data || response.data.length === 0) return m.reply(`❌ No se encontraron resultados para "${text}".`);
+let searchResults = response.data;
+let selectedResults = searchResults.slice(0, 6);
+let messages = selectedResults.map(result => [
+result.description || null, `🔎 Autor: ${result.name} (@${result.username})`, result.image]);
+await conn.sendCarousel(m.chat, `✅ Resultados para: ${text}`, "🔍 Pinterest Search", messages, m);
+} catch (error) {
+console.error(error);
+}}}
+handler.help = ['pinterest <keyword>'];
+handler.tags = ['buscadores'];
+handler.command = /^(pinterest)$/i;
+handler.register = false;
+handler.limit = 1;
 
 export default handler;
