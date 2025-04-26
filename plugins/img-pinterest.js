@@ -1,69 +1,40 @@
 
-import fetch from 'node-fetch';
+import fetch from "node-fetch";
 
-let handler = async (m, { conn, text, args }) => {
-  if (!text) return m.reply(`✨ Ingresa un término o enlace para buscar/descargar contenido. Ejemplo: .pinsearch Flores`);
+let handler = async (m, { conn, text }) => {
+  if (!text) {
+    return m.reply("❌ Ingresa un término de búsqueda.\nEjemplo: .pinterest anime");
+  }
 
   try {
-    if (text.includes("https://")) {
-      // Proceso para descargar contenido de Pinterest
-      m.react("⏳");
-      const apiUrl = `https://api.sylphy.xyz/download/pinterest?url=${args[0]}&apikey=sylph`;
-      let res = await fetch(apiUrl);
-      let data = await res.json();
+    // Llamada a la API de búsqueda de imágenes en Pinterest
+    const apiUrl = `https://api.vreden.my.id/api/search/pinterest?query=${encodeURIComponent(text)}`;
+    const response = await fetch(apiUrl);
+    const data = await response.json();
 
-      // Validar respuesta de la API
-      if (!data?.data?.download) {
-        return m.reply("❌ No se pudo obtener contenido descargable del enlace proporcionado.");
-      }
-
-      // Determinar si es video o imagen
-      let isVideo = data.data.download.includes(".mp4");
-      let messageType = isVideo ? "video" : "image";
-
-      // Enviar contenido al chat
-      await conn.sendMessage(m.chat, {
-        [messageType]: { url: data.data.download },
-        caption: `💾 *Descargado desde Pinterest*\n\n🔖 *Título:* ${data.data.title || "Sin título"}\n🌐 *Enlace directo:* ${args[0]}`
-      }, { quoted: m });
-
-      m.react("✅"); // Confirmación de éxito
-
-    } else {
-      // Proceso para buscar contenido en Pinterest
-      m.react("🔍");
-      const apiUrl = `https://api.sylphy.xyz/search/pinterest?q=${encodeURIComponent(text)}&apikey=sylph`;
-      let res = await fetch(apiUrl);
-      let results = await res.json();
-
-      if (!results?.data || results.data.length === 0) {
-        return conn.reply(m.chat, `⚠️ No se encontraron resultados para "${text}".`, m);
-      }
-
-      // Mostrar los primeros 5 resultados con imágenes
-      let message = `🔎 *Resultados de Pinterest para:* ${text}\n\n`;
-      for (let i = 0; i < Math.min(results.data.length, 5); i++) {
-        let result = results.data[i];
-        let title = result.title || "Sin título";
-        let link = result.url || "No disponible";
-
-        // Enviar cada resultado como mensaje con imagen
-        await conn.sendMessage(m.chat, {
-          image: { url: result.image_large_url },
-          caption: `🎨 *Resultado ${i + 1}:*\n\n🔖 *Título:* ${title}\n🔗 *Enlace:* ${link}`
-        }, { quoted: m });
-      }
-
-      m.react("✅"); // Confirmación de éxito
+    // Validar respuesta de la API
+    if (!data?.result?.length) {
+      return m.reply("❌ No se encontraron imágenes. Intenta con otra búsqueda.");
     }
+
+    // Obtener la primera imagen del resultado
+    const imageUrl = data.result[0];
+
+    // Enviar imagen al chat
+    await conn.sendMessage(m.chat, {
+      image: { url: imageUrl },
+      caption: `🔎 *Resultado de búsqueda en Pinterest*\n📌 *Término:* ${text}\n🔗 *Fuente:* Pinterest`
+    }, { quoted: m });
+
+    await m.react("✅"); // Confirmación de éxito
   } catch (error) {
     console.error(error);
-    conn.reply(m.chat, `❌ Error al procesar la solicitud:\n${error.message}`, m);
+    await m.reply(`❌ Error al procesar la solicitud:\n${error.message}`);
   }
 };
 
-handler.help = ['pinsearch', 'pindownload'];
-handler.command = ['pinsearch', 'pindownload', 'pin'];
-handler.tags = ['tools'];
+handler.command = ["pinterest"];
+handler.help = ["pinterest <término>"];
+handler.tags = ["image"];
 
 export default handler;
