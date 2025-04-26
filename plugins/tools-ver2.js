@@ -1,25 +1,73 @@
+const fs = require("fs");
+const path = require("path");
+const { downloadContentFromMessage } = require("@whiskeysockets/baileys");
 
-let handler = async (m, { conn, usedPrefix, command }) => {
-  if (!m.quoted || !m.quoted.message || !m.quoted.message.imageMessage) {
-    throw `[❗️INFO❗️] Debes responder a una imagen para usar este comando.`;
+const handler = async (msg, { conn }) => {
+  const rawID = conn.user?.id || "";
+  const subbotID = rawID.split(":")[0] + "@s.whatsapp.net";
+
+  const prefixPath = path.resolve("prefixes.json");
+  let prefixes = {};
+  if (fs.existsSync(prefixPath)) {
+    prefixes = JSON.parse(fs.readFileSync(prefixPath, "utf-8"));
+  }
+  const usedPrefix = prefixes[subbotID] || ".";
+
+  const quotedInfo = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+  if (!quotedInfo) {
+    return await conn.sendMessage(msg.key.remoteJid, {
+      text: "❌ *Error:* Debes responder a un mensaje de *ver una sola vez* (imagen, video o audio) para poder verlo nuevamente."
+    }, { quoted: msg });
   }
 
-  // Recuperar la imagen original del mensaje citado
-  const imageMessage = m.quoted.message.imageMessage;
-  const imageUrl = await conn.downloadMediaMessage(m.quoted);
-
-  if (!imageUrl) {
-    throw `[❗️ERROR❗️] No se pudo recuperar la imagen. Asegúrate de responder a un mensaje válido.`;
+  let mediaType, mediaMessage;
+  if (quotedInfo.imageMessage?.viewOnce) {
+    mediaType = "image";
+    mediaMessage = quotedInfo.imageMessage;
+  } else if (quotedInfo.videoMessage?.viewOnce) {
+    mediaType = "video";
+    mediaMessage = quotedInfo.videoMessage;
+  } else if (quotedInfo.audioMessage?.viewOnce) {
+    mediaType = "audio";
+    mediaMessage = quotedInfo.audioMessage;
+  } else {
+    return await conn.sendMessage(msg.key.remoteJid, {
+      text: "❌ *Error:* Solo puedes usar este comando en mensajes de *ver una sola vez*."
+    }, { quoted: msg });
   }
 
-  // Mensaje de confirmación con el enlace directo a la imagen
-  const texto = `🔰 *Aquí tienes la imagen que pediste:*`;
+  await conn.sendMessage(msg.key.remoteJid, {
+    react: { text: "⏳", key: msg.key }
+  });
 
-  // Enviar la imagen nuevamente al chat
-  await conn.sendMessage(m.chat, { image: imageUrl, caption: texto }, { quoted: m });
+  const mediaStream = await new Promise(async (resolve, reject) => {
+    try {
+      const stream = await downloadContentFromMessage(mediaMessage, mediaType);
+      let buffer = Buffer.alloc(0);
+      for await (const chunk of stream) buffer = Buffer.concat([buffer, chunk]);
+      resolve(buffer);
+    } catch {
+      reject(null);
+    }
+  });
+
+  if (!mediaStream || mediaStream.length === 0) {
+    return await conn.sendMessage(msg.key.remoteJid, {
+      text: "❌ *Error:* No se pudo descargar el archivo. Intenta de nuevo."
+    }, { quoted: msg });
+  }
+
+  let messageOptions = { mimetype: mediaMessage.mimetype };
+  if (mediaType === "image") messageOptions.image = mediaStream;
+  if (mediaType === "video") messageOptions.video = mediaStream;
+  if (mediaType === "audio") messageOptions.audio = mediaStream;
+
+  await conn.sendMessage(msg.key.remoteJid, messageOptions, { quoted: msg });
+
+  await conn.sendMessage(msg.key.remoteJid, {
+    react: { text: "✅", key: msg.key }
+  });
 };
 
-handler.help = ['ver2'];
-handler.tags = ['tools'];
-handler.command = ['ver2']; // Comando .ver para ver la imagen nuevamente
-export default handler;
+handler.command = ["ver"];
+module.exports = handler;
