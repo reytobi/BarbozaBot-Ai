@@ -1,48 +1,32 @@
-let handler = async (m, { conn, usedPrefix }) => {
-    const memes = [
-        'https://qu.ax/dpYLN.jpg',
-        'https://qu.ax/YvLWt.jpg',
-        'https://qu.ax/FxBzq.jpg',
-        'https://qu.ax/oRkAi.jpg',
-        'https://qu.ax/Gfnrz.jpg',
-        'https://qu.ax/UFWsB.jpg',
-        'https://qu.ax/rubYe.jpg',
-        'https://qu.ax/uyjpK.jpg',
-        'https://qu.ax/RcxFR.jpg',
-        'https://qu.ax/MctMj.jpg',
-        'https://qu.ax/znbWC.jpg',
-        'https://qu.ax/lLJMP.jpg',
-        'https://qu.ax/HhOVP.jpg',
-        'https://qu.ax/yQoQW.jpg',
-        'https://qu.ax/msDFZ.jpg',
-        'https://qu.ax/MTDhM.jpg',
-        'https://qu.ax/hFQOL.jpg',
-    ];
 
-    const randomMeme = memes[Math.floor(Math.random() * memes.length)];
+import fetch from 'node-fetch';
 
-    const buttons = [
-        {
-            buttonId: `${usedPrefix}meme`,
-            buttonText: { displayText: "🔄 Ver más" },
-            type: 1
-        }
-    ];
+const handler = async (m, { conn, command }) => {
+  try {
+    // Llamada a la API para obtener un meme
+    const apiUrl = 'https://api.vreden.my.id/api/meme';
+    const response = await fetch(apiUrl);
+    const data = await response.json();
 
-    await conn.sendMessage(
-        m.chat,
-        {
-            image: { url: randomMeme },
-            caption: "¡Aquí tienes un meme para alegrar tu día! 😂",
-            buttons: buttons,
-            viewOnce: true
-        },
-        { quoted: m }
-    );
+    // Verificar si la API retornó un meme válido
+    if (!data?.url) {
+      return conn.reply(m.chat, '❌ No se pudo obtener un meme. Inténtalo de nuevo más tarde.', m);
+    }
+
+    // Enviar el meme al chat
+    await conn.sendMessage(m.chat, {
+      image: { url: data.url },
+      caption: `🤣 Aquí tienes un meme aleatorio para alegrarte el día!`
+    }, { quoted: m });
+
+  } catch (error) {
+    console.error('Error al obtener el meme:', error);
+    conn.reply(m.chat, `❌ Ocurrió un error al obtener el meme: ${error.message}`, m);
+  }
 };
 
-handler.help = ['meme'];
-handler.tags = ['diversión'];
-handler.command = ['meme'];
+handler.command = ['meme', 'memes'];
+handler.help = ['meme', 'memes'];
+handler.tags = ['fun'];
 
 export default handler;
