@@ -1,58 +1,40 @@
-/* 
-- Google Search Bot By Jose
-- Power By Team Code Titans
-- https://whatsapp.com/channel/0029VaJxgcB0bIdvuOwKTM2Y 
-*/
-// *[ 🔍 GOOGLE SEARCH ]*
-import { googleIt } from '@bochilteam/scraper';
-import google from 'google-it';
-import axios from 'axios';
 
-let handler = async (m, { conn, command, args, usedPrefix }) => {
-    const fetch = (await import('node-fetch')).default;
-    const text = args.join` `;
-    if (!text) return m.reply(`*\`Ingrese el texto a buscar\`*\n• Ejemplo: ${usedPrefix + command} gato`);
+import fetch from 'node-fetch';
 
-    m.react("🔥");
-    try {
-        const res = await fetch(`${apis}/search/googlesearch?query=${encodeURIComponent(text)}`);
-        const data = await res.json();
+const handler = async (m, { conn, args }) => {
+  if (!args[0]) {
+    return conn.reply(m.chat, '❌ Por favor, ingresa un término de búsqueda.\nEjemplo: .google Microsoft Copilot', m);
+  }
 
-        if (data.status && data.data && data.data.length > 0) {
-            let teks = `\`🔍 RESULTADOS DE:\` ${text}\n\n`;
-            for (let result of data.data) {
-                teks += `*${result.title}*\n_${result.url}_\n_${result.description}_\n\n─────────────────\n\n`;
-            }
+  const query = args.join(' ');
+  const apiUrl = `https://api.vreden.my.id/api/google?query=${encodeURIComponent(query)}`;
 
-            const ss = `https://image.thum.io/get/fullpage/https://google.com/search?q=${encodeURIComponent(text)}`;
-            conn.sendFile(m.chat, ss, 'result.png', teks, fkontak, false, fake);
-            m.react("✅");
-            handler.limit = 1;      
-        }
-    } catch (error) {
-        try {
-            const url = 'https://google.com/search?q=' + encodeURIComponent(text);
-            google({ 'query': text }).then(res => {
-                let teks = `\`🔍 RESULTADOS DE:\` ${text}\n\n*${url}*\n\n`;
-                for (let g of res) {
-                    teks += `_${g.title}_\n_${g.link}_\n_${g.snippet}_\n\n┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈┈\n\n`;
-                }
-                const ss = `https://image.thum.io/get/fullpage/${url}`;
-                conn.sendFile(m.chat, ss, 'error.png', teks, fkontak, false, rcanal);
-            });
-            m.react("✅");
-            handler.limit = 1;         
-        } catch (e) {
-            handler.limit = 0;
-            console.log(e);
-            m.react("❌");
-        }
+  try {
+    await m.react('⏳'); // Reacción de "procesando"
+
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    if (!data || !data.results || data.results.length === 0) {
+      return conn.reply(m.chat, '❌ No se encontraron resultados. Intenta con otra búsqueda.', m);
     }
+
+    let results = `🔎 *Resultados de Google para:* ${query}\n\n`;
+    data.results.forEach((item, index) => {
+      results += `➤ *${index + 1}:* [${item.title}](${item.link})\n`;
+    });
+
+    await conn.reply(m.chat, results.trim(), m);
+    await m.react('✅'); // Reacción de éxito
+  } catch (error) {
+    console.error('Error al procesar la búsqueda:', error);
+    await m.react('❌'); // Reacción de error
+    conn.reply(m.chat, `❌ Ocurrió un error al realizar la búsqueda: ${error.message}`, m);
+  }
 };
 
-handler.help = ['google', 'googlef'].map(v => v + ' <pencarian>');
-handler.tags = ['buscadores'];
 handler.command = ['google'];
-handler.register = true;
+handler.help = ['google <término>'];
+handler.tags = ['search'];
 
 export default handler;
