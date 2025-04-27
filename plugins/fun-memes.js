@@ -1,32 +1,27 @@
+export const handler = async (m, { conn, usedPrefix, command }) => {
+  await conn.sendMessage(m.chat, { react: { text: '🔵', key: m.key } })
 
-import fetch from 'node-fetch';
-
-const handler = async (m, { conn, command }) => {
   try {
-    // Llamada a la API para obtener un meme
-    const apiUrl = 'https://api.vreden.my.id/api/meme';
-    const response = await fetch(apiUrl);
-    const data = await response.json();
+    const res = await fetch('https://api.vreden.my.id/api/meme')
 
-    // Verificar si la API retornó un meme válido
-    if (!data?.url) {
-      return conn.reply(m.chat, '❌ No se pudo obtener un meme. Inténtalo de nuevo más tarde.', m);
-    }
+    if (!res.ok) throw 'Error al consultar el meme.'
 
-    // Enviar el meme al chat
-    await conn.sendMessage(m.chat, {
-      image: { url: data.url },
-      caption: `🤣 Aquí tienes un meme aleatorio para alegrarte el día!`
-    }, { quoted: m });
+    const json = await res.json()
 
-  } catch (error) {
-    console.error('Error al obtener el meme:', error);
-    conn.reply(m.chat, `❌ Ocurrió un error al obtener el meme: ${error.message}`, m);
+    if (!json.result) throw 'No se encontró un meme.'
+
+    await conn.sendMessage(m.chat, { image: { url: json.result }, caption: '😂 Aquí tienes tu meme' }, { quoted: m })
+    await conn.sendMessage(m.chat, { react: { text: '🟢', key: m.key } })
+
+  } catch (e) {
+    console.error(e)
+    await conn.sendMessage(m.chat, { react: { text: '🔴', key: m.key } })
+    conn.reply(m.chat, '🔴 Ocurrió un error al buscar el meme.', m)
   }
-};
+}
 
-handler.command = ['meme', 'memes'];
-handler.help = ['meme', 'memes'];
-handler.tags = ['fun'];
+handler.help = ['meme']
+handler.tags = ['fun']
+handler.command = /^meme$/i
 
-export default handler;
+export default handler
