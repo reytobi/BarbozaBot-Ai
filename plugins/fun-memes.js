@@ -12,6 +12,7 @@ export const handler = async (m, { conn, usedPrefix, command }) => {
 
     if (!json.result) throw 'No se encontró un meme.'
 
+    // Enviar la imagen del meme al chat
     await conn.sendMessage(m.chat, { image: { url: json.result }, caption: '😂 Aquí tienes tu meme' }, { quoted: m })
     await conn.sendMessage(m.chat, { react: { text: '🟢', key: m.key } })
 
