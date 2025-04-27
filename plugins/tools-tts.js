@@ -1,50 +1,45 @@
-import gtts from 'node-gtts';
-import { readFileSync, unlinkSync } from 'fs';
-import { join } from 'path';
-
-const defaultLang = 'es';
-const emoji = '🔊'; // Declaración de la variable emoji
-
-const handler = async (m, { conn, args, usedPrefix, command }) => {
-  let lang = args[0];
-  let text = args.slice(1).join(' ');
-  if ((args[0] || '').length !== 2) {
-    lang = defaultLang;
-    text = args.join(' ');
+export const handler = async (m, { conn, args, usedPrefix, command }) => {
+  const texto = args.join(' ')
+  if (!texto) {
+    return conn.reply(
+      m.chat,
+      `✳️ *Uso correcto:*\n${usedPrefix + command} <texto>\n\n📌 *Ejemplo:*\n${usedPrefix + command} Hola, ¿cómo estás?`,
+      m
+    )
   }
-  if (!text && m.quoted?.text) text = m.quoted.text;
-  let res;
+
+  // Reacción de inicio
+  await conn.sendMessage(m.chat, { react: { text: '🔵', key: m.key } })
+
   try {
-    res = await tts(text, lang);
+    const url = `https://api.siputzx.my.id/api/tools/ttsgoogle?text=${encodeURIComponent(texto)}`
+    const res = await fetch(url)
+
+    if (!res.ok) throw 'Error al obtener el audio.'
+
+    const buffer = await res.arrayBuffer()
+
+    await conn.sendMessage(
+      m.chat,
+      {
+        audio: Buffer.from(buffer),
+        mimetype: 'audio/mp4',
+        ptt: true
+      },
+      { quoted: m }
+    )
+
+    // Reacción de éxito
+    await conn.sendMessage(m.chat, { react: { text: '🟢', key: m.key } })
+
   } catch (e) {
-    m.reply(e + '');
-    text = args.join(' ');
-    if (!text) throw `${emoji} Por favor, ingresé una frase.`;
-    res = await tts(text, defaultLang);
-  } finally {
-    if (res) conn.sendFile(m.chat, res, 'tts.opus', null, m, true);
+    console.error(e)
+    await conn.sendMessage(m.chat, { react: { text: '🔴', key: m.key } })
+    conn.reply(m.chat, '🔴 Ocurrió un error al generar el audio.', m)
   }
-};
-handler.help = ['tts2 <lang> <teks>'];
-handler.tags = ['transformador'];
-handler.group = true;
-handler.register = true;
-handler.command = ['tts2'];
-
-export default handler;
-
-function tts(text, lang = 'es') {
-  console.log(lang, text);
-  return new Promise((resolve, reject) => {
-    try {
-      const tts = gtts(lang);
-      const filePath = join(global.__dirname(import.meta.url), '../tmp', (1 * new Date) + '.wav');
-      tts.save(filePath, text, () => {
-        resolve(readFileSync(filePath));
-        unlinkSync(filePath);
-      });
-    } catch (e) {
-      reject(e);
-    }
-  });
 }
+
+handler.help = ['tts <texto-voz>']
+handler.tags = ['herramientas']
+handler.command = /^tts$/i
+export default handler
