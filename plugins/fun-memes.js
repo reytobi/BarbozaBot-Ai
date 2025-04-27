@@ -1,3 +1,5 @@
+import fetch from 'node-fetch'
+
 export const handler = async (m, { conn, usedPrefix, command }) => {
   await conn.sendMessage(m.chat, { react: { text: '🔵', key: m.key } })
 
