@@ -1,8 +1,11 @@
 import gtts from 'node-gtts';
-import {readFileSync, unlinkSync} from 'fs';
-import {join} from 'path';
+import { readFileSync, unlinkSync } from 'fs';
+import { join } from 'path';
+
 const defaultLang = 'es';
-const handler = async (m, {conn, args, usedPrefix, command}) => {
+const emoji = '🔊'; // Declaración de la variable emoji
+
+const handler = async (m, { conn, args, usedPrefix, command }) => {
   let lang = args[0];
   let text = args.slice(1).join(' ');
   if ((args[0] || '').length !== 2) {
@@ -16,15 +19,18 @@ const handler = async (m, {conn, args, usedPrefix, command}) => {
   } catch (e) {
     m.reply(e + '');
     text = args.join(' ');
-    if (!text) return conn.reply(m.chat, `🚩 *Te Faltó Un Texto*\n\nEjemplo:\n${usedPrefix + command} Hola Asta`, m, rcanal);
+    if (!text) throw `${emoji} Por favor, ingresé una frase.`;
     res = await tts(text, defaultLang);
   } finally {
     if (res) conn.sendFile(m.chat, res, 'tts.opus', null, m, true);
   }
 };
 handler.help = ['tts <lang> <teks>'];
-handler.tags = ['tools'];
-handler.command = ['tts', 'gtts'];
+handler.tags = ['transformador'];
+handler.group = true;
+handler.register = true;
+handler.command = ['tts'];
+
 export default handler;
 
 function tts(text, lang = 'es') {
