@@ -21,10 +21,10 @@ const handler = async (m, { conn, args }) => {
 
     let results = `📱 *Resultados de la búsqueda en Play Store para:* ${query}\n\n`;
     data.result.forEach((app, index) => {
-      results += `➤ *${index + 1}:* ${app.title}\n`;
-      results += `🔗 [Enlace](${app.url})\n`;
-      results += `📖 Descripción: ${app.desc}\n`;
-      results += `⭐ Calificación: ${app.rating}\n\n`;
+      results += `➤ *${index + 1}:* ${app.name}\n`; // Cambio de 'title' a 'name'
+      results += `🔗 [Enlace](${app.link})\n`; // Cambio de 'url' a 'link'
+      results += `📖 Descripción: ${app.description}\n`; // Cambio de 'desc' a 'description'
+      results += `⭐ Calificación: ${app.stars}\n\n`; // Cambio de 'rating' a 'stars'
     });
 
     await conn.reply(m.chat, results.trim(), m);
