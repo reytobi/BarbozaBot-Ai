@@ -18,12 +18,12 @@ const handler = async (m, { conn, args }) => {
     const data = await response.json();
 
     // Verifica si se obtuvo información válida
-    if (!data || !data.result) {
+    if (!data || !data.result || data.result.length === 0) {
       return conn.reply(m.chat, '❌ No se encontró información sobre la canción proporcionada.', m);
     }
 
     // Desestructura la información relevante de la respuesta
-    const { title, artist, duration, downloadUrl } = data.result;
+    const { title, artist, duration, downloadUrl } = data.result[0]; // Asegúrate de acceder al primer resultado
 
     // Crea un mensaje con la información de la canción
     const songInfo = `🎵 *Información de la Canción*\n\n` +
@@ -40,7 +40,7 @@ const handler = async (m, { conn, args }) => {
       await conn.sendMessage(m.chat, {
         audio: { url: downloadUrl },
         mimetype: 'audio/mpeg',
-        fileName: `${title || 'Canción'}.mp3`,
+        fileName: `${title || 'Canción'}.mp3`, // Asegúrate de usar comillas para el template string
       }, { quoted: m });
     }
 
@@ -48,7 +48,7 @@ const handler = async (m, { conn, args }) => {
   } catch (error) {
     console.error('Error al obtener información de Spotify:', error);
     await m.react('❌'); // Reacción de error
-    conn.reply(m.chat, `❌ Ocurrió un error al procesar tu solicitud: ${error.message}`, m);
+    conn.reply(m.chat, `❌ Ocurrió un error al procesar tu solicitud: ${error.message}`, m); // Asegúrate de usar comillas aquí también
   }
 };
 
