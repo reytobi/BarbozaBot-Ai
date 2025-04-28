@@ -13,19 +13,26 @@ const handler = async (m, { conn, args }) => {
     await m.react('⏳'); // Reacción de "procesando"
 
     const response = await fetch(apiUrl);
-    const data = await response.json();
+    if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
 
+    const data = await response.json();
     if (!data || !data.result) {
       return conn.reply(m.chat, '❌ No se encontró información sobre la canción proporcionada.', m);
     }
 
     const { title, artist, duration, downloadUrl } = data.result;
 
+    // Validación de datos individuales
+    const songTitle = title || 'Título no disponible';
+    const songArtist = artist || 'Artista no disponible';
+    const songDuration = duration || 'Duración no disponible';
+    const songLink = downloadUrl || 'Enlace no disponible';
+
     const songInfo = `🎵 *Información de la Canción*\n\n
-    ➤ 🎶 Título: ${title || 'No disponible'}
-    ➤ 👤 Artista: ${artist || 'No disponible'}
-    ➤ ⏳ Duración: ${duration || 'No disponible'}
-    ➤ 🔗 [Escuchar y Descargar]( ${downloadUrl || 'No disponible'})`;
+    ➤ 🎶 Título: ${songTitle}
+    ➤ 👤 Artista: ${songArtist}
+    ➤ ⏳ Duración: ${songDuration}
+    ➤ 🔗 [Escuchar y Descargar](${songLink})`;
 
     await conn.reply(m.chat, songInfo.trim(), m);
 
@@ -34,7 +41,7 @@ const handler = async (m, { conn, args }) => {
       await conn.sendMessage(m.chat, {
         audio: { url: downloadUrl },
         mimetype: 'audio/mpeg',
-        fileName: `${title || 'Canción'}.mp3`,
+        fileName: `${songTitle}.mp3`,
       }, { quoted: m });
     }
 
@@ -42,7 +49,7 @@ const handler = async (m, { conn, args }) => {
   } catch (error) {
     console.error('Error al obtener información de Spotify:', error);
     await m.react('❌'); // Reacción de error
-    conn.reply(m.chat, `❌ Ocurrió un error al procesar tu solicitud: ${error.message}`, m);
+    conn.reply(m.chat, `❌ Ocurrió un error: ${error.message}`, m);
   }
 };
 
