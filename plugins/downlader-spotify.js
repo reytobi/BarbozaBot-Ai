@@ -2,6 +2,7 @@
 import fetch from 'node-fetch';
 
 const handler = async (m, { conn, args }) => {
+  // Verifica si se ha ingresado un argumento (nombre de la canción)
   if (!args[0]) {
     return conn.reply(m.chat, '❌ Por favor, ingresa el nombre de una canción de Spotify.\nEjemplo: .spotify Shape of You', m);
   }
@@ -12,36 +13,34 @@ const handler = async (m, { conn, args }) => {
   try {
     await m.react('⏳'); // Reacción de "procesando"
 
+    // Realiza la solicitud a la API para obtener información de la canción
     const response = await fetch(apiUrl);
-    if (!response.ok) throw new Error(`Error HTTP ${response.status}`);
-
     const data = await response.json();
+
+    // Verifica si se obtuvo información válida
     if (!data || !data.result) {
       return conn.reply(m.chat, '❌ No se encontró información sobre la canción proporcionada.', m);
     }
 
+    // Desestructura la información relevante de la respuesta
     const { title, artist, duration, downloadUrl } = data.result;
 
-    // Validación de datos individuales
-    const songTitle = title || 'Título no disponible';
-    const songArtist = artist || 'Artista no disponible';
-    const songDuration = duration || 'Duración no disponible';
-    const songLink = downloadUrl || 'Enlace no disponible';
+    // Crea un mensaje con la información de la canción
+    const songInfo = `🎵 *Información de la Canción*\n\n` +
+                     `➤ 🎶 Título: ${title || 'No disponible'}\n` +
+                     `➤ 👤 Artista: ${artist || 'No disponible'}\n` +
+                     `➤ ⏳ Duración: ${duration || 'No disponible'}\n` +
+                     `➤ 🔗 [Escuchar y Descargar](${downloadUrl || 'No disponible'})`;
 
-    const songInfo = `🎵 *Información de la Canción*\n\n
-    ➤ 🎶 Título: ${songTitle}
-    ➤ 👤 Artista: ${songArtist}
-    ➤ ⏳ Duración: ${songDuration}
-    ➤ 🔗 [Escuchar y Descargar](${songLink})`;
-
+    // Envía la información de la canción al chat
     await conn.reply(m.chat, songInfo.trim(), m);
 
-    // Envía el archivo de audio como mensaje
+    // Si hay un enlace de descarga, envía el archivo de audio como mensaje
     if (downloadUrl) {
       await conn.sendMessage(m.chat, {
         audio: { url: downloadUrl },
         mimetype: 'audio/mpeg',
-        fileName: `${songTitle}.mp3`,
+        fileName: `${title || 'Canción'}.mp3`,
       }, { quoted: m });
     }
 
@@ -49,7 +48,7 @@ const handler = async (m, { conn, args }) => {
   } catch (error) {
     console.error('Error al obtener información de Spotify:', error);
     await m.react('❌'); // Reacción de error
-    conn.reply(m.chat, `❌ Ocurrió un error: ${error.message}`, m);
+    conn.reply(m.chat, `❌ Ocurrió un error al procesar tu solicitud: ${error.message}`, m);
   }
 };
 
