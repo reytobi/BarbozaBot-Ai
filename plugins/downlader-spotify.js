@@ -27,12 +27,10 @@ const handler = async (m, { conn, args }) => {
 
     // Crea un mensaje con la información de la canción
     const songInfo = `🎵 *Información de la Canción*\n\n` +
-    🎵 *Título:* ${video.title}
-📺 *Canal:* ${video.author.name}
-⏱️ *Duración:* ${video.duration}
-👀 *Vistas:* ${video.views}
-📅 *Publicado:* ${video.publishedAt}
-🌐 *Enlace:* ${video.url}
+                     `🎵 *Título:* ${title}\n` +
+                     `🎤 *Artista:* ${artist}\n` +
+                     `⏱️ *Duración:* ${duration}\n` +
+                     `🌐 *Enlace:* ${downloadUrl}`;
 
     // Envía la información de la canción al chat
     await conn.reply(m.chat, songInfo.trim(), m);
