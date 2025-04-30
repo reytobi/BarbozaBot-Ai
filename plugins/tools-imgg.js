@@ -1,37 +1,33 @@
 
-import fetch from "node-fetch";
+import fetch from 'node-fetch';
 
-let handler = async (m, { conn, text }) => {
-  if (!text) {
-    return m.reply("❌ Ingresa una descripción para generar una imagen.\nEjemplo: .imgg paisajes mágicos con cascadas y cristales");
+const handler = async (m, { conn, args }) => {
+  if (!args[0]) {
+    return m.reply('🚩 Por favor, proporciona un texto para generar la imagen.\n_Ejemplo: .imagen un hermoso paisaje_');
   }
 
+  const text = args.join(' ');
+  const apiUrl = `https://api.nekorinn.my.id/ai-img/imagen?text=${encodeURIComponent(text)}`;
+
   try {
-    // Llamada a la API para generar imagen
-    const apiUrl = `https://api.vreden.my.id/api/artificial/aiease/text2img?prompt=${encodeURIComponent(text)}&style=19`;
+    // Enviar mensaje de espera
+    m.reply('⏳ Generando tu imagen, espera un momento...');
+
+    // Hacer solicitud a la API
     const response = await fetch(apiUrl);
-    const data = await response.json();
+    if (!response.ok) throw new Error(`Error al generar la imagen: ${response.statusText}`);
 
-    // Validar respuesta de la API
-    if (!data?.result?.image_url) {
-      return m.reply("❌ No se pudo generar la imagen. Intenta con otro texto.");
-    }
+    // Obtener el resultado
+    const buffer = await response.buffer();
 
-    // Enviar imagen generada al chat
-    await conn.sendMessage(m.chat, {
-      image: { url: data.result.image_url },
-      caption: `🎨 *Imagen generada con IA*\n\n🔖 *Descripción:* ${text}\n✨ *Estilo:* 19 (Magical Floating Islands)`
-    }, { quoted: m });
-
-    await m.react("✅"); // Confirmación de éxito
+    // Enviar la imagen generada
+    await conn.sendFile(m.chat, buffer, 'imagen.jpg', `🖼️ *Imagen generada para:* _${text}_`, m);
   } catch (error) {
-    console.error(error);
-    await m.reply(`❌ Error al procesar la solicitud:\n${error.message}`);
+    console.error('Error al generar la imagen:', error);
+    m.reply('🚩 Ocurrió un error al generar la imagen. Por favor, intenta nuevamente más tarde.');
   }
 };
 
-handler.command = ["imgg"];
-handler.help = ["imgg <descripción>"];
-handler.tags = ["image"];
-
+// Definición del comando
+handler.command = ['immg'];
 export default handler;
