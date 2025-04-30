@@ -10,17 +10,12 @@ const handler = async (m, { conn, args }) => {
   const apiUrl = `https://api.nekorinn.my.id/ai-img/imagen?text=${encodeURIComponent(text)}`;
 
   try {
-    // Enviar mensaje de espera
     m.reply('⏳ Generando tu imagen, espera un momento...');
 
-    // Hacer solicitud a la API
     const response = await fetch(apiUrl);
     if (!response.ok) throw new Error(`Error al generar la imagen: ${response.statusText}`);
 
-    // Obtener el resultado
     const buffer = await response.buffer();
-
-    // Enviar la imagen generada
     await conn.sendFile(m.chat, buffer, 'imagen.jpg', `🖼️ *Imagen generada para:* _${text}_`, m);
   } catch (error) {
     console.error('Error al generar la imagen:', error);
@@ -28,6 +23,5 @@ const handler = async (m, { conn, args }) => {
   }
 };
 
-// Definición del comando
-handler.command = ['immg'];
+handler.command = ['imgg'];
 export default handler;
