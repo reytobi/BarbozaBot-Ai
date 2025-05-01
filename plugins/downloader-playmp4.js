@@ -26,8 +26,8 @@ let handler = async (m, { conn, text }) => {
   }
 };
 
-handler.command = ["playmp4"];
-handler.help = ["playmp4 <nombre o título>"];
+handler.command = ["play2"];
+handler.help = ["play2 <nombre o título>"];
 handler.tags = ["download"];
 
 export default handler;
