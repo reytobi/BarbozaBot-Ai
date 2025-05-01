@@ -51,7 +51,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
     let videoData = null;
     for (let quality of qualities) {
       try {
-        const apiUrl = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(videoLink)}&apikey=russellxz&type=video&quality=${quality}`;
+        const apiUrl = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(videoLink)}&apikey=barbozaxz&type=video&quality=${quality}`;
         const response = await axios.get(apiUrl);
         if (response.data?.status && response.data?.data?.url) {
           videoData = {
