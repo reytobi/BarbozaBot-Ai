@@ -1,36 +1,35 @@
-import axios from "axios";
-import uploadImage from "../lib/uploadImage.js";
+import uploadImage from '../lib/uploadImage.js'
+import fetch from 'node-fetch'
 
-const handler = async (m, { conn }) => {
-  try {
-    const q = m.quoted || m;
-    const mime = (q.msg || q).mimetype || q.mediaType || "";
-    if (!mime.startsWith("image/")) {
-      return conn.reply(m.chat, " Responde a una *Imagen.*", m);
-    }
+const handler = async (m, { conn, usedPrefix, command }) => {
+  const msgData = m.quoted || m
+  const mime = msgData.mimetype || (msgData.msg ? msgData.msg.mimetype : '')
 
-    await m.react("🕓");
-    const imgBuffer = await q.download?.();
-    const urlSubida = await uploadImage(imgBuffer);
-    const upscaledBuffer = await getUpscaledImage(urlSubida);
-
-    await conn.sendFile(m.chat, upscaledBuffer, "upscaled.jpg", "*Aquí tienes tu imagen mejorada ฅ^•ﻌ•^ฅ*", m);
-    await m.react("✅");
-  } catch (e) {
-    console.error("Error:", e);
-    await m.react("✖️");
-    conn.reply(m.chat, "Ocurrió un error al mejorar la imagen.", m);
+  if (!mime || !/image\/(jpe?g|png)/.test(mime)) {
+    throw `[❗️] Debes enviar o responder a una imagen válida (JPG o PNG) usando: ${usedPrefix + command}`
   }
-};
 
-handler.help = ["hd"]  
-handler.tags = ["tools"]  
-handler.command = ["remini", "hd", "enhance"]  
-handler.register = true
-export default handler;
+  const imageData = await msgData.download()
+  if (!imageData) throw "❌ No se pudo descargar la imagen."
 
-async function getUpscaledImage(imageUrl) {
-  const apiUrl = `https://api.siputzx.my.id/api/iloveimg/upscale?image=${encodeURIComponent(imageUrl)}`;
-  const response = await axios.get(apiUrl, { responseType: "arraybuffer" });
-  return Buffer.from(response.data);
+  const imageUrl = await uploadImage(imageData)
+  const apiUrl = `https://api.siputzx.my.id/api/iloveimg/upscale?image=${encodeURIComponent(imageUrl)}`
+
+  await conn.sendMessage(m.chat, { react: { text: '🔄', key: m.key } })
+
+  try {
+    await conn.sendMessage(m.chat, {
+      image: { url: apiUrl },
+      caption: `🛠️ *HD Completado*\n\nTu imagen se ha mejorado con éxito.`
+    }, { quoted: m })
+    await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } })
+  } catch (err) {
+    throw `❌ Error al procesar la imagen.\n\n${err}`
+  }
 }
+
+handler.command = /^hd$/i
+handler.tags = ['herramientas'] // Esto hará que aparezca en la categoría correspondiente
+handler.help = ['hd'] // Se mostrará en el menú como: • hd
+
+export default handler
