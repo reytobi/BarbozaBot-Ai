@@ -7,7 +7,7 @@ const handler = async (m, { conn, args }) => {
   }
 
   const text = args.join(' ');
-  const apiUrl = `https://delirius-apiofc.vercel.app/search/gimage?query=cats{encodeURIComponent(text)}`;
+  const apiUrl = `https://api.nekorinn.my.id/ai-img/text2img?text=${encodeURIComponent(text)}`;
 
   try {
     m.reply('⏳ Generando tu imagen, espera un momento...');
