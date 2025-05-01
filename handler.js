@@ -255,7 +255,7 @@ conn: this,
                 let text = _args.join` `  
 command = (command || '').toLowerCase() 
 const groupLimitado = '120363418071387498@g.us'  
-const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 'delsession', 's'];    
+const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 'delsession', 's', 'on', 'off'];    
 
 if (m.chat === groupLimitado && !comandosPermitidos.includes(command)) {
             return
