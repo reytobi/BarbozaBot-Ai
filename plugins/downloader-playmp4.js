@@ -8,7 +8,7 @@ const streamPipeline = promisify(pipeline);
 
 const handler = async (m, { conn, text, usedPrefix, command }) => {
   if (!text) {
-    return m.reply(`> 𝘌𝘴𝘤𝘳𝘪𝘣𝘦 𝘦𝘭 𝘯𝘰𝘮𝘣𝘳𝘦 𝘥𝘦𝘭 𝘷𝘪𝘥𝘦𝘰 𝘱𝘢𝘳𝘢 𝘱𝘰𝘥𝘦𝘳 𝘥𝘦𝘴𝘤𝘢𝘳𝘨𝘢𝘳𝘭𝘰.\n\n𝘌𝘫𝘦𝘮𝘱𝘭𝘰: .𝘱𝘭𝘢𝘺2 Lupita .🥖`);
+    return m.reply(`> 𝘌𝘴𝘤𝘳𝘪𝘣𝘦 𝘦𝘭 𝘯𝘰𝘮𝘣𝘳𝘦 𝘥𝘦𝘭 𝘷𝘪𝘥𝘦𝘰 𝘱𝘢𝘳𝘢 𝘱𝘰𝘥𝘦𝘳 𝘥𝘦𝘴𝘤𝘢𝘳𝘨𝘢𝘳𝘭𝘰.\n\n𝘌𝘫𝘦𝘮𝘱𝘭𝘰: .𝘱𝘭𝘢𝘺2 tu musica`);
   }
 
   await conn.sendMessage(m.chat, {
@@ -51,7 +51,7 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
     let videoData = null;
     for (let quality of qualities) {
       try {
-        const apiUrl = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(videoLink)}&apikey=barbozaxz&type=video&quality=${quality}`;
+        const apiUrl = `https://api.neoxr.eu/api/youtube?url=${encodeURIComponent(videoLink)}&apikey=russellxz&type=video&quality=${quality}`;
         const response = await axios.get(apiUrl);
         if (response.data?.status && response.data?.data?.url) {
           videoData = {
@@ -88,10 +88,10 @@ const handler = async (m, { conn, text, usedPrefix, command }) => {
     const stats = fs.statSync(filePath);
     if (!stats || stats.size < 100000) {
       fs.unlinkSync(filePath);
-      throw new Error('𝘕𝘰 𝘴𝘦 𝘱𝘶𝘥𝘰 𝘦𝘯𝘤𝘰𝘯𝘵𝘳𝘢𝘳 𝘦𝘭 𝘷𝘪𝘥𝘦𝘰.🥖');
+      throw new Error('𝘕𝘰 𝘴𝘦 𝘱𝘶𝘥𝘰 𝘦𝘯𝘤𝘰𝘯𝘵𝘳𝘢𝘳 𝘦𝘭 𝘷𝘪𝘥𝘦𝘰');
     }
 
-    const finalText = `> Barboza`;
+    const finalText = `> Powered by comunity Bot Barboza MD`;
 
     await conn.sendMessage(m.chat, {
       video: fs.readFileSync(filePath),
