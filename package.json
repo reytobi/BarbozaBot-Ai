@@ -34,7 +34,7 @@
   "dependencies": {
     "@whiskeysockets/baileys": "^6.5.0",
     "@adiwajshing/keyed-db": "^0.2.4",
-    "@bochilteam/scraper": "^4.3.0",
+    "@bochilteam/scraper": "^4.3.1",
     "@bochilteam/scraper-sosmed": "^1.1.0",
     "@xct007/frieren-scraper": "^0.1.0",
     "@ibaraki-douji/pixivts": "^2.4.2",
