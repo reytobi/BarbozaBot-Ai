@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 
 let handler = async (m, { conn, text }) => {
   if (!text) {
-    return m.reply("❌ Ingresa un título o nombre de la canción para buscar y descargar.\nEjemplo: .playmp4 DJ malam pagi slowed");
+    return m.reply("❌ Ingresa un título o nombre de la canción para buscar y descargar.\nEjemplo: .play2 DJ malam pagi slowed");
   }
 
   try {
