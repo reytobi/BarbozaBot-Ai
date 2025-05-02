@@ -1,31 +1,184 @@
+import axios from "axios";
+import cheerio from "cheerio";
 
-import fetch from 'node-fetch';
-
-const handler = async (m, { conn, args }) => {
-  if (!args[0]) {
-    return m.reply('🚩 Proporciona una URL de TikTok.\n📌 Ejemplo: `.tiktokurl https://www.tiktok.com/@usuario/video/1234567890`');
+let handler = async (m, { conn, text, usedPrefix, command }) => {
+  if (!text) {
+    return conn.reply(m.chat, `Usa el formato: ${usedPrefix + command} <enlace de TikTok>`, m);
   }
 
-  const url = args[0];
-  const apiUrl = `https://api.nekorinn.my.id/downloader/tikwm?url=${encodeURIComponent(url)}`;
-
   try {
-    m.reply('⏳ Procesando el enlace, espera un momento...');
+    await m.react('🕒');
 
-    const response = await fetch(apiUrl);
-    if (!response.ok) throw new Error(`Error al obtener el enlace: ${response.statusText}`);
+    const videoResult = await ttsave.video(text);
+    const { 
+      type, 
+      nickname, 
+      username, 
+      description, 
+      videoInfo, 
+      slides, 
+      audioUrl 
+    } = videoResult;
 
-    const json = await response.json();
-    if (json.data?.play) {
-      await conn.sendMessage(m.chat, { text: `🎥 *Enlace de descarga:* ${json.data.play}` }, { quoted: m });
-    } else {
-      await conn.sendMessage(m.chat, { text: "❌ No se pudo obtener el enlace del video. Verifica la URL." }, { quoted: m });
+    let message = `*✔️🍟Downloader tiktok.*
+
+> • *Nombre*: ${nickname || "-"}
+> • *Usuario*: ${username || "-"}
+> • *Descripción*: ${description || "-"}
+`.trim();
+
+    if (type === "slide") {
+      message += "\n> • *Tipo*: Presentación (Imágenes)";
+      await conn.reply(m.chat, message, m);
+
+      for (let slide of slides) {
+        await m.react('✅');
+        await conn.sendFile(m.chat, slide.url, `presentación-${slide.number}.jpg`, "", m);
+      }
+    } 
+    else if (type === "video") {
+      message += "\n> • *Tipo*: Video";
+
+      if (videoInfo.nowm) {
+        await m.react('✅');
+await conn.sendMessage(m.chat, {
+  video: { url: videoInfo.nowm },
+  caption: message,
+  footer: dev,
+  buttons: [
+    {
+      buttonId: `.tiktokmp3 ${text}`,
+      buttonText: {
+        displayText: 'Audio 🎧',
+      },
+    },
+    {
+      buttonId: `.tiktokhd ${text}`,
+      buttonText: {
+        displayText: 'Calidad HD',
+      },
+    },
+  ],
+  viewOnce: true,
+  headerType: 4,
+}, { quoted: m });
+      } else {
+        conn.reply(m.chat, "No se pudo obtener el video sin marca de agua.", m);
+      }
+    }
+
+    if (audioUrl) {
     }
   } catch (error) {
-    console.error('❌ Error al obtener el enlace:', error);
-    m.reply('🚩 Ocurrió un error, intenta nuevamente más tarde.');
+    console.error(error);
+    conn.reply(m.chat, `Ocurrió un error al procesar la solicitud. Asegúrate de que el enlace de TikTok sea válido e inténtalo nuevamente.`, m);
   }
 };
 
-handler.command = ['tiktok'];
+handler.help = ["tiktok *<url>*"];
+handler.tags = ["dl"];
+handler.command = ["tiktok"];
 export default handler;
+
+const headers = {
+  authority: "ttsave.app",
+  accept: "application/json, text/plain, */*",
+  origin: "https://ttsave.app",
+  referer: "https://ttsave.app/en",
+  "user-agent": "Postify/1.0.0",
+};
+
+const ttsave = {
+  submit: async function (url, referer) {
+    const headerx = { ...headers, referer };
+    const data = { query: url, language_id: "1" };
+    return axios.post("https://ttsave.app/download", data, { headers: headerx });
+  },
+
+  parse: function ($) {
+    const uniqueId = $("#unique-id").val();
+    const nickname = $("h2.font-extrabold").text();
+    const profilePic = $("img.rounded-full").attr("src");
+    const username = $("a.font-extrabold.text-blue-400").text();
+    const description = $("p.text-gray-600").text();
+
+    const dlink = {
+      nowm: $("a.w-full.text-white.font-bold").first().attr("href"),
+      wm: $("a.w-full.text-white.font-bold").eq(1).attr("href"),
+      audio: $("a[type='audio']").attr("href"),
+      profilePic: $("a[type='profile']").attr("href"),
+      cover: $("a[type='cover']").attr("href"),
+    };
+
+    const stats = {
+      reproducciones: "",
+      meGusta: "",
+      comentarios: "",
+      compartidos: "",
+    };
+
+    $(".flex.flex-row.items-center.justify-center").each((index, element) => {
+      const $element = $(element);
+      const svgPath = $element.find("svg path").attr("d");
+      const value = $element.find("span.text-gray-500").text().trim();
+
+      if (svgPath && svgPath.startsWith("M10 18a8 8 0 100-16")) {
+        stats.reproducciones = value;
+      } else if (svgPath && svgPath.startsWith("M3.172 5.172a4 4 0 015.656")) {
+        stats.meGusta = value || "0";
+      } else if (svgPath && svgPath.startsWith("M18 10c0 3.866-3.582")) {
+        stats.comentarios = value;
+      } else if (svgPath && svgPath.startsWith("M17.593 3.322c1.1.128")) {
+        stats.compartidos = value;
+      }
+    });
+
+    const tituloCancion = $(".flex.flex-row.items-center.justify-center.gap-1.mt-5")
+      .find("span.text-gray-500")
+      .text()
+      .trim();
+
+    const slides = $("a[type='slide']")
+      .map((i, el) => ({
+        number: i + 1,
+        url: $(el).attr("href"),
+      }))
+      .get();
+
+    return {
+      uniqueId,
+      nickname,
+      profilePic,
+      username,
+      description,
+      dlink,
+      stats,
+      tituloCancion,
+      slides,
+    };
+  },
+
+  video: async function (link) {
+    try {
+      const response = await this.submit(link, "https://ttsave.app/en");
+      const $ = cheerio.load(response.data);
+      const result = this.parse($);
+
+      if (result.slides && result.slides.length > 0) {
+        return { type: "slide", ...result };
+      }
+
+      return {
+        type: "video",
+        ...result,
+        videoInfo: {
+          nowm: result.dlink.nowm,
+          wm: result.dlink.wm,
+        },
+      };
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+};
