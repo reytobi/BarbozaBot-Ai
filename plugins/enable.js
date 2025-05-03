@@ -24,20 +24,17 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       break;
 
     case 'antilag':
-    if (!m.isGroup) {
+      if (!m.isGroup) {
         if (!isOwner) {
-            global.dfail('group', m, conn);
-            return;
+          global.dfail('group', m, conn);
+          throw false;
         }
-    } else if (!isAdmin) {
+      } else if (!isAdmin) {
         global.dfail('admin', m, conn);
-        return;
-    }
-    if (!chat) global.db.data.chats[m.chat] = {};
-    if (!('antiLag' in chat)) chat.antiLag = false;
-
-    chat.antiLag = isEnable;
-    break
+        throw false;
+      }
+      chat.antiLag = isEnable;
+      break;
 
     case 'autoread':
     case 'autoleer':
