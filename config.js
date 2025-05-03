@@ -13,7 +13,7 @@ global.owner = [
   ['50577688033', 'Goku',true],
   ['584123989549', 'sisked',true],
   ['50557865603', 'Willzek',true],
-  ['5212441357601', 'Emma (Violets Version)',true],
+  ['522431268546', 'Emma (Violets Version)',true],
 ]
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
