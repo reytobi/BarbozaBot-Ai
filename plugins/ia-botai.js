@@ -3,14 +3,14 @@ import fetch from 'node-fetch';
 
 const handler = async (m, { conn, args }) => {
   if (!args[0]) {
-    return m.reply('🚩 Por favor, ingresa un mensaje para que el bot responda.\n📌 Ejemplo: `.botai Hola, ¿cómo estás?`');
+    return m.reply('🚩 Ingresa un mensaje para que el bot responda.\n📌 Ejemplo: `.botai Hola, ¿cómo estás?`');
   }
 
   const text = args.join(' ');
   const apiUrl = `https://api.nekorinn.my.id/ai/chatbot?ai_name=Barboza&text=${encodeURIComponent(text)}`;
 
   try {
-    m.reply('🤖 Pensando en una respuesta...');
+    m.reply('🤖 Generando respuesta...');
     
     const response = await fetch(apiUrl);
     if (!response.ok) throw new Error(`Error en la API: ${response.statusText}`);
