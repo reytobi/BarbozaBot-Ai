@@ -83,7 +83,7 @@ export async function handler(chatUpdate) {
                 if (!('modoadmin' in chat)) chat.modoadmin = false
                 if (!('nsfw' in chat)) chat.nsfw = false
                 if (!isNumber(chat.expired)) chat.expired = 0
-                if (!('antiLag' in chat)) chat.antiLag = false
+                 if (!chat.hasOwnProperty('antiLag')) chat.antiLag = false;
                 if (!('per' in chat)) chat.per = []
             } else {
                 global.db.data.chats[m.chat] = {
