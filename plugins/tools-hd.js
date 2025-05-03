@@ -1,35 +1,47 @@
-import uploadImage from '../lib/uploadImage.js'
-import fetch from 'node-fetch'
+import axios from "axios";
+import uploadImage from "../lib/uploadImage.js";
 
-const handler = async (m, { conn, usedPrefix, command }) => {
-  const msgData = m.quoted || m
-  const mime = msgData.mimetype || (msgData.msg ? msgData.msg.mimetype : '')
-
-  if (!mime || !/image\/(jpe?g|png)/.test(mime)) {
-    throw `[❗️] Debes enviar o responder a una imagen válida (JPG o PNG) usando: ${usedPrefix + command}`
-  }
-
-  const imageData = await msgData.download()
-  if (!imageData) throw "❌ No se pudo descargar la imagen."
-
-  const imageUrl = await uploadImage(imageData)
-  const apiUrl = `https://api.siputzx.my.id/api/iloveimg/upscale?image=${encodeURIComponent(imageUrl)}`
-
-  await conn.sendMessage(m.chat, { react: { text: '🔄', key: m.key } })
-
+const handler = async (m, { conn }) => {
   try {
-    await conn.sendMessage(m.chat, {
-      image: { url: apiUrl },
-      caption: `🛠️ *HD Completado*\n\nTu imagen se ha mejorado con éxito.`
-    }, { quoted: m })
-    await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } })
-  } catch (err) {
-    throw `❌ Error al procesar la imagen.\n\n${err}`
+    const q = m.quoted || m;
+    const mime = (q.msg || q).mimetype || q.mediaType || "";
+    if (!mime.startsWith("image/")) {
+      return conn.reply(m.chat, "> 𝘙𝘦𝘴𝘱𝘰𝘯𝘥𝘦 𝘢 𝘶𝘯𝘢 𝘪𝘮𝘢𝘨𝘦𝘯 𝘱𝘢𝘳𝘢 𝘵𝘳𝘢𝘯𝘴𝘧𝘰𝘳𝘮𝘢𝘳𝘭𝘢 𝘦𝘯 𝘏𝘋.", m,rcanal);
+    }
+
+    await m.react("🕓");
+    const imgBuffer = await q.download?.();
+    const urlSubida = await uploadImage(imgBuffer);
+    const upscaledBuffer = await getUpscaledImage(urlSubida);
+
+    await conn.sendFile(
+      m.chat,
+      upscaledBuffer,
+      "upscaled.jpg",
+      "> 𝘈𝘲𝘶í 𝘵𝘪𝘦𝘯𝘦 𝘴𝘶 𝘪𝘮𝘢𝘨𝘦𝘯.",
+      m,rcanal
+    );
+    await m.react("✅");
+  } catch (e) {
+    console.error("Error:", e);
+    await m.react("✖️");
+    conn.reply(m.chat, "> Ocurrió un error al mejorar la imagen.", m,rcanal);
   }
+};
+
+handler.help = ["hd"];
+handler.tags = ["tools"];
+handler.command = ["remini", "hd", "enhance"];
+handler.register = false;
+export default handler;
+
+async function getUpscaledImage(imageUrl) {
+  const apiUrl = `https://jerofc.my.id/api/remini?url=${encodeURIComponent(imageUrl)}`;
+  const apiResponse = await axios.get(apiUrl);
+  if (!apiResponse.data?.status || !apiResponse.data.data?.image) {
+    throw new Error('API de mejora devolvió respuesta inválida');
+  }
+  const enhancedImageUrl = apiResponse.data.data.image;
+  const imageResponse = await axios.get(enhancedImageUrl, { responseType: 'arraybuffer' });
+  return Buffer.from(imageResponse.data);
 }
-
-handler.command = /^hd$/i
-handler.tags = ['herramientas'] // Esto hará que aparezca en la categoría correspondiente
-handler.help = ['hd'] // Se mostrará en el menú como: • hd
-
-export default handler
