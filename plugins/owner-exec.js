@@ -37,10 +37,10 @@ let handler = async (m, _2) => {
     m.exp = old
   }
 }
-//handler.help = ['>', '=>']
+handler.help = ['>', '=>']
 handler.tags = ['advanced']
 handler.customPrefix = /^=?> /
-handler.command = ["e", "eval"] // /(?:)/i
+handler.command = /(?:)/i
 handler.rowner = true
 
 export default handler
