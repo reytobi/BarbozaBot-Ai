@@ -239,10 +239,10 @@ export async function handler(chatUpdate) {
             command = (command || '').toLowerCase()
 
             // Restricción para grupo específico
-            const groupLimitado = '120363418071387498@g.us'
-            const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 'delsession', 'tutosub', 'on', 'n']
-            if (m.chat === groupLimitado && !comandosPermitidos.includes(command)) continue
+const gruposLimitados = ['120363418071387498@g.us', '120363412345678901@g.us']; // Agrega más IDs de grupos aquí
+const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 'delsession', 'tutosub', 'on', 'n'];
 
+if (gruposLimitados.includes(m.chat) && !comandosPermitidos.includes(command)) continue;
             let fail = plugin.fail || global.dfail
             let isAccept = plugin.command instanceof RegExp ?
                 plugin.command.test(command) :
