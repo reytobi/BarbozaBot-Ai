@@ -21,6 +21,10 @@ export async function handler(chatUpdate) {
 
     if (!m) return
 
+    const gruposSilenciados = ['120363418071387498@g.us', '120363400282268465@g.us']
+    const isBotPrincipal = this.user?.jid === global.conn?.user?.jid
+    if (gruposSilenciados.includes(m.chat) && !isBotPrincipal) return
+
     // Verificar si la conexión del bot está activa
     if (!this.user || !this.user.jid) {
         console.error('Error: Bot no conectado o this.user.jid no definido')
