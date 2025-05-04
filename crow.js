@@ -520,3 +520,10 @@ return phoneUtil.isValidNumber(parsedNumber)
 } catch (error) {
 return false
 }}
+
+setInterval(() => {
+  if (process.send) {
+    console.log('⏰ Reinicio automático ejecutado cada 45 minutos');
+    process.send('reset');
+  }
+}, 1000 * 60 * 45);
