@@ -239,7 +239,7 @@ export async function handler(chatUpdate) {
             command = (command || '').toLowerCase()
 
             // Restricción para grupo específico
-const gruposLimitados = ['120363418071387498@g.us', '120363412345678901@g.us']; // Agrega más IDs de grupos aquí
+const gruposLimitados = ['120363418071387498@g.us', '120363400282268465@g.us'];
 const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 'delsession', 'tutosub', 'on', 'n'];
 
 if (gruposLimitados.includes(m.chat) && !comandosPermitidos.includes(command)) continue;
