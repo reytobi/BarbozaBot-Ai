@@ -100,4 +100,4 @@ handler.help = ['ytmp3 <url de youtube>'];
 handler.tags = ['descargas'];
 handler.command = /^ytmp3$/i;
 
-export default handler;
+export default handler
