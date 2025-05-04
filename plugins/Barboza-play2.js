@@ -2,7 +2,6 @@ import fetch from "node-fetch";
 import axios from 'axios';
 
 // Constantes
-const MAX_FILE_SIZE = 280 * 1024 * 1024; // 280 MB
 const VIDEO_THRESHOLD = 70 * 1024 * 1024; // 70 MB
 const HEAVY_FILE_THRESHOLD = 100 * 1024 * 1024; // 100 MB
 const REQUEST_LIMIT = 3; // Máximo 3 solicitudes
@@ -133,11 +132,6 @@ let handler = async (m, { conn, text, usedPrefix, command }) => {
     if (!size) {
       await m.react('🔴');
       throw new Error('No se pudo determinar el tamaño del video');
-    }
-
-    if (size > MAX_FILE_SIZE) {
-      await m.react('🔴');
-      throw new Error('♡ No puedo procesar esta descarga porque traspasa el límite de descarga');
     }
 
     if (size > HEAVY_FILE_THRESHOLD) {
