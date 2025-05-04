@@ -16,7 +16,7 @@ const fetchDownloadUrl = async (videoUrl) => {
 
       let result = data?.result || data?.data;
 
-      // Adaptaci贸n para la estructura de Vreden
+      // Adaptación para la estructura de Vreden
       const audioUrl = result?.download?.url || result?.dl_url || result?.download || result?.dl;
       const title = result?.metadata?.title || result?.title || "audio";
 
@@ -39,7 +39,7 @@ const sendAudioWithRetry = async (conn, chat, audioUrl, videoTitle, maxRetries =
   let attempt = 0;
   let thumbnailBuffer;
   try {
-    const response = await axios.get('https://files.catbox.moe/skhywv.jpg', { responseType: 'arraybuffer' });
+    const response = await axios.get('https://files.catbox.moe/l81ahk.jpg', { responseType: 'arraybuffer' });
     thumbnailBuffer = Buffer.from(response.data, 'binary');
   } catch (error) {
     console.error("Error al obtener thumbnail:", error.message);
@@ -77,22 +77,22 @@ const sendAudioWithRetry = async (conn, chat, audioUrl, videoTitle, maxRetries =
 
 let handler = async (m, { conn, text }) => {
   if (!text?.trim() || (!text.includes('youtube.com') && !text.includes('youtu.be'))) {
-    await conn.reply(m.chat, `鉂� *Debes Ingresar Un Enlace De YouTube V谩lido.*`, m);
+    await conn.reply(m.chat, `❗ *Debes Ingresar Un Enlace De YouTube Válido.*`, m);
     return;
   }
 
-  const reactionMessage = await conn.reply(m.chat, `馃攳 *Procesando El Enlace 馃槈...*`, m);
-  await conn.sendMessage(m.chat, { react: { text: '馃幎', key: reactionMessage.key } });
+  const reactionMessage = await conn.reply(m.chat, `🔍 *Procesando El Enlace 😉...*`, m);
+  await conn.sendMessage(m.chat, { react: { text: '🎶', key: reactionMessage.key } });
 
   try {
     const downloadData = await fetchDownloadUrl(text);
     if (!downloadData || !downloadData.url) throw new Error("No Se Pudo Obtener La Descarga.");
 
-    await conn.sendMessage(m.chat, { react: { text: '馃煝', key: reactionMessage.key } });
+    await conn.sendMessage(m.chat, { react: { text: '🟢', key: reactionMessage.key } });
     await sendAudioWithRetry(conn, m.chat, downloadData.url, downloadData.title);
   } catch (error) {
-    console.error("鉂� Error:", error);
-    await conn.reply(m.chat, `鈿狅笍 *Error:* ${error.message || "Desconocido"}`, m);
+    console.error("❌ Error:", error);
+    await conn.reply(m.chat, `⚠️ *Error:* ${error.message || "Desconocido"}`, m);
   }
 };
 
@@ -100,4 +100,4 @@ handler.help = ['ytmp3 <url de youtube>'];
 handler.tags = ['descargas'];
 handler.command = /^ytmp3$/i;
 
-export default handler
+export default handler;
