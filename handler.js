@@ -18,10 +18,7 @@ export async function handler(chatUpdate) {
     if (!chatUpdate) return
     this.pushMessage(chatUpdate.messages).catch(console.error)
     let m = chatUpdate.messages[chatUpdate.messages.length - 1]
-    const gruposSilenciados = ['120363418071387498@g.us', '120363400282268465@g.us']
-    const isBotPrincipal = this.user?.jid === global.conn?.user?.jid
 
-    if (gruposSilenciados.includes(m.chat) && !isBotPrincipal) return
     if (!m) return
 
     // Verificar si la conexión del bot está activa
