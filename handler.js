@@ -106,7 +106,7 @@ export async function handler(chatUpdate) {
             const botJid = this.user.jid
             let settings = global.db.data.settings[botJid]
 const gruposLimitados = ['120363418071387498@g.us', '120363400282268465@g.us']
-const botPrincipal = '1234567890@s.whatsapp.net'
+const botPrincipal = '50585389943@s.whatsapp.net'
 
 const esBotPrincipal = this.user.jid === botPrincipal
 const esSubBot = settings?.modoSubbot === true
