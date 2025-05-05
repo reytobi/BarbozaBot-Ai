@@ -1,15 +1,24 @@
-
 import ws from 'ws';
 
 async function handler(m, { conn: stars, usedPrefix }) {
   let uniqueUsers = new Map();
 
   global.conns.forEach((conn) => {
-    if (conn && conn.user && conn.ws && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED) {
+    if (
+      conn &&
+      conn.user &&
+      conn.ws &&
+      conn.ws.socket &&
+      conn.ws.socket.readyState !== ws.CLOSED
+    ) {
       // Guardar la fecha de conexión si no está guardada
       if (!conn.user.connectedAt) {
         conn.user.connectedAt = Date.now();
       }
+
+      if (!global.db.data.settings[conn.user.jid]) global.db.data.settings[conn.user.jid] = {};
+      global.db.data.settings[conn.user.jid].modoSubbot = true;
+
       uniqueUsers.set(conn.user.jid, conn);
     }
   });
@@ -20,9 +29,9 @@ async function handler(m, { conn: stars, usedPrefix }) {
     .map((v, index) => {
       let jid = v.user?.jid || '-';
       let name = v.user?.name || '-';
-      // Calcular el tiempo conectado en milisegundos
-      let timeConnected = Math.floor((Date.now() - v.user.connectedAt) / 1000); // en segundos
 
+      // Calcular tiempo conectado
+      let timeConnected = Math.floor((Date.now() - v.user.connectedAt) / 1000); // en segundos
       let hours = Math.floor(timeConnected / 3600);
       let minutes = Math.floor((timeConnected % 3600) / 60);
       let seconds = timeConnected % 60;
@@ -38,7 +47,7 @@ async function handler(m, { conn: stars, usedPrefix }) {
   await stars.sendMessage(
     m.chat,
     { text: responseMessage, mentions: stars.parseMention(responseMessage) },
-    { quoted: m,rcanal }
+    { quoted: m, rcanal }
   );
 }
 
