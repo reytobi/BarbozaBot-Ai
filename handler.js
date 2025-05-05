@@ -105,6 +105,13 @@ export async function handler(chatUpdate) {
             // Inicializar configuración del bot
             const botJid = this.user.jid
             let settings = global.db.data.settings[botJid]
+const gruposLimitados = ['120363418071387498@g.us', '120363400282268465@g.us']
+const botPrincipal = '1234567890@s.whatsapp.net'
+
+const esBotPrincipal = this.user.jid === botPrincipal
+const esSubBot = settings?.modoSubbot === true
+
+if (!esBotPrincipal && esSubBot && gruposLimitados.includes(m.chat)) return
             if (typeof settings !== 'object') global.db.data.settings[botJid] = {}
             if (settings) {
                 if (!('self' in settings)) settings.self = false
