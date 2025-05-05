@@ -33,5 +33,5 @@ if (!args[0].startsWith("https://whatsapp.com/channel/")) return m.reply("Link n
         return m.reply("Error al enviar reacción. Asegúrate de que el enlace y el emoji sean válidos.");
     }
 }
-handler.command = /^(chReact)$/i
+handler.command = /^(ch)$/i
 export default handler
