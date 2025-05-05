@@ -113,7 +113,7 @@ export async function handler(chatUpdate) {
                 if (!('antiPrivate' in settings)) settings.antiPrivate = false
                 if (!('antiBot2' in settings)) settings.antiBot2 = false
                 if (!('antiSpam' in settings)) settings.antiSpam = false
-            } else {
+                  } else {
                 global.db.data.settings[botJid] = {
                     self: false,
                     autoread: false,
@@ -127,14 +127,15 @@ export async function handler(chatUpdate) {
             console.error('Error al inicializar datos:', e)
         }
 
-        // Verificar antiLag y bots permitidos
-        const mainBot = this.user.jid
-        const chatData = global.db.data.chats[m.chat] || {}
-        const isSubbs = chatData.antiLag === true
-        const allowedBots = chatData.per || []
-        if (!allowedBots.includes(mainBot)) allowedBots.push(mainBot)
-        const isAllowed = allowedBots.includes(this.user.jid)
-        if (isSubbs && !isAllowed) return
+        
+const mainBot = global.conn.user.jid
+const chat = global.db.data.chats[m.chat] || {}
+const isSubbs = chat.antiLag === true
+const allowedBots = chat.per || []
+if (!allowedBots.includes(mainBot)) allowedBots.push(mainBot)
+const isAllowed = allowedBots.includes(this.user.jid)
+       if (isSubbs && !isAllowed) 
+            return
 
         // Modos de operación
         if (opts['nyimak']) return
