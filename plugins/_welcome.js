@@ -29,8 +29,6 @@ export async function before(m, { conn, participants, groupMetadata }) {
         mentions: [m.messageStubParameters[0]] 
       });
     }
-
-    // 👋 Salida Voluntaria
     if (chat.bienvenida && m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_LEAVE) {
       const goodbyeText = `👋 *${user} ha decidido salir del grupo.*\n✨ *Esperamos verte nuevamente en* ${groupName}!`;
 
@@ -40,8 +38,6 @@ export async function before(m, { conn, participants, groupMetadata }) {
         mentions: [m.messageStubParameters[0]] 
       });
     }
-
-    // ❌ Expulsión
     if (chat.bienvenida && m.messageStubType === WAMessageStubType.GROUP_PARTICIPANT_REMOVE) {
       const kickText = `🚨 *${user} ha sido expulsado del grupo!* 🚨\n❌ *Eliminado de* ${groupName}.\n⚡ *Sigue las normas para evitar futuras sanciones.*`;
 
