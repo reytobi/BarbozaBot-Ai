@@ -1,1 +1,32 @@
-const handler = async (m, {isOwner, isAdmin, conn, text, participants, args}) => {let chat = global.db.data.chats[m.chat], emoji = chat.emojiTag || '💨'; if (!(isAdmin || isOwner)) {global.dfail('admin', m,rcanal,conn); throw false;} const pesan = args.join` `, groupMetadata = await conn.groupMetadata(m.chat), groupName = groupMetadata.subject, countryFlags = {'52': '🇲🇽', '57': '🇨🇴', '54': '🇦🇷', '34': '🇪🇸', '55': '🇧🇷', '1': '🇺🇸', '44': '🇬🇧', '91': '🇮🇳', '502': '🇬🇹', '56': '🇨🇱', '51': '🇵🇪', '58': '🇻🇪', '505': '🇳🇮', '593': '🇪🇨', '504': '🇭🇳', '591': '🇧🇴', '53': '🇨🇺', '503': '🇸🇻', '507': '🇵🇦', '595': '🇵🇾'}, getCountryFlag = (id) => {const phoneNumber = id.split('@')[0]; let phonePrefix = phoneNumber.slice(0, 3); if (phoneNumber.startsWith('1')) return '🇺🇸'; if (!countryFlags[phonePrefix]) phonePrefix = phoneNumber.slice(0, 2); return countryFlags[phonePrefix] || '🏳️‍🌈';}; let teks = `*${groupName}*\n\n*Integrantes : ${participants.length}*\n${pesan}\n┌──⭓ *Despierten*\n`; for (const mem of participants) teks += `${emoji} ${getCountryFlag(mem.id)} @${mem.id.split('@')[0]}\n`; teks += `└───────⭓\n\n𝘚𝘶𝘱𝘦𝘳 _Barboza_ 𝘉𝘰𝘵 𝘞𝘩𝘢𝘵𝘴𝘈𝘱𝘱 🚩`; await conn.sendMessage(m.chat, {text: teks, mentions: participants.map((a) => a.id)});}; handler.help = ['todos']; handler.tags = ['group']; handler.command = /^(tagall|invocar|marcar|todos|invocación)$/i;  handler.group = true; export default handler;
+
+import fetch from "node-fetch";
+
+const obtenerBandera = async (codigoPais) => {
+    try {
+        return codigoPais ? `https://flagcdn.com/w40/${codigoPais.toLowerCase()}.png` : "🌍";
+    } catch (error) {
+        console.error("❌ Error obteniendo bandera:", error);
+        return "🌍";
+    }
+};
+
+const handler = async (m, { conn, participants }) => {
+    if (!m.isGroup) return m.reply("❌ *Este comando solo funciona en grupos.*");
+
+    if (!participants || participants.length === 0) return m.reply("⚠️ *No hay suficientes miembros en el grupo.*");
+
+    let mensaje = "📢 *¡Atención grupo!* 📢\n👥 *Lista de miembros con banderas:*\n";
+
+    for (const miembro of participants) {
+        const codigoPais = miembro.id.split("@")[1].slice(0, 2); // Obtener código de país
+        const bandera = await obtenerBandera(codigoPais);
+        mensaje += `🔹 ${bandera} @${miembro.id.split("@")[0]}\n`;
+    }
+
+    mensaje += "🚀 *Mencionando a todos!*";
+
+    await conn.sendMessage(m.chat, { text: mensaje, mentions: participants.map(p => p.id) });
+};
+
+handler.command = ['todos'];
+export default handler;
