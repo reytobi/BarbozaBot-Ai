@@ -1,35 +1,45 @@
 
-const obtenerPaisEmoji = (codigoPais) => {
-    const paises = {
-        'AR': '🇦🇷 Argentina', 'BR': '🇧🇷 Brasil', 'CA': '🇨🇦 Canadá', 'EC': '🇪🇨 Ecuador', 'ES': '🇪🇸 España',
-        'DK': '🇩🇰 Dinamarca', 'CR': '🇨🇷 Costa Rica', 'CO': '🇨🇴 Colombia', 'CU': '🇨🇺 Cuba', 'CH': '🇨🇭 Suiza',
-        'CK': '🇨🇰 Islas Cook', 'CL': '🇨🇱 Chile', 'ET': '🇪🇹 Etiopía', 'FR': '🇫🇷 Francia', 'GB': '🇬🇧 Reino Unido',
-        'GE': '🇬🇪 Georgia', 'GR': '🇬🇷 Grecia', 'GW': '🇬🇼 Guinea-Bisáu', 'HN': '🇭🇳 Honduras', 'HR': '🇭🇷 Croacia',
-        'IC': '🇮🇨 Islas Canarias', 'ID': '🇮🇩 Indonesia', 'KR': '🇰🇷 Corea del Sur', 'LR': '🇱🇷 Liberia',
-        'PE': '🇵🇪 Perú', 'PA': '🇵🇦 Panamá', 'PR': '🇵🇷 Puerto Rico', 'PT': '🇵🇹 Portugal', 'SA': '🇸🇦 Arabia Saudita',
-        'VE': '🇻🇪 Venezuela', 'US': '🇺🇸 Estados Unidos', 'UY': '🇺🇾 Uruguay', 'XX': '🌍 Desconocido' // Código desconocido
-    };
-
-    return paises[codigoPais] || '🌍 Desconocido';
-};
-
-const handler = async (m, { conn, participants }) => {
-    if (!m.isGroup) return m.reply("❌ *Este comando solo funciona en grupos.*");
-
-    if (!participants || participants.length === 0) return m.reply("⚠️ *No hay suficientes miembros en el grupo.*");
-
-    let mensaje = "📢 *¡Atención grupo!* 📢\n👥 *Lista de miembros con país correspondiente:*\n";
-
-    for (const miembro of participants) {
-        const codigoPais = miembro.id.split("@")[1].slice(0, 2).toUpperCase();
-        const paisEmoji = obtenerPaisEmoji(codigoPais);
-        mensaje += `🔹 ${pais} | @${miembro.id.split("@")[0]}\n`;
+const handler = async (m, { isOwner, isAdmin, conn, text, participants, args }) => {
+    let chat = global.db.data.chats[m.chat], emoji = chat.emojiTag || '💨';
+    
+    if (!(isAdmin || isOwner)) {
+        global.dfail('admin', m, rcanal, conn);
+        throw false;
     }
 
-    mensaje += "🚀 *Mencionando a todos!*";
+    const pesan = args.join` `, groupMetadata = await conn.groupMetadata(m.chat), groupName = groupMetadata.subject;
+    
+    // Map de códigos de país y banderas
+    const countryFlags = {
+        '52': '🇲🇽', '57': '🇨🇴', '54': '🇦🇷', '34': '🇪🇸', '55': '🇧🇷', '1': '🇺🇸',
+        '44': '🇬🇧', '91': '🇮🇳', '502': '🇬🇹', '56': '🇨🇱', '51': '🇵🇪', '58': '🇻🇪',
+        '505': '🇳🇮', '593': '🇪🇨', '504': '🇭🇳', '591': '🇧🇴', '53': '🇨🇺', '503': '🇸🇻',
+        '507': '🇵🇦', '595': '🇵🇾', 'XX': '🌍' // Código desconocido
+    };
 
-    await conn.sendMessage(m.chat, { text: mensaje, mentions: participants.map(p => p.id) });
+    const getCountryFlag = (id) => {
+        const phoneNumber = id.split('@')[0];
+        let phonePrefix = phoneNumber.slice(0, 3);
+        if (phoneNumber.startsWith('1')) return '🇺🇸';
+        if (!countryFlags[phonePrefix]) phonePrefix = phoneNumber.slice(0, 2);
+        return countryFlags[phonePrefix] || '🌍';
+    };
+
+    let teks = `📢 *${groupName}*\n👥 *Integrantes: ${participants.length}*\n${pesan}\n`;
+    teks += `┌──⭓ *Mención Global*\n`;
+
+    for (const mem of participants) {
+        teks += `${emoji} ${getCountryFlag(mem.id)} @${mem.id.split('@')[0]}\n`;
+    }
+
+    teks += `└───────⭓\n\n🚀 _Powered by Barboza Bot_ 🚀`;
+
+    await conn.sendMessage(m.chat, { text: teks, mentions: participants.map((a) => a.id) });
 };
 
-handler.command = ['todos'];
+handler.help = ['todos'];
+handler.tags = ['group'];
+handler.command = /^(tagall|invocar|marcar|todos|mencion)$/i;
+handler.group = true;
+
 export default handler;
