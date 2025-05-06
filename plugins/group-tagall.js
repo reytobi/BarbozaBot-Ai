@@ -1,15 +1,16 @@
 
-const obtenerBandera = (codigoPais) => {
-    const banderas = {
-        'AR': '🇦🇷', 'BR': '🇧🇷', 'CA': '🇨🇦', 'EA': '🇪🇦', 'EC': '🇪🇨', 'ES': '🇪🇸',
-        'DK': '🇩🇰', 'CR': '🇨🇷', 'CO': '🇨🇴', 'CU': '🇨🇺', 'CH': '🇨🇭', 'CK': '🇨🇰', 
-        'CL': '🇨🇱', 'ET': '🇪🇹', 'FR': '🇫🇷', 'GB': '🇬🇧', 'GE': '🇬🇪', 'GR': '🇬🇷', 
-        'GW': '🇬🇼', 'HN': '🇭🇳', 'HR': '🇭🇷', 'IC': '🇮🇨', 'ID': '🇮🇩', 'KR': '🇰🇷', 
-        'LR': '🇱🇷', 'PE': '🇵🇪', 'PA': '🇵🇦', 'PR': '🇵🇷', 'PT': '🇵🇹', 'SA': '🇸🇦', 
-        'VE': '🇻🇪', 'US': '🇺🇸', 'UY': '🇺🇾', 'XX': '🏴' // XX = sin país
+const obtenerPaisEmoji = (codigoPais) => {
+    const paises = {
+        'AR': '🇦🇷 Argentina', 'BR': '🇧🇷 Brasil', 'CA': '🇨🇦 Canadá', 'EC': '🇪🇨 Ecuador', 'ES': '🇪🇸 España',
+        'DK': '🇩🇰 Dinamarca', 'CR': '🇨🇷 Costa Rica', 'CO': '🇨🇴 Colombia', 'CU': '🇨🇺 Cuba', 'CH': '🇨🇭 Suiza',
+        'CK': '🇨🇰 Islas Cook', 'CL': '🇨🇱 Chile', 'ET': '🇪🇹 Etiopía', 'FR': '🇫🇷 Francia', 'GB': '🇬🇧 Reino Unido',
+        'GE': '🇬🇪 Georgia', 'GR': '🇬🇷 Grecia', 'GW': '🇬🇼 Guinea-Bisáu', 'HN': '🇭🇳 Honduras', 'HR': '🇭🇷 Croacia',
+        'IC': '🇮🇨 Islas Canarias', 'ID': '🇮🇩 Indonesia', 'KR': '🇰🇷 Corea del Sur', 'LR': '🇱🇷 Liberia',
+        'PE': '🇵🇪 Perú', 'PA': '🇵🇦 Panamá', 'PR': '🇵🇷 Puerto Rico', 'PT': '🇵🇹 Portugal', 'SA': '🇸🇦 Arabia Saudita',
+        'VE': '🇻🇪 Venezuela', 'US': '🇺🇸 Estados Unidos', 'UY': '🇺🇾 Uruguay', 'XX': '🌍 Desconocido' // Código desconocido
     };
 
-    return banderas[codigoPais] || '🌍';
+    return paises[codigoPais] || '🌍 Desconocido';
 };
 
 const handler = async (m, { conn, participants }) => {
@@ -17,12 +18,12 @@ const handler = async (m, { conn, participants }) => {
 
     if (!participants || participants.length === 0) return m.reply("⚠️ *No hay suficientes miembros en el grupo.*");
 
-    let mensaje = "📢 *¡Atención grupo!* 📢\n👥 *Lista de miembros con banderas:*\n";
+    let mensaje = "📢 *¡Atención grupo!* 📢\n👥 *Lista de miembros con país correspondiente:*\n";
 
     for (const miembro of participants) {
         const codigoPais = miembro.id.split("@")[1].slice(0, 2).toUpperCase();
-        const bandera = obtenerBandera(codigoPais);
-        mensaje += `🔹 ${bandera} @${miembro.id.split("@")[0]}\n`;
+        const paisEmoji = obtenerPaisEmoji(codigoPais);
+        mensaje += `🔹 ${pais} | @${miembro.id.split("@")[0]}\n`;
     }
 
     mensaje += "🚀 *Mencionando a todos!*";
