@@ -1,13 +1,15 @@
 
-import fetch from "node-fetch";
+const obtenerBandera = (codigoPais) => {
+    const banderas = {
+        'AR': '🇦🇷', 'BR': '🇧🇷', 'CA': '🇨🇦', 'EA': '🇪🇦', 'EC': '🇪🇨', 'ES': '🇪🇸',
+        'DK': '🇩🇰', 'CR': '🇨🇷', 'CO': '🇨🇴', 'CU': '🇨🇺', 'CH': '🇨🇭', 'CK': '🇨🇰', 
+        'CL': '🇨🇱', 'ET': '🇪🇹', 'FR': '🇫🇷', 'GB': '🇬🇧', 'GE': '🇬🇪', 'GR': '🇬🇷', 
+        'GW': '🇬🇼', 'HN': '🇭🇳', 'HR': '🇭🇷', 'IC': '🇮🇨', 'ID': '🇮🇩', 'KR': '🇰🇷', 
+        'LR': '🇱🇷', 'PE': '🇵🇪', 'PA': '🇵🇦', 'PR': '🇵🇷', 'PT': '🇵🇹', 'SA': '🇸🇦', 
+        'VE': '🇻🇪', 'US': '🇺🇸', 'UY': '🇺🇾', 'XX': '🏴' // XX = sin país
+    };
 
-const obtenerBandera = async (codigoPais) => {
-    try {
-        return codigoPais ? `https://flagcdn.com/w40/${codigoPais.toLowerCase()}.png` : "🌍";
-    } catch (error) {
-        console.error("❌ Error obteniendo bandera:", error);
-        return "🌍";
-    }
+    return banderas[codigoPais] || '🌍';
 };
 
 const handler = async (m, { conn, participants }) => {
@@ -18,8 +20,8 @@ const handler = async (m, { conn, participants }) => {
     let mensaje = "📢 *¡Atención grupo!* 📢\n👥 *Lista de miembros con banderas:*\n";
 
     for (const miembro of participants) {
-        const codigoPais = miembro.id.split("@")[1].slice(0, 2); // Obtener código de país
-        const bandera = await obtenerBandera(codigoPais);
+        const codigoPais = miembro.id.split("@")[1].slice(0, 2).toUpperCase();
+        const bandera = obtenerBandera(codigoPais);
         mensaje += `🔹 ${bandera} @${miembro.id.split("@")[0]}\n`;
     }
 
