@@ -1,55 +1,42 @@
 
-import fetch from 'node-fetch';
+import fetch from "node-fetch";
+import yts from "yt-search";
 
-let handler = async (m, { conn, usedPrefix, command, text }) => {
-  if (!text) return m.reply(`✨ Ingresa un texto para buscar en YouTube.\n> *Ejemplo:* ${usedPrefix + command} Shakira`);
+const handler = async (m, { conn, text, command }) => {
+  if (!text) return m.reply("🔍 *Ingresa el nombre de un video o una URL de YouTube.*");
 
   try {
-    const searchApi = `https://delirius-apiofc.vercel.app/search/ytsearch?q=${text}`;
-    const searchResponse = await fetch(searchApi);
-    const searchData = await searchResponse.json();
+    m.react("🔄");
+    let res = await yts(text);
+    let video = res.all[0];
 
-    if (!searchData?.data || searchData.data.length === 0) {
-      return m.reply(`⚠️ No se encontraron resultados para "${text}".`);
-    }
+    if (!video) return m.reply("❌ *No se encontró el video, intenta con otro nombre.*");
 
-    const video = searchData.data[0]; // Tomar el primer resultado
-    const videoDetails = `
+    const mensaje = `
 🎵 *Título:* ${video.title}
-📺 *Canal:* ${video.author.name}
-⏱️ *Duración:* ${video.duration}
+📽️ *Autor:* ${video.author.name}
+⏳ *Duración:* ${video.duration.timestamp}
 👀 *Vistas:* ${video.views}
-📅 *Publicado:* ${video.publishedAt}
-🌐 *Enlace:* ${video.url}
+🔗 *Enlace:* ${video.url}
 `;
-  
-    await conn.sendMessage(m.chat, {
-      image: { url: video.image },
-      caption: videoDetails.trim()
-    }, { quoted: m });
 
-    const downloadApi = `https://api.vreden.my.id/api/ytmp3?url=${video.url}`;
-    const downloadResponse = await fetch(downloadApi);
-    const downloadData = await downloadResponse.json();
+    await conn.sendMessage(m.chat, { text: mensaje });
 
-    if (!downloadData?.result?.download?.url) {
-      return m.reply("❌ No se pudo obtener el audio del video.");
+    if (command === "play") {
+      const api = await (await fetch(`https://ytdl.sylphy.xyz/dl/mp3?url=${video.url}&quality=128`)).json();
+      await conn.sendFile(m.chat, api.data.dl_url, api.data.title, "", m);
+      await m.react("🎶");
+    } else if (command === "playvid") {
+      const api = await (await fetch(`https://ytdl.sylphy.xyz/dl/mp4?url=${video.url}&quality=480`)).json();
+      await conn.sendFile(m.chat, api.data.dl_url, api.data.title, "", m);
+      await m.react("🎬");
     }
-    await conn.sendMessage(m.chat, {
-      audio: { url: downloadData.result.download.url },
-      mimetype: 'audio/mpeg',
-      fileName: `${video.title}.mp3`
-    }, { quoted: m });
- 
-    await m.react("✅");
-  } catch (error) {
-    console.error(error);
-    m.reply(`❌ Error al procesar la solicitud:\n${error.message}`);
+  } catch (e) {
+    m.reply("⚠️ *Error en la descarga, intenta nuevamente más tarde.*");
   }
 };
 
-handler.command = ['play', 'playaudio'];
-handler.help = ['play <texto>', 'playaudio <texto>'];
-handler.tags = ['media'];
-
+handler.help = ["play", "playvid"];
+handler.tags = ["multimedia"];
+handler.command = ["play", "playvid"];
 export default handler;
