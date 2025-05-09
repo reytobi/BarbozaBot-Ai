@@ -6,7 +6,7 @@ const handler = async (m, { conn, text}) => {
 
     try {
         m.react("🔄");
-        let apiUrl = `https://api.nekorinn.my.id/maker/brat?text=${encodeURIComponent(text)}`;
+        let apiUrl = `https://api.nekorinn.my.id/maker/brat-v2?text=${encodeURIComponent(text)}`;
         let respuesta = await (await fetch(apiUrl)).json();
 
         if (!respuesta ||!respuesta.url) {
