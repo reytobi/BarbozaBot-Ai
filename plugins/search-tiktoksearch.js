@@ -22,7 +22,7 @@ const handler = async (m, { conn, text}) => {
 🔄 *Compartidos:* ${estadisticas.compartidos}
 ⬇️ *Descargas:* ${estadisticas.descargas}
 
-👤 *Autor:* ${author.name} (@${author.username})
+👤 *Autor:* ${author.name}
 `;
 
         await conn.sendFile(m.chat, media.no_watermark, "tiktok_video.mp4", mensaje, m);
