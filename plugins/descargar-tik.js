@@ -7,7 +7,7 @@ const obtenerTikTok = async (query) => {
         const data = await response.json();
 
         if (data.status && data.data && data.data.length> 0) {
-            return data.data[0]; // Retorna el primer resultado
+            return data.data[0];
 }
         return null;
 } catch (error) {
