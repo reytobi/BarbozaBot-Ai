@@ -11,6 +11,8 @@ const handler = async (m, { conn}) => {
 6️⃣ .sopa
 7️⃣ .buscarpalabras
 8️⃣ .acertijo
+9️⃣ .dado
+🔟 .mate
 
 
 
