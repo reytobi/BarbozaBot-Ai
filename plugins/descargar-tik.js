@@ -1,7 +1,5 @@
 
 import fetch from "node-fetch";
-
-// Función para obtener información de TikTok
 const obtenerTikTok = async (query) => {
     try {
         const apiUrl = `https://api.siputzx.my.id/api/s/tiktok?query=${encodeURIComponent(query)}`;
@@ -9,7 +7,7 @@ const obtenerTikTok = async (query) => {
         const data = await response.json();
 
         if (data.status && data.data && data.data.length> 0) {
-            return data.data.slice(0, 5); // Retorna los primeros 5 resultados
+            return data.data.slice(0, 5);
 }
         return null;
 } catch (error) {
@@ -17,8 +15,6 @@ const obtenerTikTok = async (query) => {
         return null;
 }
 };
-
-// Handler para procesar la solicitud del usuario
 const handler = async (m, { conn, text}) => {
     if (!text) {
         return m.reply("🔍 *Por favor, ingresa el nombre del video de TikTok.*");
