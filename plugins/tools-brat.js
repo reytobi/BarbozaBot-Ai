@@ -6,14 +6,14 @@ const handler = async (m, { conn, text}) => {
 
     try {
         m.react("🔄");
-        let apiUrl = `https://vapis.my.id/api/bratv1?q=${encodeURIComponent(text)}`;
+        let apiUrl = `https://api.nekorinn.my.id/maker/brat?text=${encodeURIComponent(text)}`;
         let respuesta = await (await fetch(apiUrl)).json();
 
-        if (!respuesta ||!respuesta.data ||!respuesta.data.sticker_url) {
+        if (!respuesta ||!respuesta.url) {
             return m.reply("⚠️ *No se pudo generar el sticker, intenta con otro texto.*");
 }
 
-        await conn.sendFile(m.chat, respuesta.data.sticker_url, "sticker.webp", "", m, { asSticker: true});
+        await conn.sendFile(m.chat, respuesta.url, "sticker.webp", "", m, { asSticker: true});
 } catch (error) {
         console.error("❌ Error al generar sticker:", error);
         m.reply("⚠️ *Hubo un problema, intenta más tarde.*");
