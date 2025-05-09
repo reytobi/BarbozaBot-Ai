@@ -2,31 +2,23 @@
 import fetch from "node-fetch";
 
 const handler = async (m, { conn, text}) => {
-    if (!text) return m.reply("🔍 *Por favor, ingresa un término de búsqueda para consultar en Brat.*");
+    if (!text) return m.reply("🖋️ *Por favor, ingresa el texto que deseas convertir en sticker.*");
 
     try {
         m.react("🔄");
         let apiUrl = `https://vapis.my.id/api/bratv1?q=${encodeURIComponent(text)}`;
         let respuesta = await (await fetch(apiUrl)).json();
 
-        if (!respuesta ||!respuesta.data) {
-            return m.reply("⚠️ *No se encontraron resultados, intenta con otro término.*");
+        if (!respuesta ||!respuesta.data ||!respuesta.data.sticker_url) {
+            return m.reply("⚠️ *No se pudo generar el sticker, intenta con otro texto.*");
 }
 
-        let mensaje = `
-🔥 *Resultados de Brat:* 🔥
-📌 *Título:* ${respuesta.data.title}
-🔗 *Fuente:* ${respuesta.data.source}
-📅 *Fecha:* ${respuesta.data.date}
-📜 *Descripción:* ${respuesta.data.description}
-`;
-
-        await conn.sendMessage(m.chat, { text: mensaje});
+        await conn.sendFile(m.chat, respuesta.data.sticker_url, "sticker.webp", "", m, { asSticker: true});
 } catch (error) {
-        console.error("❌ Error en la consulta de Brat:", error);
-        m.reply("⚠️ *Hubo un problema con la consulta, intenta más tarde.*");
+        console.error("❌ Error al generar sticker:", error);
+        m.reply("⚠️ *Hubo un problema, intenta más tarde.*");
 }
 };
 
-handler.command = ["bratsearch"];
+handler.command = ["brat"];
 export default handler;
