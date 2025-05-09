@@ -1,8 +1,8 @@
 
 const handler = async (m, { conn}) => {
     const autos = ["🏎️ Ferrari", "🚗 Mustang", "🚙 Jeep", "🚕 Taxi", "🚚 Camión", "🚓 Policía", "🛻 Pick-Up", "🚜 Tractor"];
-    const jugadores = {};
-    const mensajeInicial = `🚦 *Carrera de Autos* 🚦\n\n📌 **Elige tu auto:**\n`;
+    let jugadores = {}; // Cambié 'const' a 'let' para permitir modificaciones
+    let mensajeInicial = `🚦 *Carrera de Autos* 🚦\n\n📌 **Elige tu auto:**\n`;
 
     autos.forEach((auto, i) => {
         mensajeInicial += `🔹 ${i + 1}. ${auto}\n`;
