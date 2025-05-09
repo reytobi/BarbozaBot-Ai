@@ -1,16 +1,31 @@
-import fetch from 'node-fetch'
 
-let handler = async (m, { conn, text, usedPrefix, command }) => {
-if (!text) throw m.reply(`🥞 Por favor, ingresa el nombre de una canción de Spotify.`);
-await m.react('🕒');
-let ouh = await fetch(`https://api.nekorinn.my.id/downloader/spotifyplay?q=${text}`)
-let gyh = await ouh.json()
+import fetch from "node-fetch";
 
-await conn.sendMessage(m.chat, { audio: { url: gyh.result.downloadUrl }, mimetype: 'audio/mpeg' }, { quoted: m });
-await m.react('✅');
+const handler = async (m, { conn, text}) => {
+    if (!text) return m.reply("🔍 *Por favor, ingresa el nombre de una canción o artista para buscar en Spotify.*");
+
+    try {
+        m.react("🔄");
+        let apiUrl = `https://api.nekorinn.my.id/downloader/spotifyplay?q=${encodeURIComponent(text)}`;
+        let respuesta = await (await fetch(apiUrl)).json();
+
+        if (!respuesta ||!respuesta.data) {
+            return m.reply("⚠️ *No se encontraron resultados, intenta con otro término.*");
 }
-handler.help = ['spotify *<texto>*']
-handler.tags = ['descargas']
-handler.command = ['spotify']
 
-export default handler
+        let mensaje = `
+🎵 *Título:* ${respuesta.data.title}
+👤 *Artista:* ${respuesta.data.artist}
+⏳ *Duración:* ${respuesta.data.duration}
+🔗 *URL:* ${respuesta.data.url}
+`;
+
+        await conn.sendFile(m.chat, respuesta.data.download_url, "spotify.mp3", mensaje, m);
+} catch (error) {
+        console.error("❌ Error en SpotifyPlay:", error);
+        m.reply("⚠️ *Hubo un problema con la descarga, intenta más tarde.*");
+}
+};
+
+handler.command = ["spotifyplay"];
+export default handler;
