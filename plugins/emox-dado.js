@@ -1,12 +1,7 @@
 
 const handler = async (m, { conn}) => {
-    // Mensaje de procesamiento
     await conn.sendMessage(m.chat, { text: "🎲 *Procesando lanzamiento del dado...*"});
-
-    // Simular una pequeña espera antes de mostrar el resultado
     await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Generar número aleatorio del 1 al 6
     const resultado = Math.floor(Math.random() * 6) + 1;
     let mensaje = `🎲 *Has lanzado el dado y salió:* ${resultado}\n`;
 
@@ -24,8 +19,6 @@ const handler = async (m, { conn}) => {
 }
 
     await conn.sendMessage(m.chat, { text: mensaje});
-
-    // Aquí puedes agregar el código para actualizar el XP del usuario en la base de datos
 };
 
 handler.command = ["dado","dados"];
