@@ -1,7 +1,5 @@
 
 import fetch from "node-fetch";
-
-// Función para obtener información del video de TikTok
 const obtenerTikTok = async (query) => {
     try {
         const apiUrl = `https://api.siputzx.my.id/api/s/tiktok?query=${encodeURIComponent(query)}`;
@@ -17,8 +15,6 @@ const obtenerTikTok = async (query) => {
         return null;
 }
 };
-
-// Handler para procesar la solicitud del usuario
 const handler = async (m, { conn, text}) => {
     if (!text) {
         return m.reply("🔍 *Por favor, ingresa el nombre del video de TikTok.*");
@@ -36,7 +32,6 @@ const handler = async (m, { conn, text}) => {
 👤 *Autor:*
 - 🏷️ *Nombre:* ${resultado.author.nickname}
 - ✨ *Username:* @${resultado.author.unique_id}
-- 📸 *Avatar:* ${resultado.author.avatar}
 `;
 
         await conn.sendFile(m.chat, resultado.play, "tiktok.mp4", mensaje, m);
