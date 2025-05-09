@@ -1,24 +1,45 @@
+import fetch from 'node-fetch';
 
-import fetch from "node-fetch";
-
-const handler = async (m, { conn, text}) => {
-    if (!text) return m.reply("🖋️ *Por favor, ingresa el texto que deseas convertir en sticker.*");
-
+const handler = async (m, { conn, args, usedPrefix, command }) => {
     try {
-        m.react("🔄");
-        let apiUrl = `https://api.nekorinn.my.id/maker/brat-v2?text=${encodeURIComponent(text)}`;
-        let respuesta = await (await fetch(apiUrl)).json();
+        if (!args[0]) {
+            return conn.reply(m.chat, 
+                `> 𝘗𝘰𝘳 𝘧𝘢𝘷𝘰𝘳 𝘪𝘯𝘨𝘳𝘦𝘴𝘢 𝘦𝘭 𝘵𝘦𝘹𝘵𝘰 𝘲𝘶𝘦 𝘥𝘦𝘴𝘦𝘢𝘴 𝘤𝘰𝘯𝘷𝘦𝘳𝘵𝘪𝘳 𝘦𝘯 𝘴𝘵𝘪𝘤𝘬𝘦𝘳.\n\n𝘌𝘫𝘦𝘮𝘱𝘭𝘰: ${usedPrefix}st 𝘩𝘰𝘭𝘢 𝘣𝘰𝘭𝘢.`, 
+                m);
+        }
 
-        if (!respuesta ||!respuesta.url) {
-            return m.reply("⚠️ *No se pudo generar el sticker, intenta con otro texto.*");
-}
+        const text = encodeURIComponent(args.join(" "));
+        const apiUrl = `https://api.siputzx.my.id/api/m/brat?text=${text}`;
 
-        await conn.sendFile(m.chat, respuesta.url, "sticker.webp", "", m, { asSticker: true});
-} catch (error) {
-        console.error("❌ Error al generar sticker:", error);
-        m.reply("⚠️ *Hubo un problema, intenta más tarde.*");
-}
+        // Reacción de espera
+        await conn.sendMessage(m.chat, { react: { text: '⏳', key: m.key } });
+
+        // Obtener el sticker
+        const stickerResponse = await fetch(apiUrl);
+        if (!stickerResponse.ok) throw new Error('Error al generar el sticker');
+
+        // Enviar el sticker de forma limpia
+        await conn.sendMessage(m.chat, {
+            sticker: { url: apiUrl },
+            packname: 'Sticker Generator',  // Nombre que aparecerá al ver info
+            author: conn.getName(m.sender) // Muestra el nombre del creador
+        }, { quoted: m });
+
+        // Reacción de éxito
+        await conn.sendMessage(m.chat, { react: { text: '✅', key: m.key } });
+
+    } catch (err) {
+        console.error(err);
+        // Reacción de error
+        await conn.sendMessage(m.chat, { react: { text: '❌', key: m.key } });
+        await conn.reply(m.chat, 
+            `> 𝘖𝘤𝘶𝘳𝘳𝘪ó 𝘶𝘯 𝘦𝘳𝘳𝘰𝘳 𝘢𝘭 𝘨𝘦𝘯𝘦𝘳𝘢𝘳 𝘦𝘭 𝘴𝘵𝘪𝘤𝘬𝘦𝘳.\n\n𝘗𝘰𝘳 𝘧𝘢𝘷𝘰𝘳 𝘪𝘯𝘵𝘦𝘯𝘵𝘢 𝘥𝘦 𝘯𝘶𝘦𝘷𝘰.`, 
+            m);
+    }
 };
 
-handler.command = ["brat"];
+handler.help = ['st <texto>'];
+handler.tags = ['sticker'];
+handler.command = /^st(icker)?$/i;
+
 export default handler;
