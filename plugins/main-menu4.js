@@ -14,6 +14,7 @@ const handler = async (m, { conn}) => {
  .dado
  .mate
  .emoji
+ .supervivencia 
  
 
 
