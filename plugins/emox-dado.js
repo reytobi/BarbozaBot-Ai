@@ -1,20 +1,16 @@
-const da = [
-  'https://tinyurl.com/gdd01',
-  'https://tinyurl.com/gdd02',
-  'https://tinyurl.com/gdd003',
-  'https://tinyurl.com/gdd004',
-  'https://tinyurl.com/gdd05',
-  'https://tinyurl.com/gdd006'
-];
-let handler = async (m, { conn }) => {
-  conn.sendFile(m.chat, pickRandom(da), 'dado.webp', '', m)
-}
-handler.help = ['dado']
-handler.tags = ['fun']
-handler.command = ['dado', 'dados'] 
 
-export default handler
+const handler = async (m, { conn}) => {
+    // Generar un número aleatorio del 1 al 6
+    const resultado = Math.floor(Math.random() * 6) + 1;
 
-function pickRandom(list) {
-  return list[Math.floor(list.length * Math.random())]
-}
+    let mensaje = `🎲 *Has lanzado el dado y salió:* ${resultado}\n`;
+
+    if (resultado === 1) mensaje += "😢 ¡Mala suerte!";
+    else if (resultado === 6) mensaje += "🎉 ¡Número máximo, felicidades!";
+    else mensaje += "🔄 Inténtalo de nuevo y consigue un mejor número.";
+
+    await conn.sendMessage(m.chat, { text: mensaje});
+};
+
+handler.command = ["dados"];
+export default handler;
