@@ -22,7 +22,7 @@ const handler = async (m, { conn, args, usedPrefix, command }) => {
         // Enviar el sticker de forma limpia
         await conn.sendMessage(m.chat, {
             sticker: { url: apiUrl },
-            packname: 'Sticker Generator',  // Nombre que aparecerá al ver info
+            packname: 'Barboza',  // Nombre que aparecerá al ver info
             author: conn.getName(m.sender) // Muestra el nombre del creador
         }, { quoted: m });
 
