@@ -13,6 +13,7 @@ const handler = async (m, { conn}) => {
  .acertijo
  .dado
  .mate
+ .bataemoji
  
 
 
