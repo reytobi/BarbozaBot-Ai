@@ -35,8 +35,9 @@ const handler = async (m, { conn}) => {
 🔹.robot ➜ *Entrena a tu robot y participa en combates futuristas.*
 🔹.magia ➜ *Domina hechizos y vence en épicos duelos mágicos.*
 
-👽 *Modo Invasión Alienígena 🚀*
-🔹.alienigena ➜ *Defiende la Tierra de una invasión extraterrestre.*
+👽 *Modo Alienígena 🚀*
+🔹.invasionalienigena ➜ *Defiende la Tierra de una invasión extraterrestre.*
+🔹.aliens ➜ *Decide si confías en los alienígenas o descubres infiltrados.*
 
 🍽️ *Modo Especial: Juegos de Cocina 🍳*
 🔹.chefextremo ➜ *Cocina bajo presión y supera desafíos culinarios.*
@@ -61,15 +62,3 @@ const handler = async (m, { conn}) => {
 handler.command = ["menu4"];
 handler.tags = ['main'];
 export default handler;
-```
-
----
-
-*📌 Mejoras Implementadas*
-✔️ *Integración del nuevo Modo Invasión Alienígena.*
-✔️ *Mayor organización y claridad en las categorías de juegos.*
-✔️ *Mejor presentación visual para mayor impacto.*
-✔️ *El menú ahora aparece en la sección "Info" del menú general.*
-
-📌 *Prueba el código y dime si quieres más mejoras! 🚀🎮🔥*
-#MenúInteractivo #WhatsAppBot #InvasiónAlienígena
