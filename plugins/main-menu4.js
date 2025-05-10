@@ -31,7 +31,6 @@ const handler = async (m, { conn}) => {
 🧟‍♂️.zombie ➜ 🧠 Sobrevive al apocalipsis y lucha contra hordas de infectados!
 ⚔️.gladiador ➜ 🏛️ Demuestra tu fuerza en la arena y conviértete en campeón!
 💰.asalto ➜ 🕶️ Planea el robo perfecto sin ser descubierto!
-🤖.robot ➜ ⚙️ Entrena a tu robot y participa en combates futuristas!
 🔮.magia ➜ ✨ Domina hechizos y vence en épicos duelos mágicos!
 
 👽 *Modo Alienígena 🚀*
