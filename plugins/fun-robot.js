@@ -60,5 +60,5 @@ handler.before = async (m, { conn}) => {
 }
 };
 
-handler.command = ["robot"];
+handler.command = ["robotp"];
 export default handler;
