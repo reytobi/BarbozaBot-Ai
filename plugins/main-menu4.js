@@ -19,9 +19,6 @@ const handler = async (m, { conn}) => {
  .animal
  .detective 
 
-
-
-
 📌 *Usa el comando de cada juego para jugar!*
 `;
     const imageUrl = "https://qu.ax/Mvhfa.jpg";
