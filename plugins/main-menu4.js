@@ -17,7 +17,7 @@ const handler = async (m, { conn}) => {
  .supervivencia 
  .carrera
  .animal
- 
+ .detective 
 
 
 
