@@ -42,9 +42,9 @@ const handler = async (m, { conn}) => {
 🔹.postres ➜ *Sorprende a los jueces con un postre espectacular y gana la competencia.*
 
 ━━━━━━━━━━━━━━━━━━
-🔥 **Compite con amigos y escala en el ranking de los mejores jugadores!**
-🕹️ **Escribe el comando de cualquier juego para comenzar la partida!**
-🚀 **¿Estás listo para la diversión?**
+🔥 *Compite con amigos y escala en el ranking de los mejores jugadores!*
+🕹️ *Escribe el comando de cualquier juego para comenzar la partida!*
+🚀 *¿Estás listo para la diversión?*
 `;
 
     const imageUrl = "https://qu.ax/Mvhfa.jpg";
