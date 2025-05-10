@@ -21,6 +21,7 @@ const handler = async (m, { conn}) => {
  .zombie
  .gladiador 
  .asalto
+ .robot
 
 📌 *Usa el comando de cada juego para jugar!*
 `;
