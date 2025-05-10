@@ -18,6 +18,7 @@ const handler = async (m, { conn}) => {
  .carrera
  .animal
  .detective 
+ .zombie
 
 📌 *Usa el comando de cada juego para jugar!*
 `;
