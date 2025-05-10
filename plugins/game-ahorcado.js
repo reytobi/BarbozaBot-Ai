@@ -1,99 +1,82 @@
-const palabras = ["gato", "perro", "pájaro", "elefante", "tigre", "ballena", "mariposa", "tortuga", "conejo", "rana", "pulpo", "ardilla", "jirafa", "cocodrilo", "pingüino", "delfín", "serpiente", "hámster", "mosquito", "abeja", "Porno", "negro", "television", "computadora", "botsito", "reggaeton", "economía", "electrónica", "facebook", "WhatsApp", "Instagram", "tiktok", "milanesa", "presidente", "bot", "películas", 
-]
 
-const intentosMaximos = 6
+const palabras = [
+    // Tecnología y ciencia
+    "computadora", "javascript", "programación", "inteligencia", "robot", "desarrollo", "internet", "algoritmo",
+    "servidor", "criptografía", "redes", "software", "hardware", "nanotecnología", "biotecnología", "astronomía",
 
-const gam = new Map()
+    // Naturaleza y planeta
+    "planeta", "galaxia", "universo", "estrella", "satélite", "ecosistema", "biodiversidad", "evolución",
+    "volcán", "terremoto", "huracán", "tsunami", "montaña", "desierto", "bosque", "selva", "océano",
+    "río", "lago", "atmósfera", "mariposa", "especie", "fauna", "flora",
 
-function elegirPalabraAleatoria() {
-return palabras[Math.floor(Math.random() * palabras.length)]
+    // Historia y cultura
+    "historia", "arquitectura", "ingeniería", "faraón", "civilización", "imperio", "revolución", "descubrimiento",
+    "museo", "arte", "pintura", "escultura", "filosofía", "literatura", "poesía", "teatro", "mitología",
+    "batalla", "guerrero", "castillo", "nobleza",
+
+    // Deportes y entretenimiento
+    "fútbol", "tenis", "baloncesto", "natación", "atletismo", "ciclismo", "gimnasia", "boxeo",
+    "videojuego", "concierto", "película", "actor", "actriz", "director", "escenario", "musical",
+
+    // Comida y cocina
+    "pizza", "hamburguesa", "pasta", "sushi", "tacos", "queso", "chocolate", "helado",
+    "panadería", "ingredientes", "receta", "sabores", "especias",
+
+    // Animales y criaturas
+    "elefante", "jirafa", "tiburón", "mariposa", "perro", "gato", "águila", "león", "tigre",
+    "serpiente", "dragón", "dinosaurio", "fénix", "unicorno",
+
+    // Objetos y cosas comunes
+    "lámpara", "reloj", "avión", "automóvil", "bicicleta", "telescopio", "microscopio", "martillo", "espejo",
+    "sombrero", "zapato", "libro", "cuaderno"
+];
+
+const handler = async (m, { conn}) => {
+    const palabra = palabras[Math.floor(Math.random() * palabras.length)];
+    const oculta = palabra.replace(/[a-zA-Z]/g, "_");
+    let intentos = 6;
+
+    conn.hangmanGame = conn.hangmanGame || {};
+    conn.hangmanGame[m.chat] = { palabra, oculta, intentos, letras: []};
+
+    let mensaje = `🎭 *Ahorcado* 🎭\n\n📌 *Palabra:* ${oculta}\n🔹 Intentos restantes: ${intentos}\n📝 Adivina una letra enviando un mensaje con solo una letra.`;
+
+    await conn.sendMessage(m.chat, { text: mensaje});
+};
+
+handler.before = async (m, { conn}) => {
+    if (conn.hangmanGame && conn.hangmanGame[m.chat]) {
+        const juego = conn.hangmanGame[m.chat];
+        const letra = m.text.trim().toLowerCase();
+
+        if (letra.length!== 1 ||!/[a-zA-Z]/.test(letra)) {
+            return conn.reply(m.chat, "❌ *Envía solo una letra válida.*", m);
 }
 
-function ocultarPalabra(palabra, letrasAdivinadas) {
-    let palabraOculta = "";
-    for (const letra of palabra) {
-        if (letrasAdivinadas.includes(letra)) {
-            palabraOculta += letra + " "; 
-        } else {
-            palabraOculta += "_ "; 
-        }
-    }
-    return palabraOculta.trim(); 
+        if (juego.letras.includes(letra)) {
+            return conn.reply(m.chat, "🔁 *Ya has intentado esta letra.*", m);
 }
 
+        juego.letras.push(letra);
 
-function mostrarAhorcado(intentos) {
-const dibujo = [
-" ____",
-" |  |",
-intentos < 6 ? " |  O" : " |",
-intentos < 5 ? " | /" : intentos < 4 ? " | / " : intentos < 3 ? " | / \\" : intentos < 2 ? " | / \\ " : " |",
-intentos < 2 ? "_|_" : " |",
-]
-return dibujo.slice(0, intentosMaximos - intentos).join("\n")
-}
-
-function juegoTerminado(sender, mensaje, palabra, letrasAdivinadas, intentos) {
-    if (intentos === 0) {
-        gam.delete(sender);
-        return `❌ ¡Perdiste! La palabra correcta era: ${palabra}\n\n${mostrarAhorcado(intentos)}`;
-    } else if (!mensaje.includes("_")) {
-        let expGanada = Math.floor(Math.random() * 300); //fáciles
-        if (palabra.length >= 8) {
-            expGanada = Math.floor(Math.random() * 3500); //difíciles
-        }
-        global.db.data.users[sender].exp += expGanada;
-        gam.delete(sender);
-        return `¡Que pro Ganaste 🥳! Adivinaste la palabra "${palabra}".\n\n*Has ganado:* ${expGanada} Exp.`;
-    } else {
-        return `${mostrarAhorcado(intentos)}\n\n${mensaje}`;
-    }
-}
-
-let handler = async (m, { conn }) => {
-let users = global.db.data.users[m.sender]
-if (gam.has(m.sender)) {
-return conn.reply(m.chat, "Ya tienes un juego en curso. ¡Termina ese primero!", m)
-}
-let palabra = elegirPalabraAleatoria()
-let letrasAdivinadas = []
-let intentos = intentosMaximos
-let mensaje = ocultarPalabra(palabra, letrasAdivinadas)
-gam.set(m.sender, { palabra, letrasAdivinadas, intentos })
-let text = `¡Adivina la palabra:\n\n${mensaje}\n\nIntentos restantes: ${intentos}`
-conn.reply(m.chat, text, m)
-}
-
-handler.before = async (m, { conn }) => {
-let users = global.db.data.users[m.sender]
-let juego = gam.get(m.sender)
-if (!juego) return
-let { palabra, letrasAdivinadas, intentos } = juego
-if (m.text.length === 1 && m.text.match(/[a-zA-Z]/)) {
-let letra = m.text.toLowerCase()
-if (!letrasAdivinadas.includes(letra)) {
-letrasAdivinadas.push(letra)
-if (!palabra.includes(letra)) {
-intentos--
-}
-}
-let mensaje = ocultarPalabra(palabra, letrasAdivinadas)
-let respuesta = juegoTerminado(m.sender, mensaje, palabra, letrasAdivinadas, intentos)
-if (respuesta.includes("¡Perdiste!") || respuesta.includes("¡Ganaste!")) {
-conn.reply(m.chat, respuesta, m)
+        if (juego.palabra.includes(letra)) {
+            let nuevaOculta = juego.palabra.split("").map(l => (juego.letras.includes(l)? l: "_")).join("");
+            juego.oculta = nuevaOculta;
 } else {
-gam.set(m.sender, { palabra, letrasAdivinadas, intentos })
-conn.reply(m.chat, respuesta + `\n\nIntentos restantes: ${intentos}`, m)
+            juego.intentos -= 1;
 }
+
+        if (juego.oculta === juego.palabra) {
+            delete conn.hangmanGame[m.chat];
+            return conn.reply(m.chat, `🎉 *¡Has ganado!* La palabra era: ${juego.palabra} 🏆`, m);
+} else if (juego.intentos === 0) {
+            delete conn.hangmanGame[m.chat];
+            return conn.reply(m.chat, `💀 *¡Has perdido!* La palabra era: ${juego.palabra}.`, m);
 } else {
-let mensaje = ocultarPalabra(palabra, letrasAdivinadas);
-let respuesta = juegoTerminado(m.sender, mensaje, palabra, letrasAdivinadas, intentos)
-conn.reply(m.chat, respuesta, m)
-gam.delete(m.sender)
+            return conn.reply(m.chat, `🎭 *Ahorcado* 🎭\n\n📌 *Palabra:* ${juego.oculta}\n🔹 Intentos restantes: ${juego.intentos}\n📝 Adivina otra letra.`, m);
 }
 }
-handler.help = ['ahorcado']
-handler.tags = ['game']
-handler.command = ['ahorcado']
-handler.register = true
-export default handler
+};
+
+handler.command = ["ahorcado"];
+export default handler;
