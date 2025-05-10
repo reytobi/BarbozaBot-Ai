@@ -1,7 +1,7 @@
 
 const handler = async (m, { conn}) => {
     const autos = ["🏎️ Ferrari", "🚗 Mustang", "🚙 Jeep", "🚕 Taxi", "🚚 Camión", "🚓 Policía", "🛻 Pick-Up", "🚜 Tractor"];
-    let jugadores = {}; // Cambié 'const' a 'let' para permitir modificaciones
+    let jugadores = {};
     let mensajeInicial = `🚦 *Carrera de Autos* 🚦\n\n📌 **Elige tu auto:**\n`;
 
     autos.forEach((auto, i) => {
@@ -23,22 +23,23 @@ handler.before = async (m, { conn}) => {
 
         if (eleccion>= 1 && eleccion <= autos.length) {
             const autoSeleccionado = autos[eleccion - 1];
+            const usuario = conn.getName(m.sender); // Obtener el nombre del usuario
 
-            conn.raceGame[m.chat].jugadores[m.sender] = autoSeleccionado;
+            conn.raceGame[m.chat].jugadores[m.sender] = { nombre: usuario, auto: autoSeleccionado};
 
-            await conn.reply(m.chat, `✅ *Has elegido:* ${autoSeleccionado}\n⌛ Esperando más jugadores...`, m);
+            await conn.reply(m.chat, `✅ *${usuario} ha elegido:* ${autoSeleccionado}\n⌛ Esperando más jugadores...`, m);
 
             setTimeout(() => {
                 if (Object.keys(conn.raceGame[m.chat].jugadores).length> 1) {
-                    const participantes = Object.entries(conn.raceGame[m.chat].jugadores);
+                    const participantes = Object.values(conn.raceGame[m.chat].jugadores);
                     const ganador = participantes[Math.floor(Math.random() * participantes.length)];
 
                     let mensajeCarrera = "🏁 *La carrera comienza...*\n\n";
-                    participantes.forEach(([jugador, auto]) => {
-                        mensajeCarrera += `👤 ${jugador}: ${auto}\n`;
+                    participantes.forEach(({ nombre, auto}) => {
+                        mensajeCarrera += `👤 ${nombre}: ${auto}\n`;
 });
 
-                    mensajeCarrera += `\n🎉 *El ganador es:* ${ganador[1]} 🏆`;
+                    mensajeCarrera += `\n🎉 *El ganador es:* ${ganador.nombre} con ${ganador.auto} 🏆`;
 
                     conn.sendMessage(m.chat, { text: mensajeCarrera});
 } else {
