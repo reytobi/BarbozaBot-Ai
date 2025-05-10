@@ -1,0 +1,64 @@
+
+const handler = async (m, { conn}) => {
+    const inteligencias = [
+        { nombre: "🤖 AlphaBot", ventaja: "Aprendizaje automático adaptativo."},
+        { nombre: "🧠 NeuroAI", ventaja: "Redes neuronales avanzadas para estrategias óptimas."},
+        { nombre: "⚡ QuantumCode", ventaja: "Procesamiento cuántico ultra rápido."},
+        { nombre: "🔮 VisionaryAI", ventaja: "Predicciones basadas en datos históricos."},
+        { nombre: "🛡️ SentinelCore", ventaja: "Defensa cibernética impenetrable."},
+        { nombre: "🚀 HyperLogic", ventaja: "Cálculo lógico instantáneo en decisiones críticas."}
+    ];
+
+    let mensaje = `🤖 *Batalla de Inteligencias Artificiales* 🤖\n\n📌 **Elige tu IA para competir:**\n`;
+
+    inteligencias.forEach((ia, i) => {
+        mensaje += `🔹 ${i + 1}. ${ia.nombre} - ${ia.ventaja}\n`;
+});
+
+    mensaje += "\n📌 *Responde con el número de la opción que elijas.*";
+
+    conn.aiBattleGame = conn.aiBattleGame || {};
+    conn.aiBattleGame[m.chat] = {};
+
+    await conn.sendMessage(m.chat, { text: mensaje});
+};
+
+handler.before = async (m, { conn}) => {
+    if (conn.aiBattleGame && conn.aiBattleGame[m.chat]) {
+        const eleccion = parseInt(m.text.trim());
+        const inteligencias = [
+            "🤖 AlphaBot", "🧠 NeuroAI", "⚡ QuantumCode", "🔮 VisionaryAI",
+            "🛡️ SentinelCore", "🚀 HyperLogic"
+        ];
+
+        if (eleccion>= 1 && eleccion <= inteligencias.length) {
+            const iaSeleccionada = inteligencias[eleccion - 1];
+            const usuario = conn.getName(m.sender);
+            conn.aiBattleGame[m.chat] = { nombre: usuario, ia: iaSeleccionada};
+
+            await conn.reply(m.chat, `✅ *${usuario} ha elegido:* ${iaSeleccionada}\n⌛ Preparándose para el enfrentamiento...`, m);
+
+            setTimeout(() => {
+                const resultado = [
+                    "🏆 ¡Has ganado la batalla de IA con cálculos supremos!",
+                    "💀 Tu algoritmo ha sido derrotado por un modelo más eficiente.",
+                    "⚔️ Fue un empate, ambas inteligencias demostraron gran habilidad.",
+                    "🔥 Lograste una victoria ajustada, pero tu IA quedó sobrecargada.",
+                    "💢 Tu estrategia fue poderosa, pero tu rival tenía mejor optimización."
+                ];
+                const desenlace = resultado[Math.floor(Math.random() * resultado.length)];
+
+                let mensajeFinal = `🤖 *Batalla de Inteligencias Artificiales* 🤖\n\n👤 *Jugador:* ${usuario}\n⚡ *IA seleccionada:* ${iaSeleccionada}\n\n${desenlace}`;
+
+                conn.sendMessage(m.chat, { text: mensajeFinal});
+
+                delete conn.aiBattleGame[m.chat];
+}, 5000);
+} else {
+            await conn.reply(m.chat, "❌ *Opción inválida. Elige un número entre 1 y 6.*", m);
+}
+}
+};
+
+handler.command = ["batallai"];
+export default handler;
