@@ -1,67 +1,64 @@
 
 const handler = async (m, { conn}) => {
-    const inteligencias = [
-        { nombre: "🤖 AlphaBot", ventaja: "Aprendizaje automático adaptativo."},
-        { nombre: "🧠 NeuroAI", ventaja: "Redes neuronales avanzadas para estrategias óptimas."},
-        { nombre: "⚡ QuantumCode", ventaja: "Procesamiento cuántico ultra rápido."},
-        { nombre: "🔮 VisionaryAI", ventaja: "Predicciones basadas en datos históricos."},
-        { nombre: "🛡️ SentinelCore", ventaja: "Defensa cibernética impenetrable."},
-        { nombre: "🚀 HyperLogic", ventaja: "Cálculo lógico instantáneo en decisiones críticas."}
+    const hechiceros = [
+        { nombre: "🔮 Archimago", ventaja: "Control total de los elementos mágicos."},
+        { nombre: "🔥 Hechicero Infernal", ventaja: "Dominio de fuego con ataques devastadores."},
+        { nombre: "🌪️ Mago del Viento", ventaja: "Rapidez y capacidad de esquivar ataques."},
+        { nombre: "🌊 Guardián de Agua", ventaja: "Defensa con habilidades regenerativas."},
+        { nombre: "⚡ Maestro del Trueno", ventaja: "Ataques explosivos con electricidad."},
+        { nombre: "🖤 Nigromante", ventaja: "Invoca espíritus y absorbe energía de sus rivales."}
     ];
 
-    let mensaje = `🤖 *Batalla de Inteligencias Artificiales* 🤖\n\n📌 **Elige tu IA para competir:**\n`;
+    let mensaje = `🔮 *Dueño de Magia* 🔮\n\n📌 **Elige tu hechicero para la batalla:**\n`;
 
-    inteligencias.forEach((ia, i) => {
-        mensaje += `🔹 ${i + 1}. ${ia.nombre} - ${ia.ventaja}\n`;
+    hechiceros.forEach((hechicero, i) => {
+        mensaje += `🔹 ${i + 1}. ${hechicero.nombre} - ${hechicero.ventaja}\n`;
 });
 
     mensaje += "\n📌 *Responde con el número de la opción que elijas.*";
 
-    conn.aiBattleGame = conn.aiBattleGame || {};
-    conn.aiBattleGame[m.chat] = { jugadores: {}};
+    conn.magicBattleGame = conn.magicBattleGame || {};
+    conn.magicBattleGame[m.chat] = {};
 
     await conn.sendMessage(m.chat, { text: mensaje});
 };
 
 handler.before = async (m, { conn}) => {
-    if (conn.aiBattleGame && conn.aiBattleGame[m.chat]) {
+    if (conn.magicBattleGame && conn.magicBattleGame[m.chat]) {
         const eleccion = parseInt(m.text.trim());
-        const inteligencias = [
-            "🤖 AlphaBot", "🧠 NeuroAI", "⚡ QuantumCode", "🔮 VisionaryAI",
-            "🛡️ SentinelCore", "🚀 HyperLogic"
+        const hechiceros = [
+            "🔮 Archimago", "🔥 Hechicero Infernal", "🌪️ Mago del Viento", "🌊 Guardián de Agua",
+            "⚡ Maestro del Trueno", "🖤 Nigromante"
         ];
 
-        if (eleccion>= 1 && eleccion <= inteligencias.length) {
-            const iaSeleccionada = inteligencias[eleccion - 1];
+        if (eleccion>= 1 && eleccion <= hechiceros.length) {
+            const hechiceroSeleccionado = hechiceros[eleccion - 1];
             const usuario = conn.getName(m.sender);
-            conn.aiBattleGame[m.chat].jugadores[m.sender] = { nombre: usuario, ia: iaSeleccionada};
+            conn.magicBattleGame[m.chat] = { nombre: usuario, hechicero: hechiceroSeleccionado};
 
-            await conn.reply(m.chat, `✅ *${usuario} ha elegido:* ${iaSeleccionada}\n⌛ Esperando más jugadores...`, m);
+            await conn.reply(m.chat, `✅ *${usuario} ha elegido:* ${hechiceroSeleccionado}\n⌛ Preparándose para la batalla mágica...`, m);
 
             setTimeout(() => {
-                if (Object.keys(conn.aiBattleGame[m.chat].jugadores).length> 1) {
-                    const participantes = Object.values(conn.aiBattleGame[m.chat].jugadores);
-                    const ganador = participantes[Math.floor(Math.random() * participantes.length)];
+                const resultado = [
+                    "🏆 ¡Has lanzado un hechizo legendario y ganaste la batalla!",
+                    "💀 Tu energía mágica se agotó y fuiste derrotado.",
+                    "⚔️ Fue un empate, ambos hechiceros demostraron gran poder.",
+                    "🔥 Lograste una victoria ajustada, pero tu magia quedó debilitada.",
+                    "💢 Tu hechizo fue fuerte, pero tu rival resistió hasta el final."
+                ];
+                const desenlace = resultado[Math.floor(Math.random() * resultado.length)];
 
-                    let mensajeBatalla = "🤖 *La batalla de IA comienza...*\n\n";
-                    participantes.forEach(({ nombre, ia}) => {
-                        mensajeBatalla += `👤 ${nombre}: ${ia}\n`;
-});
+                let mensajeFinal = `🔮 *Batalla de Magia* 🔮\n\n👤 *Jugador:* ${usuario}\n✨ *Hechicero seleccionado:* ${hechiceroSeleccionado}\n\n${desenlace}`;
 
-                    mensajeBatalla += `\n🎉 *El ganador es:* ${ganador.nombre} con ${ganador.ia} 🏆`;
+                conn.sendMessage(m.chat, { text: mensajeFinal});
 
-                    conn.sendMessage(m.chat, { text: mensajeBatalla});
-} else {
-                    conn.sendMessage(m.chat, { text: "❌ *No hubo suficientes jugadores para iniciar la batalla.*"});
-}
-
-                delete conn.aiBattleGame[m.chat];
-}, 10000);
+                delete conn.magicBattleGame[m.chat];
+}, 5000);
 } else {
             await conn.reply(m.chat, "❌ *Opción inválida. Elige un número entre 1 y 6.*", m);
 }
 }
 };
 
-handler.command = ["batalla"];
+handler.command = ["magia"];
 export default handler;
