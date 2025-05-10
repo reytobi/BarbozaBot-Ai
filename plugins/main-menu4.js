@@ -13,6 +13,7 @@ const handler = async (m, { conn}) => {
 📜.ahorcado ➜ 🔡 Adivina la palabra antes de perder!
 🔑.acertijo ➜ 🧩 Resuelve enigmas y demuestra tu lógica!
 ➗.mate ➜ 🧮 Compite en cálculos matemáticos rápidos!
+🧩.sopa ➜ 🔠 Encuentra palabras ocultas y completa la sopa de letras!
 
 🔥 *Juegos de Azar 🎲*
 🎰.ruleta ➜ 🔄 Gira la ruleta y prueba tu suerte!
@@ -23,9 +24,10 @@ const handler = async (m, { conn}) => {
 🏹.cazar ➜ 🦌 Explora, busca presas y consigue recompensas!
 🌲.supervivencia ➜ 🏕️ Toma decisiones para sobrevivir en escenarios extremos!
 🕵️.detective ➜ 🔍 Investiga casos misteriosos y encuentra pistas!
+🚪.escape ➜ 🔑 Resuelve acertijos y escapa de habitaciones cerradas!
 
-🚀 *Juegos de Velocidad 🏎️*
-🏁.speedzone ➜ 🚥 Compite en modos de velocidad extrema y prueba tus reflejos!
+🚀 *Zona de Velocidad 🏎️*
+🏁.speed ➜ 🚥 Compite en modos de velocidad extrema y prueba tus reflejos!
 
 ⚔️ *Juegos Temáticos 🏛️*
 🧟‍♂️.zombie ➜ 🧠 Sobrevive al apocalipsis y lucha contra hordas de infectados!
@@ -37,6 +39,15 @@ const handler = async (m, { conn}) => {
 🛸.alienigena ➜ 🌍 Defiende la Tierra de una invasión extraterrestre!
 🕵️‍♂️.aliens ➜ 👀 Descubre infiltrados alienígenas en tu equipo!
 🌌.multiverso ➜ 🔄 Viaja entre dimensiones y lucha en el multiverso!
+
+🤖 *Modo Futurista*
+🔩.robotp ➜ 🤖 Construye tu propio robot y compite en combates tecnológicos!
+
+🎭 *Modo Emoji*
+😃.emoji ➜ 🎭 Responde con el emoji correcto antes de que acabe el tiempo!
+
+🎮 *Modo Game*
+🕹️.game ➜ 🎮 Desafíos de videojuegos clásicos y partidas rápidas!
 
 🍽️ *Modo Especial: Juegos de Cocina 🍳*
 🍕.chefextremo ➜ 🔥 Cocina bajo presión y supera desafíos culinarios!
@@ -61,3 +72,15 @@ const handler = async (m, { conn}) => {
 handler.command = ["menu4"];
 handler.tags = ['main'];
 export default handler;
+```
+
+---
+
+*📌 Mejoras Implementadas*
+✔️ *Se han agregado los nuevos comandos:* `.emoji`, `.animalrace`, `.escape`, `.robotp`, `.game`, `.sopa`.
+✔️ *Mayor claridad en el diseño con categorías bien organizadas.*
+✔️ *Mayor variedad de juegos incluyendo futuristas, emojis y escape.*
+✔️ *El menú aparece en la sección "Info" del menú general.*
+
+📌 *Prueba el código y dime si quieres más mejoras! 🚀🔥*
+#MenúInteractivo #WhatsAppBot #JuegosSinLímites
