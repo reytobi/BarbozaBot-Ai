@@ -18,7 +18,7 @@ const handler = async (m, { conn}) => {
     mensaje += "\n📌 *Responde con el número de la opción que elijas.*";
 
     conn.aiBattleGame = conn.aiBattleGame || {};
-    conn.aiBattleGame[m.chat] = {};
+    conn.aiBattleGame[m.chat] = { jugadores: {}};
 
     await conn.sendMessage(m.chat, { text: mensaje});
 };
@@ -34,31 +34,34 @@ handler.before = async (m, { conn}) => {
         if (eleccion>= 1 && eleccion <= inteligencias.length) {
             const iaSeleccionada = inteligencias[eleccion - 1];
             const usuario = conn.getName(m.sender);
-            conn.aiBattleGame[m.chat] = { nombre: usuario, ia: iaSeleccionada};
+            conn.aiBattleGame[m.chat].jugadores[m.sender] = { nombre: usuario, ia: iaSeleccionada};
 
-            await conn.reply(m.chat, `✅ *${usuario} ha elegido:* ${iaSeleccionada}\n⌛ Preparándose para el enfrentamiento...`, m);
+            await conn.reply(m.chat, `✅ *${usuario} ha elegido:* ${iaSeleccionada}\n⌛ Esperando más jugadores...`, m);
 
             setTimeout(() => {
-                const resultado = [
-                    "🏆 ¡Has ganado la batalla de IA con cálculos supremos!",
-                    "💀 Tu algoritmo ha sido derrotado por un modelo más eficiente.",
-                    "⚔️ Fue un empate, ambas inteligencias demostraron gran habilidad.",
-                    "🔥 Lograste una victoria ajustada, pero tu IA quedó sobrecargada.",
-                    "💢 Tu estrategia fue poderosa, pero tu rival tenía mejor optimización."
-                ];
-                const desenlace = resultado[Math.floor(Math.random() * resultado.length)];
+                if (Object.keys(conn.aiBattleGame[m.chat].jugadores).length> 1) {
+                    const participantes = Object.values(conn.aiBattleGame[m.chat].jugadores);
+                    const ganador = participantes[Math.floor(Math.random() * participantes.length)];
 
-                let mensajeFinal = `🤖 *Batalla de Inteligencias Artificiales* 🤖\n\n👤 *Jugador:* ${usuario}\n⚡ *IA seleccionada:* ${iaSeleccionada}\n\n${desenlace}`;
+                    let mensajeBatalla = "🤖 *La batalla de IA comienza...*\n\n";
+                    participantes.forEach(({ nombre, ia}) => {
+                        mensajeBatalla += `👤 ${nombre}: ${ia}\n`;
+});
 
-                conn.sendMessage(m.chat, { text: mensajeFinal});
+                    mensajeBatalla += `\n🎉 *El ganador es:* ${ganador.nombre} con ${ganador.ia} 🏆`;
+
+                    conn.sendMessage(m.chat, { text: mensajeBatalla});
+} else {
+                    conn.sendMessage(m.chat, { text: "❌ *No hubo suficientes jugadores para iniciar la batalla.*"});
+}
 
                 delete conn.aiBattleGame[m.chat];
-}, 5000);
+}, 10000);
 } else {
             await conn.reply(m.chat, "❌ *Opción inválida. Elige un número entre 1 y 6.*", m);
 }
 }
 };
 
-handler.command = ["batallaIA"];
+handler.command = ["batalla"];
 export default handler;
