@@ -60,5 +60,5 @@ handler.before = async (m, { conn}) => {
 }
 };
 
-handler.command = ["batalla"];
+handler.command = ["batallaIA"];
 export default handler;
