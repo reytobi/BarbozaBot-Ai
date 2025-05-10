@@ -1,52 +1,53 @@
 
 const handler = async (m, { conn}) => {
     let mensaje = `
-🌟 *¡Bienvenido al Menú de Juegos!* 🌟
-🎮 **Desafíos, acción y diversión asegurada!** 🎮
+*🎮 ¡Bienvenido a tu Bot de Juegos! 🤖🔥*
+*🌟 Diversión, acción y retos extremos te esperan! 🌟*
 
 ━━━━━━━━━━━━━━━━━━
-🏆 **Categorías de Juegos:**
+🏆 *Categorías de Juegos* 🏆
 ━━━━━━━━━━━━━━━━━━
 
 ✨ *Juegos de Habilidad 🧠*
-🔹.trivia ➜ *Prueba tu conocimiento con preguntas desafiantes.*
-🔹.ahorcado ➜ *Adivina la palabra antes de que sea demasiado tarde.*
-🔹.acertijo ➜ *Resuelve enigmas y demuestra tu lógica.*
-🔹.mate ➜ *Compite en cálculos matemáticos rápidos.*
+🧐 *.trivia** ➜ *📝 Prueba tu conocimiento con preguntas desafiantes!*
+📜 *.ahorcado* ➜ *🔡 Adivina la palabra antes de perder!*
+🔑 *.acertijo* ➜ *🧩 Resuelve enigmas y demuestra tu lógica!*
+➗ *.mate* ➜ *🧮 Compite en cálculos matemáticos rápidos!*
 
 🔥 *Juegos de Azar 🎲*
-🔹.ruleta ➜ *Gira la ruleta y pon a prueba tu suerte.*
-🔹.dado ➜ *Lanza el dado y gana premios aleatorios.*
-🔹.pelear ➜ *Enfrenta a otros jugadores en un duelo de habilidad.*
+🎰 *.ruleta* ➜ *🔄 Gira la ruleta y prueba tu suerte!*
+🎲 *.dado* ➜ *🎲 Lanza el dado y gana premios aleatorios!*
+🥊 *.pelear* ➜ *💥 Enfrenta a otros jugadores en un duelo épico!*
 
 🌍 *Juegos de Aventura 🚀*
-🔹.cazar ➜ *Explora, busca presas y consigue recompensas.*
-🔹.supervivencia ➜ *Toma decisiones que definirán tu destino.*
-🔹.detective ➜ *Investiga casos misteriosos y encuentra pistas.*
+🏹 *.cazar* ➜ *🦌 Explora, busca presas y consigue recompensas!*
+🌲 *.supervivencia* ➜ *🏕️ Toma decisiones para sobrevivir en escenarios extremos!*
+🕵️ *.detective* ➜ *🔍 Investiga casos misteriosos y encuentra pistas!*
 
 🚀 *Juegos de Velocidad 🏎️*
-🔹.carrera ➜ *Corre y alcanza la meta antes que los demás.*
-🔹.animal ➜ *Apuesta en competencias salvajes.*
+🏁 *.carrera* ➜ *🏎️ Corre y alcanza la meta antes que los demás!*
+🐉 *.animal* ➜ *🐎 Apuesta en competencias salvajes!*
 
 ⚔️ *Juegos Temáticos 🏛️*
-🔹.zombie ➜ *Sobrevive al apocalipsis y lucha contra hordas de infectados.*
-🔹.gladiador ➜ *Demuestra tu fuerza en la arena y conviértete en campeón.*
-🔹.asalto ➜ *Planea el robo perfecto sin ser descubierto.*
-🔹.robot ➜ *Entrena a tu robot y participa en combates futuristas.*
-🔹.magia ➜ *Domina hechizos y vence en épicos duelos mágicos.*
+🧟‍♂️ *.zombie* ➜ *🧠 Sobrevive al apocalipsis y lucha contra hordas de infectados!*
+⚔️ *.gladiador* ➜ *🏛️ Demuestra tu fuerza en la arena y conviértete en campeón!*
+💰 *.asalto* ➜ *🕶️ Planea el robo perfecto sin ser descubierto!*
+🤖 *.robot* ➜ *⚙️ Entrena a tu robot y participa en combates futuristas!*
+🔮 *.magia* ➜ *✨ Domina hechizos y vence en épicos duelos mágicos!*
 
 👽 *Modo Alienígena 🚀*
-🔹.invasionalienigena ➜ *Defiende la Tierra de una invasión extraterrestre.*
-🔹.aliens ➜ *Decide si confías en los alienígenas o descubres infiltrados.*
+🛸 *.invasionalienigena* ➜ *🌍 Defiende la Tierra de una invasión extraterrestre!*
+🕵️‍♂️ *.aliens* ➜ *👀 Descubre infiltrados alienígenas en tu equipo!*
+🌌 *.multiverso* ➜ *🔄 Viaja entre dimensiones y lucha en el multiverso!*
 
 🍽️ *Modo Especial: Juegos de Cocina 🍳*
-🔹.chefextremo ➜ *Cocina bajo presión y supera desafíos culinarios.*
-🔹.chefloco ➜ *Enfréntate a caos en la cocina con ingredientes locos.*
-🔹.batallachef ➜ *Compite contra otros chefs y demuestra tu talento.*
-🔹.postres ➜ *Sorprende a los jueces con un postre espectacular.*
+🍕 *.chefextremo* ➜ *🔥 Cocina bajo presión y supera desafíos culinarios!*
+🎭 *.chefloco* ➜ *🌀 Enfréntate a caos en la cocina con ingredientes locos!*
+🥇*.batallachef* ➜ *👨‍🍳 Compite contra otros chefs y demuestra tu talento!*
+🍰 *.postres* ➜ *🎂 Sorprende a los jueces con un postre espectacular!*
 
 ━━━━━━━━━━━━━━━━━━
-🔥 *Compite con amigos y escala en el ranking de los mejores jugadores!*
+🔥 *Juega, compite y diviértete con tu bot!* 🏆
 🕹️ *Escribe el comando de cualquier juego para comenzar!*
 🚀 *¡La diversión no tiene límites!*
 `;
@@ -62,3 +63,15 @@ const handler = async (m, { conn}) => {
 handler.command = ["menu4"];
 handler.tags = ['main'];
 export default handler;
+```
+
+---
+
+*📌 Mejoras Implementadas*
+✔️ *Más emojis para darle un aspecto aún más llamativo y visualmente atractivo.*
+✔️ *Mayor claridad en el diseño con categorías organizadas.*
+✔️ *Texto dinámico y motivador que invita a jugar.*
+✔️ *Mayor impacto visual con una estructura más envolvente.*
+
+📌 *Prueba el código y dime si quieres más mejoras! 🚀🎮🔥*
+#MenúInteractivo #WhatsAppBot #Multiverso
