@@ -30,9 +30,11 @@ const handler = async (m, { conn}) => {
 🤖.robot - Pelea con tu robot y vence en combate
 🔮.magia - Usa hechizos y gana el duelo mágico
 
+🍳 *Modo Especial:*
+🔥.chefextremo - Cocina bajo presión y supera desafíos culinarios
+
 📌 *Usa el comando de cada juego para jugar y ganar puntos!*
 🔹 **Compite con amigos y escala en el ranking de los mejores jugadores!** 🏆🔥
-
 `;
 
     const imageUrl = "https://qu.ax/Mvhfa.jpg";
