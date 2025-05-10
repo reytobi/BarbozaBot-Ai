@@ -2,10 +2,10 @@
 const handler = async (m, { conn}) => {
     let mensaje = `
 🌟 *¡Bienvenido al Menú de Juegos!* 🌟
-🎮 **Prepárate para horas de diversión y desafíos emocionantes!** 🎮
+🎮 *Prepárate para horas de diversión y desafíos emocionantes!* 🎮
 
 ━━━━━━━━━━━━━━━━━━
-🏆 **Categorías de Juegos:**
+🏆 *Categorías de Juegos:*
 ━━━━━━━━━━━━━━━━━━
 
 ✨ *Juegos de Habilidad 🧠*
