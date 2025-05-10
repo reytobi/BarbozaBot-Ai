@@ -63,15 +63,3 @@ const handler = async (m, { conn}) => {
 handler.command = ["menu4"];
 handler.tags = ['main'];
 export default handler;
-```
-
----
-
-*📌 Mejoras Implementadas*
-✔️ *Más emojis para darle un aspecto aún más llamativo y visualmente atractivo.*
-✔️ *Mayor claridad en el diseño con categorías organizadas.*
-✔️ *Texto dinámico y motivador que invita a jugar.*
-✔️ *Mayor impacto visual con una estructura más envolvente.*
-
-📌 *Prueba el código y dime si quieres más mejoras! 🚀🎮🔥*
-#MenúInteractivo #WhatsAppBot #Multiverso
