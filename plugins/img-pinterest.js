@@ -1,55 +1,47 @@
-import axios from 'axios';
 
-const handler = async (m, { conn, text }) => {
+import axios from "axios";
+
+const handler = async (m, { conn, args}) => {
+    if (!args[0]) return conn.reply(m.chat, "❌ *Debes proporcionar un término de búsqueda!*", m);
+
+    const query = encodeURIComponent(args.join(" "));
+    const apiUrl = `https://api.siputzx.my.id/api/s/pinterest?query=${query}`;
+
     try {
-        if (!text) {
-            await conn.sendMessage(m.chat, { text: '✎ Por favor proporciona un término de búsqueda.' }, { quoted: m, rcanal });
-            return;
-        }
+        await m.react("🕒");
 
-        const response = await axios.get(`https://api.siputzx.my.id/api/s/pinterest?query=${encodeURIComponent(text)}`);
+        const response = await axios.get(apiUrl);
         const data = response.data.data;
 
-        if (data.length === 0) {
-            await conn.sendMessage(m.chat, { text: `❌ No se encontraron imágenes para "${text}".` }, { quoted: m });
+        if (!data || data.length === 0) {
+            await conn.reply(m.chat, `⚠️ *No se encontraron imágenes para:* ${args.join(" ")}`, m);
             return;
-        }
+}
 
         const randomImage = data[Math.floor(Math.random() * data.length)];
         const imageUrl = randomImage.images_url;
-        const title = randomImage.grid_title || `¡Aquí tienes una imagen de ${text}!`;
 
-        await m.react('🕓');
+        await conn.sendMessage(m.chat, {
+            image: { url: imageUrl},
+            caption: `✅ *Imagen de Pinterest encontrada!*\n🔎 *Búsqueda:* ${args.join(" ")}`,
+            footer: "🚀 Pinterest API",
+            buttons: [
+                {
+                    buttonId: `.pinterestsearch ${args.join(" ")}`,
+                    buttonText: { displayText: "🔄 Otra imagen"},
+},
+            ],
+            headerType: 4,
+}, { quoted: m});
 
-        await conn.sendMessage(
-            m.chat,
-            { 
-                image: { url: imageUrl },
-                caption: `\t\t⚘ *${title}*\n ${global.dev}`,
-                buttons: [
-                    { 
-                        buttonId: `.pinterest ${text}`, 
-                        buttonText: { displayText: 'ᯓsiguente' },
-                        type: 1  
-                    }
-                ],
-                viewOnce: true,
-                headerType: 4
-            },
-            { quoted: m }
-        );
+        await m.react("✅");
 
-        await m.react('✅');
-    } catch (error) {
-        await m.react('✖️');
-        console.error('Error al obtener la imagen:', error);
-        await conn.sendMessage(m.chat, { text: '❌ Ocurrió un error al intentar obtener la imagen. Inténtalo nuevamente.' }, { quoted: m });
-    }
+} catch (error) {
+        await m.react("✖️");
+        console.error("Error al obtener la imagen:", error);
+        await conn.reply(m.chat, "❌ *Ocurrió un error al obtener la imagen. Inténtalo nuevamente.*", m);
+}
 };
 
-handler.help = ['pinterest <término>'];
-handler.tags = ['pin'];
-handler.register = true;
-handler.command = ['pinterest'];
-
+handler.command = ["pinterest"];
 export default handler;
