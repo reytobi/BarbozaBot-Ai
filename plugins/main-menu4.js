@@ -2,10 +2,10 @@
 const handler = async (m, { conn}) => {
     let mensaje = `
 🌟 *¡Bienvenido al Menú de Juegos!* 🎮🔥
-📌 *Explora diferentes categorías y diviértete con los mejores desafíos!*
+📌 **Explora diferentes categorías y diviértete con los mejores desafíos!**
 
 ━━━━━━━━━━━━━━━━━━
-🏆 *Juegos de Habilidad* 🧠
+🏆 **Juegos de Habilidad** 🧠
 ━━━━━━━━━━━━━━━━━━
 🧐 *Trivia:* \`.trivia\` 📖 - Pon a prueba tu conocimiento con preguntas desafiantes.
 📜 *Ahorcado:* \`.ahorcado\` 🔡 - Adivina la palabra antes de perder.
@@ -14,14 +14,14 @@ const handler = async (m, { conn}) => {
 🧩 *Sopa de Letras:* \`.sopa\` 🔠 - Encuentra palabras ocultas y completa el reto.
 
 ━━━━━━━━━━━━━━━━━━
-🔥 *Juegos de Azar* 🎲
+🔥 **Juegos de Azar** 🎲
 ━━━━━━━━━━━━━━━━━━
 🎰 *Ruleta:* \`.ruleta\` 🔄 - Gira la ruleta y prueba tu suerte.
 🎲 *Dado:* \`.dado\` 🎲 - Lanza el dado y gana premios aleatorios.
 🥊 *Pelear:* \`.pelear\` 💥 - Enfréntate a otros jugadores en un duelo épico.
 
 ━━━━━━━━━━━━━━━━━━
-🌍 *Juegos de Aventura* 🚀
+🌍 **Juegos de Aventura** 🚀
 ━━━━━━━━━━━━━━━━━━
 🏹 *Cazar:* \`.cazar\` 🦌 - Explora, busca presas y consigue recompensas.
 🌲 *Supervivencia:* \`.supervivencia\` 🏕️ - Toma decisiones para sobrevivir en escenarios extremos.
@@ -29,7 +29,7 @@ const handler = async (m, { conn}) => {
 🚪 *Escape:* \`.escape\` 🔑 - Resuelve acertijos y escapa de habitaciones cerradas.
 
 ━━━━━━━━━━━━━━━━━━
-🚀 *Zona Gamer - Juegos Especiales* 🎮🔥
+🚀 **Zona Gamer - Juegos Especiales** 🎮🔥
 ━━━━━━━━━━━━━━━━━━
 🕹️ *Juegos Clásicos:* \`.classic\` 🎮 - Revive los juegos retro con Pong, Snake y más!
 🔥 *Modo Ranked:* \`.rankedmode\` 🏆 - Sube de nivel y conviértete en Leyenda!
@@ -37,14 +37,14 @@ const handler = async (m, { conn}) => {
 ⚡ *Modo Gamer:* \`.gamer\` 🚀 - Experimenta desafíos extremos y demuestra quién manda!
 
 ━━━━━━━━━━━━━━━━━━
-👽 *Modo Alienígena & Futurista* 🚀🤖
+👽 **Modo Alienígena & Futurista** 🚀🤖
 ━━━━━━━━━━━━━━━━━━
 🛸 *Defensa Alienígena:* \`.alienigena\` 🌍 - Protege la Tierra de una invasión extraterrestre!
 🕵️‍♂️ *Aliens Entre Nosotros:* \`.aliens\` 👀 - Descubre infiltrados alienígenas en tu equipo!
 🔩 *Construcción de Robots:* \`.robotp\` 🤖 - Crea tu propio robot y compite en batallas tecnológicas!
 
 ━━━━━━━━━━━━━━━━━━
-🍽️ *Modo Especial - Juegos de Cocina* 🍳
+🍽️ **Modo Especial - Juegos de Cocina** 🍳
 ━━━━━━━━━━━━━━━━━━
 🍕 *Chef Extremo:* \`.chefextremo\` 🔥 - Cocina bajo presión y supera desafíos culinarios!
 🎭 *Cocina Caótica:* \`.chefloco\` 🌀 - Enfréntate al caos de ingredientes locos!
@@ -52,9 +52,9 @@ const handler = async (m, { conn}) => {
 🍰 *Postres Creativos:* \`.postres\` 🎂 - Sorprende a los jueces con un postre espectacular!
 
 ━━━━━━━━━━━━━━━━━━
-🔥 *¡Juega, compite y diviértete con tu bot!* 🏆
-🕹️ *Escribe el comando de cualquier juego para comenzar!* 🚀
-🎮 *¡La diversión no tiene límites!*
+🔥 **¡Juega, compite y diviértete con tu bot!** 🏆
+🕹️ **Escribe el comando de cualquier juego para comenzar!** 🚀
+🎮 **¡La diversión no tiene límites!**
 `;
 
     const imageUrl = "https://qu.ax/Mvhfa.jpg";
@@ -66,5 +66,5 @@ const handler = async (m, { conn}) => {
 };
 
 handler.command = ["menu4"];
-handler.tags = ['main'];
+handler.tags = ["main"];
 export default handler;
