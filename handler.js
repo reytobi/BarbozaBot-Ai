@@ -1,3 +1,4 @@
+
 import { smsg } from './lib/simple.js'
 import { format } from 'util'
 import { fileURLToPath } from 'url'
@@ -6,16 +7,9 @@ import { unwatchFile, watchFile } from 'fs'
 import chalk from 'chalk'
 import fetch from 'node-fetch'
 
-// Ensure global variables are initialized or assumed to be defined elsewhere
-// global.db, global.loadDatabase, global.owner, global.mods, global.prems, global.APIKeys, global.prefix, global.__filename, global.plugins, global.reloadHandler, global.conn are assumed to be defined in your main bot file (e.g., main.js)
-global.opts = global.opts || {}; // FIX 1: Initialize global.opts if not already defined
-
 const { proto } = (await import('@whiskeysockets/baileys')).default
 const isNumber = x => typeof x === 'number' && !isNaN(x)
 const delay = ms => isNumber(ms) && new Promise(resolve => setTimeout(function () {
-    // The `clearTimeout(this)` here is usually ineffective as `this` inside `setTimeout` callback
-    // refers to the global object (or undefined in strict mode), not the timeout ID.
-    // However, it's not a syntax error and likely benign for a simple delay function.
     clearTimeout(this)
     resolve()
 }, ms))
@@ -28,14 +22,9 @@ export async function handler(chatUpdate) {
 
     if (!m) return
 
-    // FIX 2: Define `rcanal` here. It's often used to refer to the current message object (m) for replies.
-    // Since rcanal is just a reference to m, we can use m directly for replies.
-    const rcanal = m; 
-
     // Verificar si la conexión del bot está activa
-    // This check should ideally prevent the 'jid of undefined' error if `this.user` is not ready.
     if (!this.user || !this.user.jid) {
-        console.error('Error: Bot no conectado o this.user.jid no definido. Abortando handler.')
+        console.error('Error: Bot no conectado o this.user.jid no definido')
         return
     }
 
@@ -56,14 +45,14 @@ export async function handler(chatUpdate) {
                 if (!user.premium) user.premiumTime = 0
                 if (!('registered' in user)) user.registered = false
                 if (!user.registered) {
-                    if (!('name' in user)) user.name = m.name || '' // m.name is assumed to be added by smsg
+                    if (!('name' in user)) user.name = m.name || ''
                     if (!isNumber(user.age)) user.age = -1
                     if (!isNumber(user.regTime)) user.regTime = -1
                 }
                 if (!isNumber(user.afk)) user.afk = -1
                 if (!('afkReason' in user)) user.afkReason = ''
                 if (!('banned' in user)) user.banned = false
-                if (!('useDocument' in user)) user.useDocument = true // FIX 5: Aligned useDocument to true for consistency with else block
+                if (!('useDocument' in user)) user.useDocument = false
                 if (!isNumber(user.level)) user.level = 0
                 if (!isNumber(user.bank)) user.bank = 0
             } else {
@@ -118,43 +107,35 @@ export async function handler(chatUpdate) {
             const botJid = this.user.jid
             let settings = global.db.data.settings[botJid]
 
-            if (typeof settings !== 'object') global.db.data.settings[botJid] = {}
+          if (typeof settings !== 'object') global.db.data.settings[botJid] = {}
             if (settings) {
                 if (!('self' in settings)) settings.self = false
                 if (!('autoread' in settings)) settings.autoread = false
                 if (!('antiPrivate' in settings)) settings.antiPrivate = false
                 if (!('antiBot2' in settings)) settings.antiBot2 = false
-                if (!('antiSpam' in settings)) settings.antiSpam = true // FIX 6: Aligned antiSpam to true for consistency with else block
-                if (!('banned' in settings)) settings.banned = false // FIX 4: Added initialization for 'banned'
-            } else {
+                if (!('antiSpam' in settings)) settings.antiSpam = false
+                  } else {
                 global.db.data.settings[botJid] = {
                     self: false,
                     autoread: false,
                     antiPrivate: true,
                     antiBot2: true,
                     antiSpam: true,
-                    status: 0,
-                    banned: false, // FIX 4: Added initialization for 'banned'
+                    status: 0
                 }
             }
         } catch (e) {
             console.error('Error al inicializar datos:', e)
         }
 
-        // FIX 8: Ensure global.conn.user.jid is available before using it.
-        // This adds an extra layer of safety for 'global.conn' if it differs from 'this' temporarily.
-        const mainBot = (global.conn && global.conn.user && global.conn.user.jid) ? global.conn.user.jid : null;
-        if (!mainBot) {
-            console.error('Error: global.conn.user.jid no disponible. Se aborta la ejecución en la línea de mainBot.');
-            return
-        }
 
-        const chat = global.db.data.chats[m.chat] || {}
-        const isSubbs = chat.antiLag === true
-        const allowedBots = chat.per || []
-        if (!allowedBots.includes(mainBot)) allowedBots.push(mainBot)
-        const isAllowed = allowedBots.includes(this.user.jid)
-        if (isSubbs && !isAllowed)
+const mainBot = global.conn.user.jid
+const chat = global.db.data.chats[m.chat] || {}
+const isSubbs = chat.antiLag === true
+const allowedBots = chat.per || []
+if (!allowedBots.includes(mainBot)) allowedBots.push(mainBot)
+const isAllowed = allowedBots.includes(this.user.jid)
+       if (isSubbs && !isAllowed) 
             return
 
         // Modos de operación
@@ -176,7 +157,7 @@ export async function handler(chatUpdate) {
         if (opts['queque'] && m.text && !(isMods || isPrems)) {
             let queque = this.msgqueque, time = 1000 * 5
             const previousID = queque[queque.length - 1]
-            queque.push(m.id || m.key.id) // FIX 3: Changed `pipe` to `push`. `pipe` is not an Array method.
+            queque.pipe(m.id || m.key.id)
             setInterval(async function () {
                 if (queque.indexOf(previousID) === -1) clearInterval(this)
                 await delay(time)
@@ -262,10 +243,10 @@ export async function handler(chatUpdate) {
             command = (command || '').toLowerCase()
 
             // Restricción para grupo específico
-            const gruposLimitados = ['120363418071387498@g.us', '120363400282268465@g.us'];
-            const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 'delsession', 'tutosub', 'on', 'n'];
+const gruposLimitados = ['120363418071387498@g.us', '120363400282268465@g.us'];
+const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 'delsession', 'tutosub', 'on', 'n'];
 
-            if (gruposLimitados.includes(m.chat) && !comandosPermitidos.includes(command)) continue;
+if (gruposLimitados.includes(m.chat) && !comandosPermitidos.includes(command)) continue;
             let fail = plugin.fail || global.dfail
             let isAccept = plugin.command instanceof RegExp ?
                 plugin.command.test(command) :
@@ -279,7 +260,7 @@ export async function handler(chatUpdate) {
             m.plugin = name
 
             // Verificar bans
-            const chat = global.db.data.chats[m.chat] || {} // Re-fetching chat data to ensure latest state
+            const chat = global.db.data.chats[m.chat] || {}
             const userData = global.db.data.users[m.sender] || {}
             const settings = global.db.data.settings[this.user.jid] || {}
             if (name !== 'group-unbanchat.js' && chat.isBanned) return
@@ -291,39 +272,39 @@ export async function handler(chatUpdate) {
 
             // Verificar permisos
             if (plugin.rowner && !isROwner) {
-                fail('rowner', m, this, usedPrefix)
+                fail('rowner', m, this)
                 continue
             }
             if (plugin.owner && !isOwner) {
-                fail('owner', m, this, usedPrefix)
+                fail('owner', m, this)
                 continue
             }
             if (plugin.mods && !isMods) {
-                fail('mods', m, this, usedPrefix)
+                fail('mods', m, this)
                 continue
             }
             if (plugin.premium && !isPrems) {
-                fail('premium', m, this, usedPrefix)
+                fail('premium', m, this)
                 continue
             }
             if (plugin.group && !m.isGroup) {
-                fail('group', m, this, usedPrefix)
+                fail('group', m, this)
                 continue
             }
             if (plugin.botAdmin && !isBotAdmin) {
-                fail('botAdmin', m, this, usedPrefix)
+                fail('botAdmin', m, this)
                 continue
             }
             if (plugin.admin && !isAdmin) {
-                fail('admin', m, this, usedPrefix)
+                fail('admin', m, this)
                 continue
             }
             if (plugin.private && m.isGroup) {
-                fail('private', m, this, usedPrefix)
+                fail('private', m, this)
                 continue
             }
             if (plugin.register && !userData.registered) {
-                fail('unreg', m, this, usedPrefix)
+                fail('unreg', m, this)
                 continue
             }
 
@@ -337,8 +318,7 @@ export async function handler(chatUpdate) {
 
             // Verificar límites
             if (!isPrems && plugin.limit && userData.limit < plugin.limit * 1) {
-                // FIX: Removed redundant 'rcanal' argument as 'm' is already the quoted message.
-                this.reply(m.chat, `Se agotaron tus *✳️ Eris*`, m) 
+                this.reply(m.chat, `Se agotaron tus *✳️ Eris*`, m, rcanal)
                 continue
             }
 
@@ -383,13 +363,12 @@ export async function handler(chatUpdate) {
                         console.error(`Error en plugin.after (${name}):`, e)
                     }
                 }
-                // FIX: Removed redundant 'rcanal' argument as 'm' is already the quoted message.
-                if (m.limit) this.reply(m.chat, `Utilizaste *${+m.limit}* ✳️`, m) 
+                if (m.limit) this.reply(m.chat, `Utilizaste *${+m.limit}* ✳️`, m, rcanal)
             }
             break
         }
     } catch (e) {
-        console.error('Error en handler (fuera del bloque de plugins):', e)
+        console.error('Error en handler:', e)
     } finally {
         if (opts['queque'] && m.text) {
             const quequeIndex = this.msgqueque.indexOf(m.id || m.key.id)
@@ -451,7 +430,17 @@ global.dfail = (type, m, conn, usedPrefix) => {
         premium: " _*`🔑 𝗡𝗼 𝗲𝗿𝗲𝘀 𝘂𝗻 𝘂𝘀𝘂𝗮𝗿𝗶𝗼 𝗣𝗥𝗘𝗠𝗜𝗨𝗠, 𝗵𝗮𝗯𝗹𝗮 𝗰𝗼𝗻 𝗺𝗶 𝗢𝘄𝗻𝗲𝗿⚡`*_",
         group: " _*`🟢 𝗣𝗲𝗿𝗱𝗼𝗻, 𝗲𝘀𝘁𝗲 𝗰𝗼𝗺𝗮𝗻𝗱𝗼 𝘀𝗼𝗹𝗼 𝗲𝘀 𝗽𝗮𝗿𝗮 𝗴𝗿𝘂𝗽𝗼𝘀⚡`*_",
         private: " _*`💬 𝗩𝗲 𝗮 𝗺𝗶 𝗰𝗵𝗮𝘁 𝗽𝗿𝗶𝘃𝗮𝗱𝗼 𝘆 𝘂𝘀𝗮 𝗲𝘀𝘁𝗲 𝗰𝗼𝗺𝗮𝗻𝗱𝗼⚡`*_",
-        // FIX: Corrected typo in 'admin' message
-        admin: " _*`❌ 𝗤𝘂𝗶𝗲𝗻 𝗲𝗿𝗲𝘀? 𝗧𝘂 𝗡𝗢 𝗲𝗿𝗲𝘀 𝗮𝗱𝗺𝗶𝗻⚡`*_", 
+        admin: " _*`❌ 𝗤𝘂𝗶𝗲𝗻 𝗲𝗿𝗲𝘀? 𝗧𝘂 𝗡𝗢 𝗲𝗿𝗲𝘀 𝗮𝗱𝗺𝗶�_n⚡`*_",
         botAdmin: " _*`⚠️ 𝗘𝘀 𝗻𝗲𝗰𝗲𝘀𝗮𝗿𝗶𝗼 𝗤𝘂𝗲 𝗦𝗲𝗮 𝗮𝗱𝗺𝗶𝗻 𝗣𝗥𝗜𝗠𝗘𝗥𝗢 𝗣𝗔𝗥𝗔 𝘂𝘀𝗮𝗿 𝗲𝘀𝘁𝗮 𝗳𝘂𝗻𝗰𝗶𝗼́𝗻⚡`*_",
-        unreg: " _*`‼️ 𝗨𝗦𝗨𝗔𝗥𝗜𝗢 𝗡𝗢 𝗥𝗘𝗚𝗜𝗦𝗧𝗥𝗔𝗗𝗢 ‼️`*_\n\n`𝗣𝗮𝗿𝗮 𝗥𝗲𝗴
+        unreg: " _*`‼️ 𝗨𝗦𝗨𝗔𝗥𝗜𝗢 𝗡𝗢 𝗥𝗘𝗚𝗜𝗦𝗧𝗥𝗔𝗗𝗢 ‼️`*_\n\n`𝗣𝗮𝗿𝗮 𝗥𝗲𝗴𝗶𝘀𝘁𝗿𝗮𝗿𝘀𝗲:`\n\n> .reg 𝗻𝗼𝗺𝗯𝗿𝗲.𝗲𝗱𝗮𝗱\n\n`𝗘𝗷𝗲𝗺𝗽𝗹𝗼:`\n\n> .reg 𝗕𝗮𝗿𝗯𝗼𝘇𝗮.20",
+        restrict: "*🚫 𝗖𝗼𝗺𝗮𝗻𝗱𝗼 𝗱𝗲𝘀𝗮𝗰𝘁𝗶𝘃𝗮𝗱𝗼 𝗽𝗼𝗿 𝗺𝗶 𝗢𝘄𝗻𝗲𝗿 🚫*"
+    }[type]
+    if (msg) return conn.reply(m.chat, msg, m, rcanal).then(_ => m.react('✖️'))
+}
+
+let file = global.__filename(import.meta.url, true)
+watchFile(file, async () => {
+    unwatchFile(file)
+    console.log(chalk.magenta("Se actualizó 'handler.js'"))
+    if (global.reloadHandler) console.log(await global.reloadHandler())
+})
