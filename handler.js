@@ -29,7 +29,8 @@ export async function handler(chatUpdate) {
     if (!m) return
 
     // FIX 2: Define `rcanal` here. It's often used to refer to the current message object (m) for replies.
-    const rcanal = m;
+    // Since rcanal is just a reference to m, we can use m directly for replies.
+    const rcanal = m; 
 
     // Verificar si la conexión del bot está activa
     // This check should ideally prevent the 'jid of undefined' error if `this.user` is not ready.
@@ -145,7 +146,7 @@ export async function handler(chatUpdate) {
         const mainBot = (global.conn && global.conn.user && global.conn.user.jid) ? global.conn.user.jid : null;
         if (!mainBot) {
             console.error('Error: global.conn.user.jid no disponible. Se aborta la ejecución en la línea de mainBot.');
-            return;
+            return
         }
 
         const chat = global.db.data.chats[m.chat] || {}
@@ -336,7 +337,8 @@ export async function handler(chatUpdate) {
 
             // Verificar límites
             if (!isPrems && plugin.limit && userData.limit < plugin.limit * 1) {
-                this.reply(m.chat, `Se agotaron tus *✳️ Eris*`, m, rcanal)
+                // FIX: Removed redundant 'rcanal' argument as 'm' is already the quoted message.
+                this.reply(m.chat, `Se agotaron tus *✳️ Eris*`, m) 
                 continue
             }
 
@@ -381,7 +383,8 @@ export async function handler(chatUpdate) {
                         console.error(`Error en plugin.after (${name}):`, e)
                     }
                 }
-                if (m.limit) this.reply(m.chat, `Utilizaste *${+m.limit}* ✳️`, m, rcanal)
+                // FIX: Removed redundant 'rcanal' argument as 'm' is already the quoted message.
+                if (m.limit) this.reply(m.chat, `Utilizaste *${+m.limit}* ✳️`, m) 
             }
             break
         }
@@ -448,10 +451,7 @@ global.dfail = (type, m, conn, usedPrefix) => {
         premium: " _*`🔑 𝗡𝗼 𝗲𝗿𝗲𝘀 𝘂𝗻 𝘂𝘀𝘂𝗮𝗿𝗶𝗼 𝗣𝗥𝗘𝗠𝗜𝗨𝗠, 𝗵𝗮𝗯𝗹𝗮 𝗰𝗼𝗻 𝗺𝗶 𝗢𝘄𝗻𝗲𝗿⚡`*_",
         group: " _*`🟢 𝗣𝗲𝗿𝗱𝗼𝗻, 𝗲𝘀𝘁𝗲 𝗰𝗼𝗺𝗮𝗻𝗱𝗼 𝘀𝗼𝗹𝗼 𝗲𝘀 𝗽𝗮𝗿𝗮 𝗴𝗿𝘂𝗽𝗼𝘀⚡`*_",
         private: " _*`💬 𝗩𝗲 𝗮 𝗺𝗶 𝗰𝗵𝗮𝘁 𝗽𝗿𝗶𝘃𝗮𝗱𝗼 𝘆 𝘂𝘀𝗮 𝗲𝘀𝘁𝗲 𝗰𝗼𝗺𝗮𝗻𝗱𝗼⚡`*_",
-        admin: " _*`❌ 𝗤𝘂𝗶𝗲𝗻 𝗲𝗿𝗲𝘀? 𝗧𝘂 𝗡𝗢 𝗲𝗿𝗲𝘀 𝗮𝗱𝗺𝗶�_n⚡`*_", // Note: Typo in 'admin' word (�_)
+        // FIX: Corrected typo in 'admin' message
+        admin: " _*`❌ 𝗤𝘂𝗶𝗲𝗻 𝗲𝗿𝗲𝘀? 𝗧𝘂 𝗡𝗢 𝗲𝗿𝗲𝘀 𝗮𝗱𝗺𝗶𝗻⚡`*_", 
         botAdmin: " _*`⚠️ 𝗘𝘀 𝗻𝗲𝗰𝗲𝘀𝗮𝗿𝗶𝗼 𝗤𝘂𝗲 𝗦𝗲𝗮 𝗮𝗱𝗺𝗶𝗻 𝗣𝗥𝗜𝗠𝗘𝗥𝗢 𝗣𝗔𝗥𝗔 𝘂𝘀𝗮𝗿 𝗲𝘀𝘁𝗮 𝗳𝘂𝗻𝗰𝗶𝗼́𝗻⚡`*_",
-        unreg: " _*`‼️ 𝗨𝗦𝗨𝗔𝗥𝗜𝗢 𝗡𝗢 𝗥𝗘𝗚𝗜𝗦𝗧𝗥𝗔𝗗𝗢 ‼️`*_\n\n`𝗣𝗮𝗿𝗮 𝗥𝗲𝗴𝗶𝘀𝘁𝗿𝗮𝗿𝘀𝗲:`\n\n> .reg 𝗻𝗼𝗺𝗯𝗿𝗲.𝗲𝗱𝗮𝗱\n\n`𝗘𝗷𝗲𝗺𝗽𝗹𝗼:`\n\n> .reg 𝗕𝗮𝗿𝗯𝗼𝘇𝗮.20",
-        restrict: "*🚫 𝗖𝗼𝗺𝗮𝗻𝗱𝗼 𝗱𝗲𝘀𝗮𝗰𝘁𝗶𝘃𝗮𝗱𝗼 𝗽𝗼𝗿 𝗺𝗶 𝗢𝘄𝗻𝗲𝗿 🚫*"
-    }[type]
-    if (msg) {
-        // FIX 7: Removed `rcanal` from `conn.reply` as `m` 
+        unreg: " _*`‼️ 𝗨𝗦𝗨𝗔𝗥𝗜𝗢 𝗡𝗢 𝗥𝗘𝗚𝗜𝗦𝗧𝗥𝗔𝗗𝗢 ‼️`*_\n\n`𝗣𝗮𝗿𝗮 𝗥𝗲𝗴
