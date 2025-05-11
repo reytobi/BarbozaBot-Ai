@@ -68,10 +68,3 @@ const handler = async (m, { conn}) => {
 handler.command = ["menu4"];
 handler.tags = ['main'];
 export default handler;
-```
-
----
-
-📌 *Este menú ahora es más claro, fácil de leer y completamente organizado!* 🚀🔥
-🔥 *Dime si quieres más ajustes o mejoras!* 🎮💡
-#ZonaGamer #MenúInteractivo #WhatsAppBot
