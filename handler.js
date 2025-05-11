@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url'
 import path, { join } from 'path'
 import { unwatchFile, watchFile } from 'fs'
 import chalk from 'chalk'
-import fetch from 'node-fetch' // Imported but not used in this snippet, which is fine.
+import fetch from 'node-fetch'
 
 // Ensure global variables are initialized or assumed to be defined elsewhere
 // global.db, global.loadDatabase, global.owner, global.mods, global.prems, global.APIKeys, global.prefix, global.__filename, global.plugins, global.reloadHandler, global.conn are assumed to be defined in your main bot file (e.g., main.js)
@@ -16,7 +16,7 @@ const delay = ms => isNumber(ms) && new Promise(resolve => setTimeout(function (
     // The `clearTimeout(this)` here is usually ineffective as `this` inside `setTimeout` callback
     // refers to the global object (or undefined in strict mode), not the timeout ID.
     // However, it's not a syntax error and likely benign for a simple delay function.
-    clearTimeout(this) 
+    clearTimeout(this)
     resolve()
 }, ms))
 
@@ -29,11 +29,12 @@ export async function handler(chatUpdate) {
     if (!m) return
 
     // FIX 2: Define `rcanal` here. It's often used to refer to the current message object (m) for replies.
-    const rcanal = m; 
+    const rcanal = m;
 
     // Verificar si la conexión del bot está activa
+    // This check should ideally prevent the 'jid of undefined' error if `this.user` is not ready.
     if (!this.user || !this.user.jid) {
-        console.error('Error: Bot no conectado o this.user.jid no definido')
+        console.error('Error: Bot no conectado o this.user.jid no definido. Abortando handler.')
         return
     }
 
@@ -116,7 +117,7 @@ export async function handler(chatUpdate) {
             const botJid = this.user.jid
             let settings = global.db.data.settings[botJid]
 
-          if (typeof settings !== 'object') global.db.data.settings[botJid] = {}
+            if (typeof settings !== 'object') global.db.data.settings[botJid] = {}
             if (settings) {
                 if (!('self' in settings)) settings.self = false
                 if (!('autoread' in settings)) settings.autoread = false
@@ -139,14 +140,20 @@ export async function handler(chatUpdate) {
             console.error('Error al inicializar datos:', e)
         }
 
+        // FIX 8: Ensure global.conn.user.jid is available before using it.
+        // This adds an extra layer of safety for 'global.conn' if it differs from 'this' temporarily.
+        const mainBot = (global.conn && global.conn.user && global.conn.user.jid) ? global.conn.user.jid : null;
+        if (!mainBot) {
+            console.error('Error: global.conn.user.jid no disponible. Se aborta la ejecución en la línea de mainBot.');
+            return;
+        }
 
-const mainBot = global.conn.user.jid
-const chat = global.db.data.chats[m.chat] || {}
-const isSubbs = chat.antiLag === true
-const allowedBots = chat.per || []
-if (!allowedBots.includes(mainBot)) allowedBots.push(mainBot)
-const isAllowed = allowedBots.includes(this.user.jid)
-       if (isSubbs && !isAllowed) 
+        const chat = global.db.data.chats[m.chat] || {}
+        const isSubbs = chat.antiLag === true
+        const allowedBots = chat.per || []
+        if (!allowedBots.includes(mainBot)) allowedBots.push(mainBot)
+        const isAllowed = allowedBots.includes(this.user.jid)
+        if (isSubbs && !isAllowed)
             return
 
         // Modos de operación
@@ -254,10 +261,10 @@ const isAllowed = allowedBots.includes(this.user.jid)
             command = (command || '').toLowerCase()
 
             // Restricción para grupo específico
-const gruposLimitados = ['120363418071387498@g.us', '120363400282268465@g.us'];
-const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 'delsession', 'tutosub', 'on', 'n'];
+            const gruposLimitados = ['120363418071387498@g.us', '120363400282268465@g.us'];
+            const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 'delsession', 'tutosub', 'on', 'n'];
 
-if (gruposLimitados.includes(m.chat) && !comandosPermitidos.includes(command)) continue;
+            if (gruposLimitados.includes(m.chat) && !comandosPermitidos.includes(command)) continue;
             let fail = plugin.fail || global.dfail
             let isAccept = plugin.command instanceof RegExp ?
                 plugin.command.test(command) :
@@ -329,7 +336,7 @@ if (gruposLimitados.includes(m.chat) && !comandosPermitidos.includes(command)) c
 
             // Verificar límites
             if (!isPrems && plugin.limit && userData.limit < plugin.limit * 1) {
-                this.reply(m.chat, `Se agotaron tus *✳️ Eris*`, m, rcanal) // rcanal is defined at the top
+                this.reply(m.chat, `Se agotaron tus *✳️ Eris*`, m, rcanal)
                 continue
             }
 
@@ -374,12 +381,12 @@ if (gruposLimitados.includes(m.chat) && !comandosPermitidos.includes(command)) c
                         console.error(`Error en plugin.after (${name}):`, e)
                     }
                 }
-                if (m.limit) this.reply(m.chat, `Utilizaste *${+m.limit}* ✳️`, m, rcanal) // rcanal is defined at the top
+                if (m.limit) this.reply(m.chat, `Utilizaste *${+m.limit}* ✳️`, m, rcanal)
             }
             break
         }
     } catch (e) {
-        console.error('Error en handler:', e)
+        console.error('Error en handler (fuera del bloque de plugins):', e)
     } finally {
         if (opts['queque'] && m.text) {
             const quequeIndex = this.msgqueque.indexOf(m.id || m.key.id)
@@ -446,12 +453,5 @@ global.dfail = (type, m, conn, usedPrefix) => {
         unreg: " _*`‼️ 𝗨𝗦𝗨𝗔𝗥𝗜𝗢 𝗡𝗢 𝗥𝗘𝗚𝗜𝗦𝗧𝗥𝗔𝗗𝗢 ‼️`*_\n\n`𝗣𝗮𝗿𝗮 𝗥𝗲𝗴𝗶𝘀𝘁𝗿𝗮𝗿𝘀𝗲:`\n\n> .reg 𝗻𝗼𝗺𝗯𝗿𝗲.𝗲𝗱𝗮𝗱\n\n`𝗘𝗷𝗲𝗺𝗽𝗹𝗼:`\n\n> .reg 𝗕𝗮𝗿𝗯𝗼𝘇𝗮.20",
         restrict: "*🚫 𝗖𝗼𝗺𝗮𝗻𝗱𝗼 𝗱𝗲𝘀𝗮𝗰𝘁𝗶𝘃𝗮𝗱𝗼 𝗽𝗼𝗿 𝗺𝗶 𝗢𝘄𝗻𝗲𝗿 🚫*"
     }[type]
-    if (msg) return conn.reply(m.chat, msg, m).then(_ => m.react('✖️')) // FIX 7: Removed `rcanal` from `conn.reply` as `m` is already passed as quoted message. `rcanal` was undefined in this scope.
-}
-
-let file = global.__filename(import.meta.url, true) // Assumes global.__filename is defined
-watchFile(file, async () => {
-    unwatchFile(file)
-    console.log(chalk.magenta("Se actualizó 'handler.js'"))
-    if (global.reloadHandler) console.log(await global.reloadHandler()) // Assumes global.reloadHandler is defined
-})
+    if (msg) {
+        // FIX 7: Removed `rcanal` from `conn.reply` as `m` 
