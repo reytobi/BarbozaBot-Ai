@@ -24,14 +24,6 @@ const handler = async (m, { conn, args}) => {
         await conn.sendMessage(m.chat, {
             image: { url: imageUrl},
             caption: `✅ *Imagen de Pinterest encontrada!*\n🔎 *Búsqueda:* ${args.join(" ")}`,
-            footer: "🚀 Pinterest API",
-            buttons: [
-                {
-                    buttonId: `.pinterestsearch ${args.join(" ")}`,
-                    buttonText: { displayText: "🔄 Otra imagen"},
-},
-            ],
-            headerType: 4,
 }, { quoted: m});
 
         await m.react("✅");
