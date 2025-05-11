@@ -2,7 +2,7 @@
 import fs from "fs";
 
 const handler = async (m, { conn}) => {
-    const folderPath = "./comandos"; // Ruta donde están los archivos de comandos
+    const folderPath = "./plungis"; // Ruta donde están los archivos de comandos
     let mensaje = "*📂 Revisión Automática de Syntax Errors* 🔍⚙️\n\n";
 
     try {
