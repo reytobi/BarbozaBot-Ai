@@ -72,15 +72,3 @@ const handler = async (m, { conn}) => {
 handler.command = ["menu4"];
 handler.tags = ['main'];
 export default handler;
-```
-
----
-
-*📌 Mejoras Implementadas*
-✔️ *Se han agregado los nuevos comandos:* `.emoji`, `.animalrace`, `.escape`, `.robotp`, `.game`, `.sopa`.
-✔️ *Mayor claridad en el diseño con categorías bien organizadas.*
-✔️ *Mayor variedad de juegos incluyendo futuristas, emojis y escape.*
-✔️ *El menú aparece en la sección "Info" del menú general.*
-
-📌 *Prueba el código y dime si quieres más mejoras! 🚀🔥*
-#MenúInteractivo #WhatsAppBot #JuegosSinLímites
