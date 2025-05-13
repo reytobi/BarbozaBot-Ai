@@ -1,30 +1,33 @@
-import fetch from 'node-fetch'
+let handler = async (m) => {
+    const memes = [
+        'https://i.imgur.com/1.jpg',
+        'https://qu.ax/dpYLN.jpg',
+        'https://qu.ax/YvLWt.jpg',
+        'https://qu.ax/FxBzq.jpg',
+        'https://qu.ax/oRkAi.jpg',
+        'https://qu.ax/Gfnrz.jpg',
+        'https://qu.ax/UFWsB.jpg',
+        'https://qu.ax/rubYe.jpg',
+        'https://qu.ax/UFWsB.jpg',
+        'https://qu.ax/uyjpK.jpg',
+        'https://qu.ax/RcxFR.jpg',
+        'https://qu.ax/MctMj.jpg',
+        'https://qu.ax/znbWC.jpg',
+        'https://qu.ax/lLJMP.jpg',
+        'https://qu.ax/HhOVP.jpg',
+        'https://qu.ax/yQoQW.jpg',
+        'https://qu.ax/msDFZ.jpg',
+        'https://qu.ax/MTDhM.jpg',
+        'https://qu.ax/hFQOL.jpg'
+    ];
 
-export const handler = async (m, { conn, usedPrefix, command }) => {
-  await conn.sendMessage(m.chat, { react: { text: '🔵', key: m.key } })
+    const randomMeme = memes[Math.floor(Math.random() * memes.length)];
 
-  try {
-    const res = await fetch('https://api.vreden.my.id/api/meme')
-
-    if (!res.ok) throw 'Error al consultar el meme.'
-
-    const json = await res.json()
-
-    if (!json.result) throw 'No se encontró un meme.'
-
-    // Enviar la imagen del meme al chat
-    await conn.sendMessage(m.chat, { image: { url: json.result }, caption: '😂 Aquí tienes tu meme' }, { quoted: m })
-    await conn.sendMessage(m.chat, { react: { text: '🟢', key: m.key } })
-
-  } catch (e) {
-    console.error(e)
-    await conn.sendMessage(m.chat, { react: { text: '🔴', key: m.key } })
-    conn.reply(m.chat, '🔴 Ocurrió un error al buscar el meme.', m)
-  }
+    await conn.sendMessage(m.chat, { image: { url: randomMeme }, caption: "¡Aquí tienes un meme para alegrar tu día!" }, { quoted: m });
 }
 
-handler.help = ['meme']
-handler.tags = ['fun']
-handler.command = /^meme$/i
+handler.help = ['meme'];
+handler.tags = ['diversión'];
+handler.command = ['meme'];
 
-export default handler
+export default handler;
