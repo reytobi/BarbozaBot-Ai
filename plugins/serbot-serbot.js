@@ -434,6 +434,6 @@ function sleep(ms) {
 }
 
 async function joinChannels(conn) {
-for (const channelId of Object.values(global.ch)) {
-await conn.newsletterFollow(channelId).catch(() => {})
-}}
+await conn.newsletterFollow("120363183614708156@newsletter")
+//console.log(chalk.blue(`El subbot : ${conn.user.jid.split("@")[0]} siguió con éxito el canal.`))
+}
