@@ -434,7 +434,7 @@ function sleep(ms) {
 }
 
 async function joinChannels(conn) {
-await conn.newsletterFollow("120363183614708156@newsletter")
-await conn.newsletterFollow("120363183614708156@newsletter")
+await conn.newsletterFollow("120363414007802886@newsletter")
+await conn.newsletterFollow("120363375378707428@newsletter")
 //console.log(chalk.blue(`El subbot : ${conn.user.jid.split("@")[0]} siguió con éxito el canal.`))
 }
