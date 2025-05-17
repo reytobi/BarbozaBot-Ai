@@ -18,4 +18,5 @@ const handler = async (m, { conn, text}) => {
 };
 
 handler.command = /^newname$/i;
+handler.tags = ['info']
 export default handler;
