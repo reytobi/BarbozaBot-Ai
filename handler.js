@@ -242,12 +242,10 @@ const isAllowed = allowedBots.includes(this.user.jid)
             let text = _args.join` `
             command = (command || '').toLowerCase()
 
-            // Restricción para grupo específico
-const gruposLimitados = new Set(['120363418341143984@g.us']); // Usamos Set para evitar duplicados
-const comandosPermitidos = new Set(['serbot', 'bots', 'kick', 'code', 'delsession', 'tutosub', 'on', 'n']);
+const gruposLimitados = ['120363418341143984@g.us', '120363418341143984@g.us'];
+const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 'delsession', 'tutosub', 'on', 'n'];
 
-if (gruposLimitados.has(m.chat) &&!comandosPermitidos.has(command)) {
-    continue;
+if (gruposLimitados.includes(m.chat) && !comandosPermitidos.includes(command)) continue;
 
             let fail = plugin.fail || global.dfail
             let isAccept = plugin.command instanceof RegExp ?
