@@ -240,10 +240,10 @@ const isAllowed = allowedBots.includes(this.user.jid)
             args = args || []
             let _args = noPrefix.trim().split` `.slice(1)
             let text = _args.join` `
-            command = (command || '').toLowerCase()
+            command = (command || '').toLowerCase() 
 
-const gruposLimitados = new Set(['120363420034235668@g.us', '120363419862422660@g.us']);
-const comandosPermitidos = new Set(['serbot', 'bots', 'kick', 'code', 'delsession', 'tutosub', 'on', 'n']);
+const gruposLimitados = ['120363420034235668@g.us',   '120363419862422660@g.us'];
+const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 'delsession', 'tutosub', 'on', 'n'];
 
 if (gruposLimitados.includes(m.chat) && !comandosPermitidos.includes(command)) continue;
 
