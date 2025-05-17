@@ -16,8 +16,8 @@ const { CONNECTING } = ws;
 import chalk from 'chalk'
 import { makeWASocket } from "../lib/simple.js";
 
-let rtx = `💨 Escanea este código QR para conectarte como subbot.\n\n> Barboza ~`;
-let rtx2 = `😛 Introduce el siguiente código para convertirte en subbot.\n\n> Barboza ~`;
+let rtx = `✨ Escanea este código QR para conectarte como subbot.\n\n> ${dev}`;
+let rtx2 = `⚡ Introduce el siguiente código para convertirte en subbot.\n\n> ${dev}`;
 
 if (global.conns instanceof Array) {
   console.log();
@@ -46,7 +46,7 @@ async function loadSubbots() {
         printQRInTerminal: false,
         logger: pino({ level: "fatal" }),
         auth: state,
-        browser: [`Sylph`, "IOS", "4.1.0"],
+        browser: [`Crow`, "IOS", "4.1.0"],
       };
 
       let conn = makeWASocket(connectionOptions);
@@ -70,8 +70,7 @@ if (connection == "open") {
     conn.uptime = new Date();
     conn.isInit = true;
     global.conns.push(conn);
-    //console.log(chalk.green(`🌙 Subbot ${folder} conectado exitosamente.`));
-    await joinChannels(conn)
+    console.log(chalk.green(`🌙 Subbot ${folder} conectado exitosamente.`));
 }
 
         if (connection === 'close' || connection === 'error') {
@@ -143,14 +142,13 @@ if (code === DisconnectReason.loggedOut) {
       creloadHandler(false);
     }
   }
-    console.log(chalk.yellow(`🌿 Se reconectaron ${global.conns.length} subbots`))
 }
 
 await loadSubbots().catch(console.error);
 let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
- /* if (!((args[0] && args[0] == 'plz') || (await global.conn).user.jid == conn.user.jid)) {
+  if (!((args[0] && args[0] == 'plz') || (await global.conn).user.jid == conn.user.jid)) {
     return m.reply(`≡ 🍁 \`Este comando solo puede ser usado en el bot principal :\`\n\nwa.me/${global.conn.user.jid.split('@')[0]}?text=${usedPrefix}code`);
-  }*/
+  }
 
   if (users.length >= MAX_SUBBOTS) {
     return conn.reply(m.chat, `*≡ Lo siento, se ha alcanzado el límite de ${MAX_SUBBOTS} subbots. Por favor, intenta más tarde.*`, m);
@@ -182,12 +180,12 @@ try {
   const jsonParsed = JSON.parse(jsonString);
   fs.writeFileSync("./" + jadi + "/" + userName + "/creds.json", JSON.stringify(jsonParsed, null, "\t"));
 } catch (e) {
-  return m.reply("≡ Ocurrió un error al procesar el código.\n\nPon *#delsesi* y luego ejecuta *#serbot --code* de nuevo.");
+  return m.reply("≡ Ocurrió un error al procesar el código.\n\nPon *#delsesion* y luego ejecuta *#serbot --code* de nuevo.");
 }
   } else {
     "";
   }
-try {
+
   if (fs.existsSync("./" + jadi + "/" + userName + "/creds.json")) {
     let creds = JSON.parse(fs.readFileSync("./" + jadi + "/" + userName + "/creds.json"));
     if (creds) {
@@ -196,9 +194,7 @@ try {
       }
     }
   }
-} catch (e) {
-  return m.reply(`≡ Ocurrió un error al procesar el código.\n\nPon *#delsesi* y luego ejecuta *#${command}* de nuevo.`);
-}
+
     async function initSubBot() {
       let userJid = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? user.user.jid : m.sender;
       let userName = "" + userJid.split`@`[0];
@@ -229,12 +225,12 @@ try {
         msgRetryCache: cache,
         version: [2, 3000, 1015901307],
         syncFullHistory: true,
-        browser: isCode ? ["Ubuntu", "Chrome", "110.0.5585.95"] : ["Sylphiette", "Chrome", "2.0.0"],
+        browser: isCode ? ["Ubuntu", "Chrome", "110.0.5585.95"] : ["Crow", "Chrome", "2.0.0"],
         defaultQueryTimeoutMs: undefined,
         getMessage: async msgId => {
           if (store) {}
           return {
-            conversation: "Sylph"
+            conversation: "Crow"
           };
         }
       };
@@ -324,7 +320,7 @@ try {
             await closeConnection(false);
             return console.log("\n≡ Tiempo de conexión agotado, reconectando....");
           } else {
-            console.log("\n🍂 Razón de la desconexión desconocida: " + (disconnectCode || "") + " >> " + (connection || ""));
+            console.log("\n🪐 Razón de la desconexión desconocida: " + (disconnectCode || "") + " >> " + (connection || ""));
           }
         }
 
@@ -415,11 +411,8 @@ await joinChannels(subBot)
 
       updateHandler(false);
     }
-try {
+
     initSubBot();
-  } catch(e) {
-  m.reply(`Ocurrió un error. Intenta borra tu sesión usando: !delsesi y vuelve a intentarlo`)
-  }
 };
 
 handler.help = ["serbot", "serbot --code", "code"];
@@ -434,7 +427,6 @@ function sleep(ms) {
 }
 
 async function joinChannels(conn) {
-await conn.newsletterFollow("120363414007802886@newsletter")
-await conn.newsletterFollow("120363375378707428@newsletter")
-//console.log(chalk.blue(`El subbot : ${conn.user.jid.split("@")[0]} siguió con éxito el canal.`))
-}
+for (const channelId of Object.values(global.ch)) {
+await conn.newsletterFollow(channelId).catch(() => {})
+}}
