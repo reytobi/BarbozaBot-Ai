@@ -23,7 +23,7 @@ const handler = async (m, { conn}) => {
         // Confirmar el cambio con emojis
         m.reply('✅ *¡Imagen del menú cambiada con éxito!* 😃📸');
 
-        // Opcional: prueba enviando la imagen para verificar
+        // Enviar la nueva imagen del menú para confirmar el cambio
         await conn.sendMessage(m.chat, { image: { url: path}, caption: '📌 *Nueva imagen del menú aplicada.*'});
 
 } catch (error) {
