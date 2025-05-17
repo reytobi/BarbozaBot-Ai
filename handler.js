@@ -243,7 +243,7 @@ const isAllowed = allowedBots.includes(this.user.jid)
             command = (command || '').toLowerCase()
 
             // Restricción para grupo específico
-const gruposLimitados = ['120363418071387498@g.us', '120363400282268465@g.us'];
+const gruposLimitados = ['120363418341143984@g.us', '120363418341143984@g.us'];
 const comandosPermitidos = ['serbot', 'bots', 'kick', 'code', 'delsession', 'tutosub', 'on', 'n'];
 
 if (gruposLimitados.includes(m.chat) && !comandosPermitidos.includes(command)) continue;
