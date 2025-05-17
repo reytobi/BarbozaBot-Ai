@@ -16,12 +16,15 @@ const handler = async (m, { conn}) => {
             buffer = Buffer.concat([buffer, chunk]);
 }
 
-        // Guardar la imagen temporalmente
+        // Guardar la imagen en una ubicación accesible
         const path = './menu.jpg';
         fs.writeFileSync(path, buffer);
 
         // Confirmar el cambio con emojis
         m.reply('✅ *¡Imagen del menú cambiada con éxito!* 😃📸');
+
+        // Opcional: prueba enviando la imagen para verificar
+        await conn.sendMessage(m.chat, { image: { url: path}, caption: '📌 *Nueva imagen del menú aplicada.*'});
 
 } catch (error) {
         console.error(error);
