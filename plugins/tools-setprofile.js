@@ -32,4 +32,5 @@ const handler = async (m, { conn}) => {
 };
 
 handler.command = /^setprofile$/i;
+handler.tags = ['info']
 export default handler;
