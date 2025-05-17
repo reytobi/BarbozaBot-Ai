@@ -1,1 +1,52 @@
-import yts from 'yt-search';let ytSearchHandler = async (m, { conn, text, usedPrefix, command }) => {     // Verificar que se haya proporcionado un t茅rmino de b煤squeda  if (!text || !text.trim()) {    await conn.reply(      m.chat,      `Uso: ${usedPrefix + command} <t茅rmino de b煤squeda>\nEjemplo: ${usedPrefix + command} Nio Garcia Infinitamente remix`,      m    );    return;  }  text = text.trim();  // Notificar que se est谩 realizando la b煤squeda  await conn.reply(m.chat, `Buscando en YouTube por: ${text}`, m);  try {    // Realizar la b煤squeda en YouTube    const searchResults = await yts(text);    if (!searchResults?.videos?.length) throw new Error("No se encontraron resultados en YouTube.");    // Seleccionar los primeros 5 resultados    const videos = searchResults.videos.slice(0, 5);    // Enviar cada resultado por separado    for (const video of videos) {      let caption = `鈱樷攣鈹€鈹佲攢鈮搫�*Barboza*饾劉鈹€鈹佲攢鈹佲寴\n\n`;      caption += `鉃� T铆tulo: ${video.title}\n`;      caption += `鉃� Duraci贸n: ${video.timestamp || "Desconocida"}\n`;      caption += `SI QUIERES DESCARGAR AUDIO/VIDEO USA LOS COMANDOS MAS LA URL DEL VIDEO\n`;      caption += `.ytmp3+ ${video.url} Audio\n`;      caption += `.ytmp4+ ${video.url} Video\n\n`;      caption += `> 漏 Prohibido la copia, C贸digo Oficial de Barboza鈩;      // Enviar mensaje con imagen y descripci贸n      await conn.sendMessage(        m.chat,        { image: { url: video.image }, caption },        { quoted: m }      );    }  } catch (error) {    console.error("鉂� Error:", error);    await conn.reply(m.chat, `馃毃 *Error:* ${error.message || "Error desconocido"}`, m);  }};ytSearchHandler.help = ['ytsearch/yts <texto>']ytSearchHandler.tags = ['b煤squedas']ytSearchHandler.command = /^(yts|ytsearch)$/iexport default ytSearchHandle
+import yts from 'yt-search';
+
+let ytSearchHandler = async (m, { conn, text, usedPrefix, command }) => {
+  // Verificar que se haya proporcionado un término de búsqueda
+  if (!text || !text.trim()) {
+    await conn.reply(
+      m.chat,
+      `Uso: ${usedPrefix + command} <término de búsqueda>\nEjemplo: ${usedPrefix + command} Nio Garcia Infinitamente remix`,
+      m
+    );
+    return;
+  }
+  text = text.trim();
+
+  // Notificar que se está realizando la búsqueda
+  await conn.reply(m.chat, `Buscando en YouTube por: ${text}`, m);
+
+  try {
+    // Realizar la búsqueda en YouTube
+    const searchResults = await yts(text);
+    if (!searchResults?.videos?.length) throw new Error("No se encontraron resultados en YouTube.");
+
+    // Seleccionar los primeros 5 resultados
+    const videos = searchResults.videos.slice(0, 5);
+
+    // Enviar cada resultado por separado
+    for (const video of videos) {
+      let caption = `⌘━─━─≪𓄂*MEDIAHUB*𝄢─━─━⌘\n\n`;
+      caption += `➷ Título: ${video.title}\n`;
+      caption += `➷ Duración: ${video.timestamp || "Desconocida"}\n`;
+      caption += `SI QUIERES DESCARGAR AUDIO/VIDEO USA LOS COMANDOS MAS LA URL DEL VIDEO\n`;
+      caption += `.ytmp3+ ${video.url} Audio\n`;
+      caption += `.ytmp4+ ${video.url} Video\n\n`;
+      caption += `> © Prohibido la copia, Código Oficial de MediaHub™`;
+
+      // Enviar mensaje con imagen y descripción
+      await conn.sendMessage(
+        m.chat,
+        { image: { url: video.image }, caption },
+        { quoted: m }
+      );
+    }
+  } catch (error) {
+    console.error("❌ Error:", error);
+    await conn.reply(m.chat, `🚨 *Error:* ${error.message || "Error desconocido"}`, m);
+  }
+};
+
+ytSearchHandler.help = ['ytsearch/yts <texto>']
+ytSearchHandler.tags = ['búsquedas']
+ytSearchHandler.command = /^(yts|ytsearch)$/i
+export default ytSearchHandler
