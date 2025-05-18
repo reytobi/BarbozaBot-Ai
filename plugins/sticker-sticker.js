@@ -4,7 +4,8 @@ import { webp2png} from '../lib/webp2mp4.js';
 import uploadFile from '../lib/uploadFile.js';
 import uploadImage from '../lib/uploadImage.js';
 
-const REDES = 'https://tu-enlace-o-dominio.com'; // URL predeterminada
+const REDES = 'https://www.instagram.com/sebastian_barboza13?igsh=ZGsyNm9lNTBhcGp1';
+
 const ICONS = null; // Define "icons" si es necesario
 
 const handler = async (m, { conn, args}) => {
@@ -49,8 +50,8 @@ const sendSticker = (m, conn, stickerFile) => {
       isForwarded: false,
       externalAdReply: {
         showAdAttribution: false,
-        title: 'Sticker Bot 🤖',
-        body: 'Generador de Stickers',
+        title: 'Barboza Bot 🤖',
+        body: 'tu papi barboza',
         mediaType: 2,
         sourceUrl: REDES,
         thumbnail: ICONS
