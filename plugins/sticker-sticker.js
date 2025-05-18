@@ -6,7 +6,7 @@ import uploadImage from '../lib/uploadImage.js';
 
 const REDES = 'https://www.instagram.com/sebastian_barboza13?igsh=ZGsyNm9lNTBhcGp1';
 
-const ICONS = null; // Define "icons" si es necesario
+const ICONS = null;
 
 const handler = async (m, { conn, args}) => {
   try {
@@ -17,7 +17,7 @@ const handler = async (m, { conn, args}) => {
       if (args[0] && isUrl(args[0])) {
         return sendSticker(m, conn, args[0]);
 }
-      return m.reply('💫 Debes enviar una imagen, video o un URL válido.');
+      return m.reply('💫 Debes enviar una imagen.');
 }
 
     let media = await q.download?.();
