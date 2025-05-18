@@ -5,23 +5,19 @@ import uploadFile from '../lib/uploadFile.js';
 import uploadImage from '../lib/uploadImage.js';
 
 const REDES = 'https://www.instagram.com/sebastian_barboza13?igsh=ZGsyNm9lNTBhcGp1';
-
 const ICONS = null;
 
-const handler = async (m, { conn, args}) => {
+const handler = async (m, { conn}) => {
   try {
     let q = m.quoted? m.quoted: m;
     let mime = q.mimetype || q.mediaType || '';
 
     if (!/webp|image|video/g.test(mime)) {
-      if (args[0] && isUrl(args[0])) {
-        return sendSticker(m, conn, args[0]);
-}
-      return m.reply('💫 Debes enviar una imagen.');
+      return m.reply('💫 Responde a una imagen para convertirla en sticker.');
 }
 
     let media = await q.download?.();
-    if (!media) return m.reply('⚡ Envía primero el archivo y luego usa el comando.');
+    if (!media) return m.reply('⚡ No se pudo descargar el archivo.');
 
     if (/video/g.test(mime) && q.seconds> 8) {
       return m.reply('☁️ ¡El video no puede durar más de 8 segundos!');
@@ -60,11 +56,7 @@ const sendSticker = (m, conn, stickerFile) => {
 }, { quoted: m});
 };
 
-const isUrl = (text) => {
-  return /^https?:\/\/.+\.(jpe?g|gif|png)$/.test(text);
-};
-
-handler.help = ['sticker <imagen>', 'sticker <url>'];
+handler.help = ['sticker (responde a una imagen)'];
 handler.tags = ['herramientas'];
 handler.command = ['s', 'sticker', 'stiker'];
 
