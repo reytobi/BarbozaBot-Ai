@@ -1,10 +1,11 @@
+
 let handler = async (m, { args, text, command, conn }) => {
     if (!args[0]) {
-        return m.reply(`💨 Ejemplo de uso :\n${command} https://whatsapp.com/channel/.... Hola`);
+        return m.reply("💨 ¡Hola! Para reaccionar a un mensaje, usa el siguiente formato:\n" + `${command} https://whatsapp.com/channel/.... ¡Hola, amigos! 🎉`);
     }
 
     if (!args[0].startsWith("https://whatsapp.com/channel/")) {
-        return m.reply("No es un enlace válido.");
+        return m.reply("❌ Ups! No es un enlace válido. Asegúrate de que empieza con `https://whatsapp.com/channel/`.");
     }
 
     const hurufGaya = {
@@ -18,7 +19,7 @@ let handler = async (m, { args, text, command, conn }) => {
 
     const emojiInput = args.slice(1).join(' ').toLowerCase();
     const emoji = emojiInput.split('').map(c => {
-        if (c === ' ') return '―';
+        if (c === ' ') return "🌟";  // Emoji para espacios
         return hurufGaya[c] || c;
     }).join('');
 
@@ -30,12 +31,13 @@ let handler = async (m, { args, text, command, conn }) => {
         const res = await conn.newsletterMetadata("invite", channelId);
         await conn.newsletterReactMessage(res.id, messageId, emoji);
 
-        return m.reply(`Se envió exitosamente la reacción *${emoji}* al mensaje en el canal *${res.name}*.`);
+        return m.reply(`🎉 ¡Felicidades! Se envió la reacción *${emoji}* al mensaje en el canal *${res.name}*. ¡Que comience la fiesta! 🥳`);
     } catch (e) {
         console.error(e);
-        return m.reply("No se pudo enviar la reacción. Asegúrese de que el enlace y el texto sean válidos: " + e);
+        return m.reply("🚫 Oh no... No se pudo enviar la reacción. Verifica que el enlace y el texto sean válidos. ¡Vamos a intentarlo de nuevo! 🤞");
     }
 };
-handler.help = handler.command = ["rc"]
-handler.tags = ["tools"]
-export default handler
+
+handler.help = handler.command = ["rc"];
+handler.tags = ["tools"];
+export default handler;
