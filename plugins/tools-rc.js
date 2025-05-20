@@ -5,7 +5,7 @@ let handler = async (m, { args, text, command, conn }) => {
     }
 
     if (!args[0].startsWith("https://whatsapp.com/channel/")) {
-        return m.reply("❌ Ups! No es un enlace válido. Asegúrate de que empieza con `https://whatsapp.com/channel/`.");
+        return m.reply("❌ Ups! No es un enlace válido. Asegúrate de que empieza con https://whatsapp.com/channel/.");
     }
 
     const hurufGaya = {
@@ -19,7 +19,7 @@ let handler = async (m, { args, text, command, conn }) => {
 
     const emojiInput = args.slice(1).join(' ').toLowerCase();
     const emoji = emojiInput.split('').map(c => {
-        if (c === ' ') return "•";  // Cambié el emoji para espacios por un punto
+        if (c === '') return "•";  // Cambié el emoji para espacios por un punto
         return hurufGaya[c] || c;
     }).join('');
 
