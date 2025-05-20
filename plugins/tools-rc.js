@@ -19,7 +19,7 @@ let handler = async (m, { args, text, command, conn }) => {
 
     const emojiInput = args.slice(1).join(' ').toLowerCase();
     const emoji = emojiInput.split('').map(c => {
-        if (c === ' ') return "🌟";  // Emoji para espacios
+        if (c === ' ') return "•";  // Cambié el emoji para espacios por un punto
         return hurufGaya[c] || c;
     }).join('');
 
