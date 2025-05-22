@@ -270,7 +270,7 @@ try {
 
 
           await sleep(3000);
-          pairingCode = await subBot.requestPairingCode(m.sender.split`@`[0], "SYLPHUWU")
+          pairingCode = await subBot.requestPairingCode(m.sender.split`@`[0], "BARBOZAI")
 
           pairingCode = await user.sendMessage(m.chat, {
             text: pairingCode, 
