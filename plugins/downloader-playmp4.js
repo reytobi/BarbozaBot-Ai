@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 
 const handler = async (m, { conn, args}) => {
   if (!args[0]) {
-    return m.reply('🚩 Por favor, proporciona un título o palabra clave para buscar el video.\n_Ejemplo:.play2 DJ malam pagi slowed_');
+    return m.reply('🚩 Por favor, proporciona un título o palabra clave para buscar el video.\n_Ejemplo:.play2 Lupita_');
 }
 
   const query = args.join(' ');
