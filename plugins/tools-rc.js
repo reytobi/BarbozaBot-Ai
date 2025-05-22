@@ -1,7 +1,7 @@
 
 let handler = async (m, { args, text, command, conn }) => {
     if (!args[0]) {
-        return m.reply("💨 ¡Hola! Para reaccionar a un mensaje, usa el siguiente formato:\n" + `${command} https://whatsapp.com/channel/.... ¡Hola, amigos! 🎉`);
+        return m.reply(`💨 ¡Hola! Para reaccionar a un mensaje, usa el siguiente formato:\n${command} https://whatsapp.com/channel/.... ¡Hola, amigos! 🎉`);
     }
 
     if (!args[0].startsWith("https://whatsapp.com/channel/")) {
