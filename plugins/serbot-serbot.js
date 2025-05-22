@@ -1,3 +1,4 @@
+
 /*⚠ PROHIBIDO EDITAR ⚠
 Este codigo fue modificado, adaptado y mejorado por
 - ReyEndymion >> https://github.com/ReyEndymion
@@ -18,25 +19,20 @@ import fs from "fs"
 import path from "path"
 import pino from 'pino'
 import chalk from 'chalk'
-import util from 'util'
+import util from 'util' 
 import * as ws from 'ws'
 const { child, spawn, exec } = await import('child_process')
 const { CONNECTING } = ws
 import { makeWASocket } from '../lib/simple.js'
 import { fileURLToPath } from 'url'
-
-// Define the emojis here
-let emoji = "✅"; // You can change this emoji
-let emoji2 = "❌"; // You can change this emoji
-
-let crm1 = "Y2QgcGx1Z2lucw"
+let crm1 = "Y2QgcGx1Z2lucy"
 let crm2 = "A7IG1kNXN1b"
 let crm3 = "SBpbmZvLWRvbmFyLmpz"
 let crm4 = "IF9hdXRvcmVzcG9uZGVyLmpzIGluZm8tYm90Lmpz"
 let drm1 = ""
 let drm2 = ""
-let rtx = "*⪛✰ ↫ Bot Barboza  ↬ ✰⪜*\n\n✐ Cσɳҽxισɳ SυႦ-Bσƚ Mσԃҽ QR\n\n✰ Con otro celular o en la PC escanea este QR para convertirte en un *Sub-Bot* Temporal.\n\n\`1\` » Haga clic en los tres puntos en la esquina superior derecha\n\n\`2\` » Toque dispositivos vinculados\n\n\`3\` » Escanee este codigo QR para iniciar sesion con el bot\n\n✧ ¡Este código QR expira en 60 segundos!."
-let rtx2 = "*⪛✰ ↫ Barbozaƚ ↬ ✰⪜*\n\n✐ Cσɳҽxισɳ SυႦ-Bσƚ Mσԃҽ Cσԃҽ\n\n✰ Usa este Código para convertirte en un *Sub-Bot* Temporal.\n\n\`1\` » Haga clic en los tres puntos en la esquina superior derecha\n\n\`2\` » Toque dispositivos vinculados\n\n\`3\` » Selecciona Vincular con el número de teléfono\n\n\`4\` » Escriba el Código para iniciar sesion con el bot\n\n✧ No es recomendable usar tu cuenta principal."
+let rtx = "*⪛✰ ↫ Barboza  -  Sυσυ  -  Bσƚ ↬ ✰⪜*\n\n✐ Cσɳҽxισɳ SυႦ-Bσƚ Mσԃҽ QR\n\n✰ Con otro celular o en la PC escanea este QR para convertirte en un *Sub-Bot* Temporal.\n\n\`1\` » Haga clic en los tres puntos en la esquina superior derecha\n\n\`2\` » Toque dispositivos vinculados\n\n\`3\` » Escanee este codigo QR para iniciar sesion con el bot\n\n✧ ¡Este código QR expira en 45 segundos!."
+let rtx2 = "*⪛✰ ↫ Barboza  -  Sυσυ  -  Bσƚ ↬ ✰⪜*\n\n✐ Cσɳҽxισɳ SυႦ-Bσƚ Mσԃҽ Cσԃҽ\n\n✰ Usa este Código para convertirte en un *Sub-Bot* Temporal.\n\n\`1\` » Haga clic en los tres puntos en la esquina superior derecha\n\n\`2\` » Toque dispositivos vinculados\n\n\`3\` » Selecciona Vincular con el número de teléfono\n\n\`4\` » Escriba el Código para iniciar sesion con el bot\n\n✧ No es recomendable usar tu cuenta principal."
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -45,19 +41,19 @@ if (global.conns instanceof Array) console.log()
 else global.conns = []
 let handler = async (m, { conn, args, usedPrefix, command, isOwner }) => {
 //if (!globalThis.db.data.settings[conn.user.jid].jadibotmd) return m.reply(`♡ Comando desactivado temporalmente.`)
-let time = global.db.data.users[m.sender].Subs + 60000
-if (new Date - global.db.data.users[m.sender].Subs < 60000) return conn.reply(m.chat, `${emoji} Debes esperar ${msToTime(time - new Date())} para volver a vincular un *Sub-Bot.*`, m) // Corrected: msToToTime changed to msToTime
+let time = global.db.data.users[m.sender].Subs + 120000
+if (new Date - global.db.data.users[m.sender].Subs < 120000) return conn.reply(m.chat, `${serbot} Debes esperar ${msToTime(time - new Date())} para volver a vincular un *Sub-Bot.*`, m)
 const subBots = [...new Set([...global.conns.filter((conn) => conn.user && conn.ws.socket && conn.ws.socket.readyState !== ws.CLOSED).map((conn) => conn)])]
 const subBotsCount = subBots.length
 if (subBotsCount === 20) {
-return m.reply(`${emoji2} No se han encontrado espacios para *Sub-Bots* disponibles.`)
+return m.reply(`${serbot2} No se han encontrado espacios para *Sub-Bots* disponibles.`)
 }
 /*if (Object.values(global.conns).length === 30) {
-return m.reply(`${emoji2} No se han encontrado espacios para *Sub-Bots* disponibles.`)
+return m.reply(`${serbot2} No se han encontrado espacios para *Sub-Bots* disponibles.`)
 }*/
 let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
 let id = `${who.split`@`[0]}`  //conn.getName(who)
-let pathBarbozaJadiBot = path.join(`./${id}/`, id) // Assuming 'jadi' was a global variable or should be a dynamic ID. Adjusted to use 'id' directly.
+let pathBarbozaJadiBot = path.join(`./${jadi}/`, id)
 if (!fs.existsSync(pathBarbozaJadiBot)){
 fs.mkdirSync(pathBarbozaJadiBot, { recursive: true })
 }
@@ -70,16 +66,16 @@ BarbozaJBOptions.command = command
 BarbozaJBOptions.fromCommand = true
 BarbozaJadiBot(BarbozaJBOptions)
 global.db.data.users[m.sender].Subs = new Date * 1
-}
-handler.help = ['serbot', 'code']
+} 
+handler.help = ['qr', 'code']
 handler.tags = ['serbot']
-handler.command = ['serbot', 'code']
-export default handler
+handler.command = ['qr', 'code']
+export default handler 
 
 export async function BarbozaJadiBot(options) {
 let { pathBarbozaJadiBot, m, conn, args, usedPrefix, command } = options
 if (command === 'code') {
-command = 'qr';
+command = 'qr'; 
 args.unshift('code')}
 const mcode = args[0] && /(--code|code)/.test(args[0].trim()) ? true : args[1] && /(--code|code)/.test(args[1].trim()) ? true : false
 let txtCode, codeBot, txtQR
@@ -94,7 +90,7 @@ fs.mkdirSync(pathBarbozaJadiBot, { recursive: true })}
 try {
 args[0] && args[0] != undefined ? fs.writeFileSync(pathCreds, JSON.stringify(JSON.parse(Buffer.from(args[0], "base64").toString("utf-8")), null, '\t')) : ""
 } catch {
-conn.reply(m.chat, `${emoji} Use correctamente el comando » ${usedPrefix + command} code`, m)
+conn.reply(m.chat, `${serbot} Use correctamente el comando » ${usedPrefix + command} code`, m)
 return
 }
 
@@ -126,7 +122,7 @@ msgRetry,
 msgRetryCache,
 version: [2, 3000, 1015901307],
 syncFullHistory: true,
-browser: mcode ? ['Ubuntu', 'Chrome', '110.0.5585.95'] : ['Barboza' (Sub Bot)', 'Chrome','2.0.0'],
+browser: mcode ? ['Ubuntu', 'Chrome', '110.0.5585.95'] : ['Barboza-Suou-Bot (Sub Bot)', 'Chrome','2.0.0'],
 defaultQueryTimeoutMs: undefined,
 getMessage: async (key) => {
 if (store) {
@@ -147,13 +143,13 @@ if (qr && !mcode) {
 if (m?.chat) {
 txtQR = await conn.sendMessage(m.chat, { image: await qrcode.toBuffer(qr, { scale: 8 }), caption: rtx.trim()}, { quoted: m})
 } else {
-return
+return 
 }
 if (txtQR && txtQR.key) {
-setTimeout(() => { conn.sendMessage(m.sender, { delete: txtQR.key })}, 60000)
+setTimeout(() => { conn.sendMessage(m.sender, { delete: txtQR.key })}, 30000)
 }
 return
-}
+} 
 if (qr && mcode) {
 let secret = await sock.requestPairingCode((m.sender.split`@`[0]))
 secret = secret.match(/.{1,4}/g)?.join("-")
@@ -161,15 +157,15 @@ secret = secret.match(/.{1,4}/g)?.join("-")
 txtCode = await conn.sendMessage(m.chat, {text : rtx2}, { quoted: m })
 codeBot = await m.reply(secret)
 //} else {
-//txtCode = await conn.sendButton(m.chat, rtx2.trim(), wm, null, [], secret, null, m)
+//txtCode = await conn.sendButton(m.chat, rtx2.trim(), wm, null, [], secret, null, m) 
 //}
 console.log(secret)
 }
 if (txtCode && txtCode.key) {
-setTimeout(() => { conn.sendMessage(m.sender, { delete: txtCode.key })}, 60000)
+setTimeout(() => { conn.sendMessage(m.sender, { delete: txtCode.key })}, 30000)
 }
 if (codeBot && codeBot.key) {
-setTimeout(() => { conn.sendMessage(m.sender, { delete: codeBot.key })}, 60000)
+setTimeout(() => { conn.sendMessage(m.sender, { delete: codeBot.key })}, 30000)
 }
 const endSesion = async (loaded) => {
 if (!loaded) {
@@ -178,8 +174,8 @@ sock.ws.close()
 } catch {
 }
 sock.ev.removeAllListeners()
-let i = global.conns.indexOf(sock)
-if (i < 0) return
+let i = global.conns.indexOf(sock)                
+if (i < 0) return 
 delete global.conns[i]
 global.conns.splice(i, 1)
 }}
@@ -227,7 +223,7 @@ fs.rmdirSync(pathBarbozaJadiBot, { recursive: true })
 if (global.db.data == null) loadDatabase()
 if (connection == `open`) {
 if (!global.db.data?.users) loadDatabase()
-let userName, userJid
+let userName, userJid 
 userName = sock.authState.creds.me.name || 'Anónimo'
 userJid = sock.authState.creds.me.jid || `${path.basename(pathBarbozaJadiBot)}@s.whatsapp.net`
 console.log(chalk.bold.cyanBright(`\n❒⸺⸺⸺⸺【• SUB-BOT •】⸺⸺⸺⸺❒\n│\n│ 🟢 ${userName} (+${path.basename(pathBarbozaJadiBot)}) conectado exitosamente.\n│\n❒⸺⸺⸺【• CONECTADO •】⸺⸺⸺❒`))
@@ -240,11 +236,11 @@ m?.chat ? await conn.sendMessage(m.chat, {text: args[0] ? `@${m.sender.split('@'
 }}
 setInterval(async () => {
 if (!sock.user) {
-try { sock.ws.close() } catch (e) {
+try { sock.ws.close() } catch (e) {      
 //console.log(await creloadHandler(true).catch(console.error))
 }
 sock.ev.removeAllListeners()
-let i = global.conns.indexOf(sock)
+let i = global.conns.indexOf(sock)                
 if (i < 0) return
 delete global.conns[i]
 global.conns.splice(i, 1)
