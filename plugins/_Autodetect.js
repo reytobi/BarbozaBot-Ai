@@ -1,4 +1,5 @@
-import from '@whiskeysockets/baileys';
+
+import baileys from '@whiskeysockets/baileys';
 
 const WAMessageStubType = baileys.default;
 
@@ -45,7 +46,7 @@ END:VCARD`
       tipo: 'texto'
 },
     24: {
-      mensaje: `📝 *Descripción del Grupo Modificada* 📝\n👤 *Usuario:* ${usuario}\n✍️ Nueva descripción:\n${m.messageStubParameters[0]}`,
+      mensaje: `📝 *Descripción del Grupo Modificada* 📝\n👤 *Usuario:* ${usuario}\n✍️ Nueva descripción:\n${m.messageStubParameters?.[0] || 'Descripción no disponible'}`,
       tipo: 'texto'
 },
     25: {
