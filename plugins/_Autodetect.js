@@ -1,5 +1,4 @@
-
-import baileys from '@whiskeysockets/baileys';
+import from '@whiskeysockets/baileys';
 
 const WAMessageStubType = baileys.default;
 
@@ -28,58 +27,51 @@ END:VCARD`
 };
 
   let chat = global.db.data.chats[m.chat];
-  let usuario = `@${m.sender.split`@`[0]}`;
+  let usuario = participants.find(p => p.id === m.sender)?.name || `@${m.sender.split`@`[0]}`;
   let pp = await conn.profilePictureUrl(m.chat, 'image').catch(_ => null) || 'https://files.catbox.moe/xr2m6u.jpg';
 
-  let nombre = `
-🔹🔸 *¡ALERTA DE GRUPO!* 🔸🔹
-👤 *Usuario:* ${usuario}
-🆕 *Nuevo nombre:* ${m.messageStubParameters[0]}
-📢 ¡Cambio detectado!`;
+  let eventos = {
+    21: {
+      mensaje: `🔹 *Cambio de Nombre* 🔹\n👤 *Usuario:* ${usuario}\n🆕 *Nuevo Nombre:* ${m.messageStubParameters[0]}`,
+      tipo: 'texto'
+},
+    22: {
+      mensaje: `🖼️ *Cambio de Imagen* 🖼️\n👤 *Usuario:* ${usuario}\n📸 Se ha actualizado la foto del grupo.`,
+      tipo: 'imagen',
+      imagen: pp
+},
+    23: {
+      mensaje: `🔗 *Enlace de Grupo Restablecido* 🔗\n👤 *Usuario:* ${usuario}\n🌐 Se ha generado un nuevo enlace.`,
+      tipo: 'texto'
+},
+    24: {
+      mensaje: `📝 *Descripción del Grupo Modificada* 📝\n👤 *Usuario:* ${usuario}\n✍️ Nueva descripción:\n${m.messageStubParameters[0]}`,
+      tipo: 'texto'
+},
+    25: {
+      mensaje: `⚙️ *Cambio de Configuración* ⚙️\n👤 *Usuario:* ${usuario}\n🔧 Nuevo estado: ${m.messageStubParameters[0] == 'on'? 'Solo administradores': 'Todos'}`,
+      tipo: 'texto'
+},
+    26: {
+      mensaje: `🚪 *Estado del Grupo Actualizado* 🚪\n👤 *Usuario:* ${usuario}\n🔓 Estado: ${m.messageStubParameters[0] == 'on'? 'Cerrado 🔒': 'Abierto 🔓'}`,
+      tipo: 'texto'
+},
+    29: {
+      mensaje: `👑 *Ascenso a Administrador* 👑\n📌 *Nuevo Admin:* ${participants.find(p => p.id === m.messageStubParameters[0])?.name || `@${m.messageStubParameters[0].split`@`[0]}`}\n🛠️ *Acción por:* ${usuario}`,
+      tipo: 'texto'
+},
+    30: {
+      mensaje: `⚠️ *Remoción de Administrador* ⚠️\n📌 *Usuario afectado:* ${participants.find(p => p.id === m.messageStubParameters[0])?.name || `@${m.messageStubParameters[0].split`@`[0]}`}\n📉 *Cambio realizado por:* ${usuario}`,
+      tipo: 'texto'
+}
+};
 
-  let foto = `
-🖼️ *ACTUALIZACIÓN DE IMAGEN*
-👤 *Usuario:* ${usuario}
-📸 ¡Se ha cambiado la foto del grupo!`;
-
-  let edit = `
-⚙️ *CONFIGURACIÓN MODIFICADA*
-👤 *Usuario:* ${usuario}
-🔒 Nueva configuración: ${m.messageStubParameters[0] == 'on'? 'Solo administradores': 'Todos'}`;
-
-  let newlink = `
-🔗 *ENLACE DEL GRUPO RESTABLECIDO*
-👤 *Usuario:* ${usuario}
-🌐 ¡El grupo tiene un nuevo enlace!`;
-
-  let status = `
-🚪 *CAMBIO EN EL ESTADO DEL GRUPO*
-👤 *Usuario:* ${usuario}
-🔓 Estado actual: ${m.messageStubParameters[0] == 'on'? 'Cerrado 🔒': 'Abierto 🔓'}`;
-
-  let admingp = `
-👑 *ASCENSO A ADMINISTRADOR*
-📌 *Nuevo admin:* ${m.messageStubParameters[0].split`@`[0]}
-🛠️ *Acción realizada por:* ${usuario}`;
-
-  let noadmingp = `
-⚠️ *REMOCIÓN DE ADMINISTRADOR*
-📌 *Usuario afectado:* ${m.messageStubParameters[0].split`@`[0]}
-📉 *Cambio realizado por:* ${usuario}`;
-
-  if (chat.detect && m.messageStubType == 21) {
-    await conn.sendMessage(m.chat, { text: nombre, mentions: [m.sender]}, { quoted: fkontak});
-} else if (chat.detect && m.messageStubType == 22) {
-    await conn.sendMessage(m.chat, { image: { url: pp}, caption: foto, mentions: [m.sender]}, { quoted: fkontak});
-} else if (chat.detect && m.messageStubType == 23) {
-    await conn.sendMessage(m.chat, { text: newlink, mentions: [m.sender]}, { quoted: fkontak});
-} else if (chat.detect && m.messageStubType == 25) {
-    await conn.sendMessage(m.chat, { text: edit, mentions: [m.sender]}, { quoted: fkontak});
-} else if (chat.detect && m.messageStubType == 26) {
-    await conn.sendMessage(m.chat, { text: status, mentions: [m.sender]}, { quoted: fkontak});
-} else if (chat.detect && m.messageStubType == 29) {
-    await conn.sendMessage(m.chat, { text: admingp, mentions: [`${m.sender}`, `${m.messageStubParameters[0]}`]}, { quoted: fkontak});
-} else if (chat.detect && m.messageStubType == 30) {
-    await conn.sendMessage(m.chat, { text: noadmingp, mentions: [`${m.sender}`, `${m.messageStubParameters[0]}`]}, { quoted: fkontak});
+  if (chat.detect && eventos[m.messageStubType]) {
+    let evento = eventos[m.messageStubType];
+    if (evento.tipo === 'texto') {
+      await conn.sendMessage(m.chat, { text: evento.mensaje, mentions: [m.sender]}, { quoted: fkontak});
+} else if (evento.tipo === 'imagen') {
+      await conn.sendMessage(m.chat, { image: { url: evento.imagen}, caption: evento.mensaje, mentions: [m.sender]}, { quoted: fkontak});
+}
 }
 }
