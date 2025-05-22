@@ -76,9 +76,9 @@ kiritoJBOptions.command = command
 kiritoJadiBot(kiritoJBOptions)
 global.db.data.users[m.sender].Subs = new Date * 1
 } 
-handler.help = ['serbot', 'code']
+handler.help = ['serbot', ' code']
 handler.tags = ['serbot']
-handler.command = ['code', 'serbot']
+handler.command = ['jadibot', 'serbot']
 export default handler 
 
 export async function kiritoJadiBot(options) {
