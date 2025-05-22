@@ -1,35 +1,45 @@
 
-import fetch from 'node-fetch';
+import axios from 'axios'
+import fetch from 'node-fetch'
 
-const handler = async (m, { conn, args}) => {
-  if (!args[0]) {
-    return m.reply('🚩 Por favor, proporciona un título o palabra clave para buscar el video.\n_Ejemplo:.play2 Lupita_');
-}
+let handler = async (m, { conn, args, text }) => {
+  if (!args[0]) throw m.reply('Proporcione una consulta');
+  const sender = m.sender.split('@')[0];
 
-  const query = args.join(' ');
-  const apiUrl = `https://api.vreden.my.id/api/ytplaymp4?query=${encodeURIComponent(query)}`;
+let ouh = await fetch(`https://fastrestapis.fasturl.cloud/downup/ytdown-v1?name=${text}&format=mp4&quality=720&server=auto`)
+  let gyh = await ouh.json()
+  const { duration, thumbnail, views, description, lengthSeconds, uploadDate } = gyh.result.metadata
+  const { author, name, bio, image, subCount } = gyh.result.author
+  const { url, format, quality, media, title } = gyh.result
 
-  try {
-    m.reply('⏳ Buscando el video, por favor espera un momento...');
+  m.reply(wait);
+let textcap = `*YOUTUBE VIDEO DOWNLOADER*
 
-    const response = await fetch(apiUrl);
-    if (!response.ok) throw new Error(`Error en la búsqueda: ${response.statusText}`);
+# Titulo: ${title}
+# Duración: ${lengthSeconds}
+# Calidad: ${quality}
 
-    const data = await response.json();
+  _*Descripción:*_
+  
+  ${description}
 
-    if (!data ||!data.result ||!data.result.url) {
-      return m.reply('🚩 No se pudo encontrar el video. Intenta con otro título.');
-}
+> ${wm}`
+await conn.sendMessage(
+        m.chat,
+        {
+          video: { url: media },
+          mimetype: 'video/mp4',
+          fileName: 'video.mp4',
+          caption: textcap,
+          mentions: [m.sender],
+        },
+        { quoted: m }
+      );
 
-    const videoUrl = data.result.url;
-    const title = data.result.title || 'Video encontrado';
-
-    await conn.sendFile(m.chat, videoUrl, `${title}.mp4`, `🎥 *Video encontrado:* _${title}_\n🔗 ${videoUrl}`, m);
-} catch (error) {
-    console.error('Error al obtener el video:', error);
-    m.reply('🚩 Ocurrió un error al obtener el video. Por favor, intenta nuevamente más tarde.');
-}
 };
 
-handler.command = ['play2', 'ytplay2'];
-export default handler;
+handler.help = ['play2 <consulta>'];
+handler.tags = ['downloader'];
+handler.command = ["play2"];
+
+export default handler
