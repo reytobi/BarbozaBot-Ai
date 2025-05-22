@@ -1,7 +1,8 @@
 
+
 let handler = async (m, { args, text, command, conn }) => {
     if (!args[0]) {
-        return m.reply(`💨 ¡Hola! Para reaccionar a un mensaje, usa el siguiente formato:\n${command} https://whatsapp.com/channel/.... ¡Hola, amigos! 🎉`);
+        return m.reply(`💨 ¡Hola! Para reaccionar a un mensaje, usa el siguiente formato:\n${command} https://whatsapp.com/channel/... ¡Hola, amigos! 🎉`);
     }
 
     if (!args[0].startsWith("https://whatsapp.com/channel/")) {
@@ -19,8 +20,7 @@ let handler = async (m, { args, text, command, conn }) => {
 
     const emojiInput = args.slice(1).join(' ').toLowerCase();
     const emoji = emojiInput.split('').map(c => {
-        if (c === '') return "•";  // Cambié el emoji para espacios por un punto
-        return hurufGaya[c] || c;
+        return c === '' ? "•" : (hurufGaya[c] || c);
     }).join('');
 
     try {
