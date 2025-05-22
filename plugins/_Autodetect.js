@@ -28,7 +28,7 @@ END:VCARD`
 };
 
   let chat = global.db.data.chats[m.chat];
-  let usuario = participants.find(p => p.id === m.sender)?.name || `@${m.sender.split`@`[0]}`;
+  let usuario = participants.find(p => p.id === m.sender)?.name || `@${m.sender.split('@')[0]}`;
   let pp = await conn.profilePictureUrl(m.chat, 'image').catch(_ => null) || 'https://files.catbox.moe/xr2m6u.jpg';
 
   let eventos = {
@@ -58,11 +58,11 @@ END:VCARD`
       tipo: 'texto'
 },
     29: {
-      mensaje: `👑 *Ascenso a Administrador* 👑\n📌 *Nuevo Admin:* ${participants.find(p => p.id === m.messageStubParameters[0])?.name || `@${m.messageStubParameters[0].split`@`[0]}`}\n🛠️ *Acción por:* ${usuario}`,
+      mensaje: `👑 *Ascenso a Administrador* 👑\n📌 *Nuevo Admin:* ${participants.find(p => p.id === m.messageStubParameters[0])?.name || `@${m.messageStubParameters[0].split('@')[0]}`}\n🛠️ *Acción por:* ${usuario}`,
       tipo: 'texto'
 },
     30: {
-      mensaje: `⚠️ *Remoción de Administrador* ⚠️\n📌 *Usuario afectado:* ${participants.find(p => p.id === m.messageStubParameters[0])?.name || `@${m.messageStubParameters[0].split`@`[0]}`}\n📉 *Cambio realizado por:* ${usuario}`,
+      mensaje: `⚠️ *Remoción de Administrador* ⚠️\n📌 *Usuario afectado:* ${participants.find(p => p.id === m.messageStubParameters[0])?.name || `@${m.messageStubParameters[0].split('@')[0]}`}\n📉 *Cambio realizado por:* ${usuario}`,
       tipo: 'texto'
 }
 };
