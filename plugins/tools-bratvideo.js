@@ -13,7 +13,7 @@ const handler = async (m, { conn, args}) => {
     m.reply('⏳ Generando tu sticker animado, por favor espera un momento...');
 
     const response = await fetch(apiUrl);
-    if (!response.ok) throw new Error(`Error al generar el video: ${response.statusText}`);
+    if (!response.ok) throw new Error(`Error al generar el sticker: ${response.statusText}`);
 
     const buffer = await response.buffer();
 
