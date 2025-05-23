@@ -64,12 +64,10 @@ export async function handler(chatUpdate) {
                     user.level = 0
                 if (!isNumber(user.bank))
                     user.bank = 0
-            } else { // Inicializa el usuario si no existe
+            } else 
                 global.db.data.users[m.sender] = {
                     exp: 0,
                     limit: 10,
-                    premium: false, // Asegúrate de inicializar premium aquí también
-                    premiumTime: 0,
                     registered: false,
                     name: m.name,
                     age: -1,
@@ -81,10 +79,6 @@ export async function handler(chatUpdate) {
                     bank: 0,
                     level: 0,
                 }
-                // Actualiza la variable 'user' después de la inicialización para asegurar que siempre esté definida.
-                user = global.db.data.users[m.sender] 
-            }
-
             let chat = global.db.data.chats[m.chat]
             if (typeof chat !== 'object')
                 global.db.data.chats[m.chat] = {}
@@ -111,7 +105,7 @@ export async function handler(chatUpdate) {
                     chat.antiLag = false
                 if (!('per' in chat))
                     chat.per = []
-            } else { // Inicializa el chat si no existe
+            } else
                 global.db.data.chats[m.chat] = {
                     isBanned: false,
                     bienvenida: false,
@@ -125,10 +119,6 @@ export async function handler(chatUpdate) {
                     antiLag: false,
                     per: [],
                 }
-                 // Actualiza la variable 'chat' después de la inicialización
-                chat = global.db.data.chats[m.chat]
-            }
-
             var settings = global.db.data.settings[this.user.jid]
             if (typeof settings !== 'object') global.db.data.settings[this.user.jid] = {}
             if (settings) {
@@ -148,14 +138,11 @@ export async function handler(chatUpdate) {
         } catch (e) {
             console.error(e)
         }
-        
-       // Tesis estuvo aquí 🤤
-       // Asegurarse de que _user esté definido antes de usarlo
-       const _user = global.db.data && global.db.data.users && global.db.data.users[m.sender] || {}
+        // Tesis estuvo aquí 🤤
        const mainBot = global.conn.user.jid
-       const chatData = global.db.data.chats[m.chat] || {} // Usar un nombre diferente para evitar conflicto con la variable 'chat' anterior.
-       const isSubbs = chatData.antiLag === true
-       const allowedBots = chatData.per || []
+       const chat = global.db.data.chats[m.chat] || {}
+       const isSubbs = chat.antiLag === true
+       const allowedBots = chat.per || []
        if (!allowedBots.includes(mainBot)) allowedBots.push(mainBot)
        const isAllowed = allowedBots.includes(this.user.jid)
        if (isSubbs && !isAllowed) 
@@ -167,12 +154,13 @@ export async function handler(chatUpdate) {
         if (typeof m.text !== 'string')
             m.text = ''
 
+
+        let _user = global.db.data && global.db.data.users && global.db.data.users[m.sender]
+
         const isROwner = [conn.decodeJid(global.conn.user.id), ...global.owner.map(([number]) => number)].map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
         const isOwner = isROwner || m.fromMe
         const isMods = isOwner || global.mods.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender)
-        
-        // Corrección de la línea isPrems para evitar 'undefined reading'
-        const isPrems = isROwner || global.prems.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender) || (_user && _user.premium === true)
+        const isPrems = isROwner || global.prems.map(v => v.replace(/[^0-9]/g, '') + '@s.whatsapp.net').includes(m.sender) || _user.prem == true
 
         if (opts['queque'] && m.text && !(isMods || isPrems)) {
             let queque = this.msgqueque, time = 1000 * 5
@@ -288,19 +276,19 @@ if (m.chat === groupLimitado && !comandosPermitidos.includes(command)) {
                 if (!isAccept)
                     continue
                 m.plugin = name
-                // Asegurarse de que 'chat' y 'user' estén definidos y sean objetos antes de acceder a sus propiedades
-                const currentChat = global.db.data.chats[m.chat] || {};
-                const currentUser = global.db.data.users[m.sender] || {};
-                const currentSetting = global.db.data.settings[this.user.jid] || {};
+                if (m.chat in global.db.data.chats || m.sender in global.db.data.users) {
+                    let chat = global.db.data.chats[m.chat]
+                    let user = global.db.data.users[m.sender]
+                    let setting = global.db.data.settings[this.user.jid]
+                    if (name != 'group-unbanchat.js' && chat?.isBanned)
+                        return 
+                    if (name != 'owner-unbanuser.js' && user?.banned)
+                        return
+                    if (name != 'owner-unbanbot.js' && setting?.banned)
+                        return
+                }
+                let adminMode = global.db.data.chats[m.chat].modoadmin
 
-                if (name != 'group-unbanchat.js' && currentChat?.isBanned)
-                    return 
-                if (name != 'owner-unbanuser.js' && currentUser?.banned)
-                    return
-                if (name != 'owner-unbanbot.js' && currentSetting?.banned)
-                    return
-                
-                let adminMode = currentChat.modoadmin; // Usar currentChat aquí
                 if (adminMode && !isOwner && !isROwner && m.isGroup && !isAdmin) return
                 if (plugin.rowner && plugin.owner && !(isROwner || isOwner)) { 
                     fail('owner', m, this)
@@ -336,7 +324,7 @@ if (m.chat === groupLimitado && !comandosPermitidos.includes(command)) {
                     fail('private', m, this)
                     continue
                 }
-                if (plugin.register == true && currentUser.registered == false) { // Usar currentUser aquí
+                if (plugin.register == true && _user.registered == false) { 
                     fail('unreg', m, this)
                     continue
                 }
@@ -346,7 +334,7 @@ if (m.chat === groupLimitado && !comandosPermitidos.includes(command)) {
                     m.reply('chirrido -_-')
                 else
                     m.exp += xp
-                if (!isPrems && plugin.limit && currentUser.limit < plugin.limit * 1) { // Usar currentUser aquí
+                if (!isPrems && plugin.limit && global.db.data.users[m.sender].limit < plugin.limit * 1) {
                     conn.reply(m.chat, `Se agotaron tus *✳️ Eris*`, m, rcanal)
                     continue
                 }
@@ -472,4 +460,8 @@ global.dfail = (type, m, conn, usedPrefix) => {
 }
 
 let file = global.__filename(import.meta.url, true)
-watchFile(file, asy
+watchFile(file, async () => {
+    unwatchFile(file)
+    console.log(chalk.magenta("Se actualizo 'handler.js'"))
+    if (global.reloadHandler) console.log(await global.reloadHandler())
+})
