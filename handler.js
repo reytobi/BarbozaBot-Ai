@@ -189,8 +189,8 @@ const isAllowed = allowedBots.includes(this.user.jid)
                         chatUpdate,
                         __dirname: ___dirname,
                         __filename
-                    })
-                } catch (e) {
+                       })
+            await delay(500)
                     console.error(`Error en plugin.all (${name}):`, e)
                 }
             }
@@ -348,6 +348,7 @@ if (gruposLimitados.includes(m.chat) && !comandosPermitidos.includes(command)) c
 
             try {
                 await plugin.call(this, m, extra)
+                await delay(500)  
                 if (!isPrems) m.limit = m.limit || plugin.limit || false
             } catch (e) {
                 m.error = e
