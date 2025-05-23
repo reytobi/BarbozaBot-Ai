@@ -1,47 +1,71 @@
-import axios from "axios";
-import uploadImage from "../lib/uploadImage.js";
+import fs from "fs"
+import path from "path"
+import fetch from "node-fetch"
+import Jimp from "jimp"
+import FormData from "form-data"
+import { fileURLToPath } from "url"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const handler = async (m, { conn }) => {
   try {
-    const q = m.quoted || m;
-    const mime = (q.msg || q).mimetype || q.mediaType || "";
-    if (!mime.startsWith("image/")) {
-      return conn.reply(m.chat, "> 𝘙𝘦𝘴𝘱𝘰𝘯𝘥𝘦 𝘢 𝘶𝘯𝘢 𝘪𝘮𝘢𝘨𝘦𝘯 𝘱𝘢𝘳𝘢 𝘵𝘳𝘢𝘯𝘴𝘧𝘰𝘳𝘮𝘢𝘳𝘭𝘢 𝘦𝘯 𝘏𝘋.", m,rcanal);
+    const q = m.quoted || m
+    const mime = (q.msg || q).mimetype || q.mediaType || ""
+
+    if (!/^image\/(jpe?g|png)$/.test(mime)) {
+      return m.reply('🪐 Responde a una imagen JPG o PNG.')
     }
 
-    await m.react("🕓");
-    const imgBuffer = await q.download?.();
-    const urlSubida = await uploadImage(imgBuffer);
-    const upscaledBuffer = await getUpscaledImage(urlSubida);
+    await conn.sendMessage(m.chat, { text: `⏳ Mejorando Su Imagen Espere Un Momento.\n> ${dev}` }, { quoted: m })
 
-    await conn.sendFile(
-      m.chat,
-      upscaledBuffer,
-      "upscaled.jpg",
-      "> 𝘈𝘲𝘶í 𝘵𝘪𝘦𝘯𝘦 𝘴𝘶 𝘪𝘮𝘢𝘨𝘦𝘯.",
-      m,rcanal
-    );
-    await m.react("✅");
-  } catch (e) {
-    console.error("Error:", e);
-    await m.react("✖️");
-    conn.reply(m.chat, "> Ocurrió un error al mejorar la imagen.", m,rcanal);
+    const buffer = await q.download()
+    const image = await Jimp.read(buffer)
+    image.resize(800, Jimp.AUTO)
+
+    const tmp = path.join(__dirname, `tmp_${Date.now()}.jpg`)
+    await image.writeAsync(tmp)
+
+    const pene = await uploadToUguu(tmp)
+    if (!pene) throw new Error('Lo Sentimos La Api Fue Un Fracaso Total, Bueno Todas son asi😿')
+
+    const enhanced = await upscaleImage(pene)
+    await conn.sendFile(m.chat, enhanced, 'hd.jpg', '', m)
+    await conn.sendMessage(m.chat, { text: "✅ Imagen mejorada." }, { quoted: m })
+
+  } catch (err) {
+    conn.reply(m.chat, `*Error:* ${err.message}\n > 🕊️.`, m)
   }
-};
+}
 
-handler.help = ["hd"];
-handler.tags = ["tools"];
-handler.command = ["remini", "hd", "enhance"];
-handler.register = false;
-export default handler;
+handler.help = ['upscale']
+handler.tags = ['tools']
+handler.command = ['hd', 'remini', 'upscale']
 
-async function getUpscaledImage(imageUrl) {
-  const apiUrl = `https://jerofc.my.id/api/remini?url=${encodeURIComponent(imageUrl)}`;
-  const apiResponse = await axios.get(apiUrl);
-  if (!apiResponse.data?.status || !apiResponse.data.data?.image) {
-    throw new Error('API de mejora devolvió respuesta inválida');
+export default handler
+
+async function uploadToUguu(filePath) {
+  const form = new FormData()
+  form.append("files[]", fs.createReadStream(filePath))
+
+  try {
+    const res = await fetch("https://uguu.se/upload.php", {
+      method: "POST",
+      headers: form.getHeaders(),
+      body: form
+    })
+
+    const json = await res.json()
+    await fs.promises.unlink(filePath)
+    return json.files?.[0]?.url
+  } catch {
+    await fs.promises.unlink(filePath)
+    return null
   }
-  const enhancedImageUrl = apiResponse.data.data.image;
-  const imageResponse = await axios.get(enhancedImageUrl, { responseType: 'arraybuffer' });
-  return Buffer.from(imageResponse.data);
+}
+
+async function upscaleImage(url) {
+  const res = await fetch(`https://api.siputzx.my.id/api/iloveimg/upscale?image=${encodeURIComponent(url)}`)
+  if (!res.ok) throw new Error("No se pudo mejorar la imagen.")
+  return await res.buffer()
 }
