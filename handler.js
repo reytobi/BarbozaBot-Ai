@@ -1,32 +1,20 @@
-import { smsg } from './lib/simple.js'
-import { format } from 'util' 
-import { fileURLToPath } from 'url'
-import path, { join } from 'path'
-import { unwatchFile, watchFile } from 'fs'
-import chalk from 'chalk'
-import fetch from 'node-fetch'
-
-const { proto } = (await import('@whiskeysockets/baileys')).default
-const isNumber = x => typeof x === 'number' && !isNaN(x)
-const delay = ms => isNumber(ms) && new Promise(resolve => setTimeout(function () {
-    clearTimeout(this)
-    resolve()
-}, ms))
-
 export async function handler(chatUpdate) {
     this.msgqueque = this.msgqueque || []
-    if (!chatUpdate)
-        return
+    if (!chatUpdate) return
+
+    // Add this check at the beginning of the handler
+    if (!this.user) {
+        console.warn('Bot user information is not available yet. Skipping handler execution.');
+        return; 
+    }
+
     this.pushMessage(chatUpdate.messages).catch(console.error)
     let m = chatUpdate.messages[chatUpdate.messages.length - 1]
-    if (!m)
-        return
-    if (global.db.data == null)
-        await global.loadDatabase()
+    if (!m) return
+    if (global.db.data == null) await global.loadDatabase()
     try {
         m = smsg(this, m) || m
-        if (!m)
-            return
+        if (!m) return
         m.exp = 0
         m.limit = false
         try {
