@@ -57,7 +57,7 @@ let handler = async (m, { conn, text, args, usedPrefix, command }) => {
             externalAdReply: {
                 title: '🔔 Nuevo registro',
                 body: `Usuario ${name} ha sido registrado con éxito.`,
-                thumbnailUrl: 'https://qu.ax/Mvhfa.jpg', // Imagen proporcionada
+                thumbnailUrl: 'https://qu.ax/iVZTn.jpg', // Imagen proporcionada
                 sourceUrl: 'https://your-website.com', // Personaliza con tu enlace
                 mediaType: 1,
                 renderLargerThumbnail: true
