@@ -39,7 +39,7 @@ let handler = async (m, { conn, groupMetadata }) => {
     await conn.groupParticipantsUpdate(m.chat, [user], 'remove');
 };
 
-handler.command = /^(ruletadelban)$/i;
+handler.command = /^(ruletaban)$/i;
 handler.group = true;
 handler.tags = ['game'];
 handler.admin = true;
