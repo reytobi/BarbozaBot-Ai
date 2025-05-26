@@ -18,7 +18,7 @@ const handler = async (m, {conn, text}) => {
   m.reply(`≡ *💎 𝙰𝙽̃𝙰𝙳𝙸𝙳𝙾*
 ┌──────────────
 ▢ *𝚃𝚘𝚝𝚊𝚕:* ${dmt}
-©2023 EliteBotGlobal -
+Bot Barboza  -
 └──────────────`);
 };
 handler.command = ['añadirdiamantes', 'addd', 'dard', 'dardiamantes'];
