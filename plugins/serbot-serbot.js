@@ -299,8 +299,7 @@ try {
         if (connection === "close") {
           console.log(disconnectCode);
           if (disconnectCode == 405) {
-            await fs.unlinkSync("./" + jadi + "/" + userName + "/creds.json");
-            return await m.reply("≡ Reenvia nuevamente el comando.");
+          await fs.promises.unlink(`./${jadi}/${userName}/creds.json`);
           }
           if (disconnectCode === DisconnectReason.restartRequired) {
             initSubBot();
