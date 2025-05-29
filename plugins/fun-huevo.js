@@ -18,7 +18,7 @@ const handler = async (m, { conn, usedPrefix, command, text }) => {
   } catch (e) {
     // Si no se puede obtener la imagen, se mantendrá el valor predeterminado
   } finally {
-    let pp = await conn.profilePictureUrl(who, 'image').catch(_ => './src/avatar_contact.png');
+    let pp = await conn.profilePictureUrl(who, 'image').catch(_ => './storage/avatar_contact.png');
     let username = conn.getName(who);
     let str = `@${m.sender.split('@')[0]} le está agarrando el huevo a @${who.split('@')[0]} 🍆`;
     let mentionedJid = [who, m.sender];
